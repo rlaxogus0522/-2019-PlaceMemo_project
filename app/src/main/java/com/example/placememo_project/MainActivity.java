@@ -13,11 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.placememo_project.databinding.ActivityMainBinding;
 import com.google.gson.Gson;
+import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 
 import java.util.ArrayList;
 
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     RecyclerAdapter[] adapters;
     Realm myRealm;
     AlertDialog alamreset;
+    public ItemTouchHelperExtension[] mItemTouchHelper;
+    public ItemTouchHelperExtension.Callback[] mCallback;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,10 +70,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerViews[3] = findViewById(R.id.recycleerView4);
         recyclerViews[4] = findViewById(R.id.recycleerView5);
         adapters = new RecyclerAdapter[5];
+        mCallback = new ItemTouchHelperCallback[5];
+        mItemTouchHelper = new ItemTouchHelperExtension[5];
         for (int i = 0; i < recyclerViews.length; i++) {
-            adapters[i] = new RecyclerAdapter();
+            mCallback[i] = new ItemTouchHelperCallback();
+            mItemTouchHelper[i] = new ItemTouchHelperExtension(mCallback[i]);
+            adapters[i] = new RecyclerAdapter(this);
             recyclerViews[i].setLayoutManager(new LinearLayoutManager(this));
             recyclerViews[i].setAdapter(adapters[i]);
+            mItemTouchHelper[i].attachToRecyclerView(recyclerViews[i]);
         }
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
@@ -292,4 +301,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 }
-//
+///
