@@ -29,7 +29,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             color = items.get(position).getColor();
             return VIEW_TYPE_B;
         }
-////
+/////
     }
 
     @Override
