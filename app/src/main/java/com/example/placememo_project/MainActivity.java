@@ -8,12 +8,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.ItemTouchHelper;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,10 +29,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final static String TAG = "MainActivity======";
     private DrawerLayout drawerLayout;
     private View drawView;
-    RecyclerAdapter[] adapter;
     private boolean isdrawer = false;
     int color[] = new int[]{0xFFE8EE9C,0xFFE4B786,0xFF97E486,0xFF86E4D1,0xFFE48694};
     private ArrayList<String> titlename = new ArrayList<>();
+    RecyclerView[] recyclerViews;
+    RecyclerAdapter[] adapters;
     Realm myRealm;
     AlertDialog alamreset;
     @Override
@@ -59,10 +59,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainBinding.menu.btnClose.setOnClickListener(this);
         mainBinding.menu.btnReset.setOnClickListener(this);
         mainBinding.btnInsertMemo.setOnClickListener(this);
-
-        adapter = new RecyclerAdapter[5];
-
-
+        recyclerViews = new RecyclerView[5];
+        recyclerViews[0] = findViewById(R.id.recycleerView);
+        recyclerViews[1] = findViewById(R.id.recycleerView2);
+        recyclerViews[2] = findViewById(R.id.recycleerView3);
+        recyclerViews[3] = findViewById(R.id.recycleerView4);
+        recyclerViews[4] = findViewById(R.id.recycleerView5);
+        adapters = new RecyclerAdapter[5];
+        for (int i = 0; i < recyclerViews.length; i++) {
+            adapters[i] = new RecyclerAdapter();
+            recyclerViews[i].setLayoutManager(new LinearLayoutManager(this));
+            recyclerViews[i].setAdapter(adapters[i]);
+        }
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
         drawView = (View) findViewById(R.id.drawer);
@@ -81,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             public void onClick(
                                     DialogInterface dialog, int id) {
                                 // 초기화
-//                                     alamReset();
+                                     alamReset();
 
                             }
                         })
@@ -96,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         alamreset = alertDialogBuilder.create();
 
 
-//        dataUpdate();
+        dataUpdate();
         checkNoImage();
 
 
@@ -182,17 +190,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         settingToggleButton(view);
     }
 
-//    private void alamReset() {
-//        for (int i = 0; i < titlename.size(); i++) {
-//            adapters[i].remove(0);
-//        }
-//        titlename.clear();
-//        checkNoImage();
-//        RealmResults<Data_alam> realmDataBases = myRealm.where(Data_alam.class).findAll();
-//        myRealm.beginTransaction();
-//        realmDataBases.deleteAllFromRealm(); // 데이터베이스에 내용 전부 제거
-//        myRealm.commitTransaction();
-//    }
+    private void alamReset() {
+        for (int i = 0; i < titlename.size(); i++) {
+            adapters[i].remove(0);
+        }
+        titlename.clear();
+        checkNoImage();
+        RealmResults<Data_alam> realmDataBases = myRealm.where(Data_alam.class).findAll();
+        myRealm.beginTransaction();
+        realmDataBases.deleteAllFromRealm(); // 데이터베이스에 내용 전부 제거
+        myRealm.commitTransaction();
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -218,34 +226,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (resultCode == RESULT_OK) {
-//            if (titlename.contains(data.getStringExtra("nName"))) { // 있다면
-//                for (int i = 0; i < titlename.size(); i++) {
-//                    if (titlename.get(i).equals(data.getStringExtra("nName"))) {
-//                        adapters[i].addItem(new RecyclerItem(data.getStringExtra("memo"), "B"));
-//                    }
-//                }
-//            } else { // 없다면
-//                titlename.add(data.getStringExtra("nName"));
-//                checkNoImage();
-//                for (int i = 0; i < titlename.size(); i++) {
-//                    try {
-//                        if (titlename.get(i).equals(data.getStringExtra("nName"))) {
-//                            adapters[i].addItem(new RecyclerItem(data.getIntExtra("nicon", -1), data.getStringExtra("nName"),color[i], "A"));
-//                            adapters[i].addItem(new RecyclerItem(data.getStringExtra("memo"), "B"));
-//                        }
-//                    } catch (NullPointerException e) {
-//                    }
-//                    Log.d(TAG, "NullPointerException");
-//
-//                }
-//
-//            }
-//
-//        }
-//    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (titlename.contains(data.getStringExtra("nName"))) { // 있다면
+                for (int i = 0; i < titlename.size(); i++) {
+                    if (titlename.get(i).equals(data.getStringExtra("nName"))) {
+                        adapters[i].addItem(new RecyclerItem(data.getStringExtra("memo"), "B"));
+                    }
+                }
+            } else { // 없다면
+                titlename.add(data.getStringExtra("nName"));
+                checkNoImage();
+                for (int i = 0; i < titlename.size(); i++) {
+                    try {
+                        if (titlename.get(i).equals(data.getStringExtra("nName"))) {
+                            adapters[i].addItem(new RecyclerItem(data.getIntExtra("nicon", -1), data.getStringExtra("nName"),color[i], "A"));
+                            adapters[i].addItem(new RecyclerItem(data.getStringExtra("memo"), "B"));
+                        }
+                    } catch (NullPointerException e) {
+                    }
+                    Log.d(TAG, "NullPointerException");
+
+                }
+
+            }
+
+        }
+    }
 
 
     private void settingToggleButton(View view) {
