@@ -20,7 +20,7 @@
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:padding="12dp"
+            android:padding="8dp"
             android:text="수정"
             android:textColor="@android:color/white"/>
 
@@ -30,7 +30,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/delete_memo"
             android:gravity="center"
-            android:padding="12dp"
+            android:padding="8dp"
             android:text="삭제"
             android:textColor="@android:color/white"/>
 

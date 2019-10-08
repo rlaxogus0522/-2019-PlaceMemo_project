@@ -1,5 +1,6 @@
 package com.example.placememo_project;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -28,12 +29,13 @@ import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     ActivityMainBinding mainBinding;
+    public static Context mContext;
     private final static String TAG = "MainActivity======";
     private DrawerLayout drawerLayout;
     private View drawView;
     private boolean isdrawer = false;
     int color[] = new int[]{0xFFE8EE9C,0xFFE4B786,0xFF97E486,0xFF86E4D1,0xFFE48694};
-    private ArrayList<String> titlename = new ArrayList<>();
+    static public ArrayList<String> titlename = new ArrayList<>();
     RecyclerView[] recyclerViews;
     RecyclerAdapter[] adapters;
     Realm myRealm;
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (Exception e) {
             Log.d(TAG, "myRealm = null");
         }
+        mContext = this;
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mainBinding.btnSetting.setOnClickListener(this);
         mainBinding.menu.sortName.setOnClickListener(this);
@@ -171,7 +174,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void checkNoImage() {
+
+    void checkNoImage() {
         if (titlename.size() == 0) {
             mainBinding.imageNoMemo.setAlpha(1.0f);
             mainBinding.TextViewNoMemo.setAlpha(1);

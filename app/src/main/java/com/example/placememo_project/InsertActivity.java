@@ -82,9 +82,6 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
 
         dataUpdate();
         refreshButtonImage();
-        for (int i = 0; i < locationName.size(); i++) {
-            Log.d(TAG, locationName.get(i));
-        }
     }
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
