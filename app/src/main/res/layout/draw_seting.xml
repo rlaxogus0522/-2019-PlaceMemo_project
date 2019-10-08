@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer"
+    android:background="#ffffff"
+    android:layout_width="260dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="end"
+    android:padding="10dp"
+    android:weightSum="10"
+    android:orientation="vertical">
+<LinearLayout
+    android:layout_weight="0.5"
+    android:layout_width="match_parent"
+    android:layout_height="0dp">
+
+    <ImageButton
+        android:id="@+id/btn_close"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="26dp"
+        android:layout_height="30dp"
+        android:background="@drawable/close" /></LinearLayout>
+    <LinearLayout
+        android:layout_weight="5.5"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="설정"
+        android:textColor="#000000"
+        android:textSize="15dp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/sort_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            style="?android:attr/borderlessButtonStyle"
+            android:textSize="13dp"
+            android:textColor="#46A0DC"
+            android:text="이름 순" />
+
+        <Button
+            android:id="@+id/sort_update"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            android:background="@android:color/transparent"
+            android:textSize="13dp"
+            android:text="추가된 순" />
+
+        <Button
+            android:id="@+id/sort_alams"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="?android:attr/borderlessButtonStyle"
+            android:background="@android:color/transparent"
+            android:textSize="13dp"
+            android:text="알람 많은 순" />
+
+    </LinearLayout>
+    <TextView
+        android:textColor="#000000"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="알람 반복 설정"
+        android:textSize="15dp"
+        android:textStyle="bold"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/loof_1"
+            android:background="@android:color/transparent"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="1회"
+            android:textColor="#46A0DC"
+            android:textSize="13dp" />
+
+        <Button
+            android:id="@+id/loof_3"
+            android:layout_width="0dp"
+            android:textSize="13dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            style="?android:attr/borderlessButtonStyle"
+
+            android:text="3회" />
+
+        <Button
+            android:id="@+id/loof_infinity"
+            android:layout_width="0dp"
+            android:textSize="13dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="무한 반복" />
+    </LinearLayout>
+    <TextView
+        android:textColor="#000000"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="홈 위젯 설정"
+        android:textSize="15dp"
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/wiget_on"
+            android:textSize="13dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            style="?android:attr/borderlessButtonStyle"
+            android:textColor="#46A0DC"
+            android:text="켜기" />
+
+        <Button
+            android:id="@+id/wiget_off"
+            android:textSize="13dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="끄기" />
+
+    </LinearLayout>
+        <Button
+            android:textSize="13dp"
+            android:id="@+id/btn_reset"
+            android:textStyle="bold"
+            android:textColor="#7B7575"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="모든 알람 초기화" />
+
+    </LinearLayout>
+<LinearLayout
+    android:gravity="center"
+    android:layout_weight="0.5"
+    android:layout_width="match_parent"
+    android:layout_height="0dp">
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background = "#7A7A7A"/></LinearLayout>
+    <LinearLayout
+        android:layout_weight="3"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+    <Button
+        android:textSize="15dp"
+        android:textStyle="bold"
+        android:textColor="#7B7575"
+        android:gravity="left|center"
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        style="?android:attr/borderlessButtonStyle"
+        android:text="앱 후원하고 광고 없애기" />
+    <Button
+        android:textSize="15dp"
+        android:layout_marginBottom="50dp"
+        android:textStyle="bold"
+        android:textColor="#7B7575"
+        android:gravity="left|center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        style="?android:attr/borderlessButtonStyle"
+        android:text="플레이스토어에 피드백 남기기" /></LinearLayout>
+
+
+</LinearLayout></layout>

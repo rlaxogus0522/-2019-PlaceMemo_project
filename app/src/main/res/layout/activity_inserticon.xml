@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?><layout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="@drawable/inserticon"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:weightSum="5">
+
+            <ImageButton
+                android:id="@+id/btn_location_1"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_margin="5dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent" />
+
+            <ImageButton
+                android:id="@+id/btn_location_2"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_margin="5dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent" />
+
+            <ImageButton
+                android:id="@+id/btn_location_3"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_margin="5dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent" />
+
+            <ImageButton
+                android:id="@+id/btn_location_4"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_margin="5dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent" />
+
+            <ImageButton
+                android:id="@+id/btn_location_5"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_margin="5dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:weightSum="5">
+
+            <ImageButton
+                android:id="@+id/btn_location_6"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_margin="5dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent" />
+
+            <ImageButton
+                android:id="@+id/btn_location_7"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_margin="5dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent" />
+
+            <ImageButton
+                android:id="@+id/btn_location_8"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_margin="5dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent" />
+
+            <ImageButton
+                android:id="@+id/btn_location_9"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_margin="5dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent" />
+
+            <ImageButton
+                android:id="@+id/btn_location_10"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_margin="5dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/transparent" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1.4"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="bottom|left"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/btn_addicon"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:background="@drawable/add_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="편집/추가" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:gravity="bottom|right"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+            <Button
+                android:id="@+id/btn_addicon_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/okbutton"
+                android:textColor="#ffffff"
+                android:textStyle="bold"
+                android:text="적 용"/>
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+    </LinearLayout></layout>

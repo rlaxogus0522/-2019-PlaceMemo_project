@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/memo"
+    android:layout_margin="10dp">
+    <TextView
+        android:id="@+id/tv_memo"
+        android:padding="10dp"
+        android:layout_weight="8"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:gravity="center|left"
+        android:textStyle="bold"
+        />
+    <ImageView
+        android:layout_gravity="center"
+        android:id="@+id/alam"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:background="@drawable/baseline_notifications_active_white_48dp"/>
+
+</LinearLayout>

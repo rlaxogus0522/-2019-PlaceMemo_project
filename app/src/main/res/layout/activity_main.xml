@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:id="@+id/drawlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"
+        >
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="#FF9D60B7">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Place 메모"
+                    android:textColor="#ffffff"
+                    android:textSize="17dp"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/btn_setting"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="right|center"
+                    android:background="@drawable/settings" />
+            </androidx.appcompat.widget.Toolbar>
+
+
+            <LinearLayout
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_weight="1.5"
+                    android:gravity="right|center"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+                    <ImageButton
+                        android:id="@+id/btn_insertMemo"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:background="@drawable/plus"/>
+                </LinearLayout>
+                <ScrollView
+                    android:layout_weight="10"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_margin="20dp"
+                        android:id="@+id/recycleerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/recycle"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_margin="20dp"
+                        android:id="@+id/recycleerView2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/recycle"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_margin="20dp"
+                        android:id="@+id/recycleerView3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/recycle"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_margin="20dp"
+                        android:id="@+id/recycleerView4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/recycle"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_margin="20dp"
+                        android:id="@+id/recycleerView5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/recycle"/>
+
+                    <ImageView
+                        android:id="@+id/image_no_memo"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/nomemo" />
+
+                    <TextView
+                        android:id="@+id/TextView_no_memo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:text="No Memo"
+                        android:textSize="20dp"
+                        android:textStyle="italic|bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/image_no_memo" /></LinearLayout></ScrollView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+        <include
+            android:id="@+id/menu"
+            layout="@layout/draw_seting"
+            />
+    </androidx.drawerlayout.widget.DrawerLayout></layout>
