@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DrawerLayout drawerLayout;
     private View drawView;
     private boolean isdrawer = false;
-    int color[] = new int[]{0xFFE8EE9C,0xFFE4B786,0xFF97E486,0xFF86E4D1,0xFFE48694};
+    int color[] = new int[]{0xFFE8EE9C, 0xFFE4B786, 0xFF97E486, 0xFF86E4D1, 0xFFE48694};
     static public ArrayList<String> titlename = new ArrayList<>();
     RecyclerView[] recyclerViews;
     RecyclerAdapter[] adapters;
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     AlertDialog alamreset;
     public ItemTouchHelperExtension[] mItemTouchHelper;
     public ItemTouchHelperExtension.Callback[] mCallback;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             public void onClick(
                                     DialogInterface dialog, int id) {
                                 // 초기화
-                                     alamReset();
+                                alamReset();
 
                             }
                         })
@@ -120,11 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkNoImage();
 
 
-
     }
-
-
-
 
 
     private void dataUpdate() {
@@ -143,28 +140,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 /*----------------------------------------------------------------------------------------------------*/
 
-                Log.d("===","titlename"+titlename);
-                    if (titlename.contains(data_alam.getName())) { // 있다면
-                        for (int i = 0; i < titlename.size(); i++) {
+                Log.d("===", "titlename" + titlename);
+                if (titlename.contains(data_alam.getName())) { // 있다면
+                    for (int i = 0; i < titlename.size(); i++) {
+                        if (titlename.get(i).equals(data_alam.getName())) {
+                            adapters[i].addItem(new RecyclerItem(data_alam.getMemo(), "B"));
+                        }
+                    }
+                } else { // 없다면
+                    titlename.add(data_alam.getName());
+                    for (int i = 0; i < titlename.size(); i++) {
+                        try {
                             if (titlename.get(i).equals(data_alam.getName())) {
+                                adapters[i].addItem(new RecyclerItem(data_alam.getIcon(), data_alam.getName(), color[i], "A"));
                                 adapters[i].addItem(new RecyclerItem(data_alam.getMemo(), "B"));
                             }
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                            Log.d(TAG, e.toString());
                         }
-                    } else { // 없다면
-                        titlename.add(data_alam.getName());
-                        for (int i = 0; i < titlename.size(); i++) {
-                            try {
-                                if (titlename.get(i).equals(data_alam.getName())) {
-                                    adapters[i].addItem(new RecyclerItem(data_alam.getIcon(),data_alam.getName(),color[i], "A"));
-                                    adapters[i].addItem(new RecyclerItem(data_alam.getMemo(), "B"));
-                                }
-                            } catch (NullPointerException e) {
-                                e.printStackTrace();
-                                Log.d(TAG, e.toString());
-                            }
-                        }
-
                     }
+
+                }
 
 
                 /*-------------------------------------------------------------------------------------------------------------------*/
@@ -216,27 +213,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        // TODO Auto-generated method stub
-        if( event.getAction() == KeyEvent.ACTION_DOWN ){ //키 다운 액션 감지
-            if( keyCode == KeyEvent.KEYCODE_BACK ){ //BackKey 다운일 경우만 처리
-                Log.d("+++",String.valueOf(isdrawer));
-                if(isdrawer) {
-                    drawerLayout.closeDrawers();
-                    isdrawer = false;
-                    return false;
-                }else{
-                    finish();
-                    return true;
-                }
-                 // 리턴이 true인 경우 기존 BackKey의 기본액션이 그대로 행해 지게 됩니다.
-                // 리턴을 false로 할 경우 기존 BackKey의 기본액션이 진행 되지 않습니다.
-                // 따라서 별도의 종료처리 혹은 다이얼로그 처리를 통한
-                //BackKey기본액션을 구현 해주셔야 합니다.
-            }
+    public void onBackPressed() {
+        if (isdrawer) {
+            drawerLayout.closeDrawers();
+            isdrawer = false;
+            return;
+        } else {
+            super.onBackPressed();
+            finishAffinity();
         }
-        return super.onKeyDown( keyCode, event );
     }
+
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        // TODO Auto-generated method stub
+//        if( event.getAction() == KeyEvent.ACTION_DOWN ){ //키 다운 액션 감지
+//            if( keyCode == KeyEvent.KEYCODE_BACK ){ //BackKey 다운일 경우만 처리
+//                Log.d("+++",String.valueOf(isdrawer));
+//                if(isdrawer) {
+//                    drawerLayout.closeDrawers();
+//
+//                    return false;
+//                }else{
+//                    finish();
+//                    return true;
+//                }
+//                 // 리턴이 true인 경우 기존 BackKey의 기본액션이 그대로 행해 지게 됩니다.
+//                // 리턴을 false로 할 경우 기존 BackKey의 기본액션이 진행 되지 않습니다.
+//                // 따라서 별도의 종료처리 혹은 다이얼로그 처리를 통한
+//                //BackKey기본액션을 구현 해주셔야 합니다.
+//            }
+//        }
+//        return super.onKeyDown( keyCode, event );
+//    }
 
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -254,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 for (int i = 0; i < titlename.size(); i++) {
                     try {
                         if (titlename.get(i).equals(data.getStringExtra("nName"))) {
-                            adapters[i].addItem(new RecyclerItem(data.getIntExtra("nicon", -1), data.getStringExtra("nName"),color[i], "A"));
+                            adapters[i].addItem(new RecyclerItem(data.getIntExtra("nicon", -1), data.getStringExtra("nName"), color[i], "A"));
                             adapters[i].addItem(new RecyclerItem(data.getStringExtra("memo"), "B"));
                         }
                     } catch (NullPointerException e) {

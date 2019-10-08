@@ -33,6 +33,8 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import static com.example.placememo_project.MainActivity.titlename;
+
 
 public class IntroActivity extends AppCompatActivity {
     static boolean permission = false;
@@ -45,6 +47,7 @@ public class IntroActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
         checkPermission(); // --  권한 체크 시작
+        titlename.clear();
     }
 
     @Override

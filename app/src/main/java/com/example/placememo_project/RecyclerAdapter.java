@@ -76,6 +76,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(mcontext,"삭제 버튼 클릭",Toast.LENGTH_LONG).show();
+                    remove(0);
+                    ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.setTranslationX(0f);
                 }
             });
             ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewEdit1.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +127,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if(items.size()==0){
                     break;
                 }
-                titlename.remove(getTitle());
+                RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("memo",getMemo(items.size()-1)).findAll();
+                myRealm.beginTransaction();
+                data_alams.deleteAllFromRealm();
+                myRealm.commitTransaction();
+                if(items.size()==1) {
+                    RealmResults<Data_alam> data_alam = myRealm.where(Data_alam.class).equalTo("name", getTitle()).findAll();
+                    myRealm.beginTransaction();
+                    data_alam.deleteAllFromRealm();
+                    myRealm.commitTransaction();
+                    titlename.remove(getTitle());
+                }
                 items.remove(items.size()-1);
             }
             notifyDataSetChanged();  // --  업데이트
@@ -136,7 +148,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             data_alams.deleteAllFromRealm();
             myRealm.commitTransaction();
             if(items.size()==1){
-                Log.d("이건과연",getTitle());
                 RealmResults<Data_alam> data_alam = myRealm.where(Data_alam.class).equalTo("name",getTitle()).findAll();
                 myRealm.beginTransaction();
                 data_alam.deleteAllFromRealm();
@@ -151,6 +162,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public String getTitle(){
         return items.get(0).getTitle();    }
+
+    public String getMemo(int position){
+        return items.get(position).getMemo();    }
 
     class ViewHolder1 extends RecyclerView.ViewHolder {
         TextView textView;
