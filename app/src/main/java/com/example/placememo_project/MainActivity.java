@@ -1,5 +1,8 @@
 package com.example.placememo_project;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,7 +29,6 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    //ㅋㅋ
     ActivityMainBinding mainBinding;
     public static Context mContext;
     private final static String TAG = "MainActivity======";
@@ -115,13 +117,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         });
         alamreset = alertDialogBuilder.create();
 
-
         dataUpdate();
         checkNoImage();
-
+        scheduleJob();
 
     }
 
+    public void scheduleJob(){
+        ComponentName componentName = new ComponentName(this,JobService.class);
+        JobInfo info = new JobInfo.Builder(522,componentName)
+                .setPersisted(true)
+                .setPeriodic(15 * 60 * 1000)
+                .build();
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        int resultCode = scheduler.schedule(info);
+        if (resultCode == JobScheduler.RESULT_SUCCESS){
+            Log.d("","Job 시작");
+        }else {
+            Log.d("","Job 실패");
+        }
+
+    }
+    public void cancleJob(){
+        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        scheduler.cancel(522);
+        Log.d(""," Job 종료");
+    }
 
     private void dataUpdate() {
         Log.d("dataUpdate 실행됨", "");

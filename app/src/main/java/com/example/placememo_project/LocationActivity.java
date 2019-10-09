@@ -38,6 +38,7 @@ import static com.example.placememo_project.IntroActivity.permission;
 
 public class LocationActivity extends AppCompatActivity implements View.OnClickListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     private final static String TAG = "LocationActivity : ";
+    public static Context lContext;
     ActivityLocationBinding lBinding;
     private int icon, clickicon;
     private GoogleMap mMap;
@@ -49,7 +50,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         lBinding = DataBindingUtil.setContentView(this, R.layout.activity_location);
-
+        lContext = this;
         lBinding.btnAddIcon.setOnClickListener(this);
         lBinding.btnAddlocation.setOnClickListener(this);
         lBinding.btnSerch.setOnClickListener(this);
@@ -87,7 +88,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
         manager.removeUpdates(mLocation);
     }
 
-    private void startLocation() {
+    public void startLocation() {
         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         long minTime = 0;
         float minDistance = 0;
