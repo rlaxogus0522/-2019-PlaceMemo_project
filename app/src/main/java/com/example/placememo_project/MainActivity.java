@@ -26,6 +26,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    //ㅋㅋ
     ActivityMainBinding mainBinding;
     public static Context mContext;
     private final static String TAG = "MainActivity======";
