@@ -2,11 +2,11 @@ package com.example.placememo_project;
 
 import io.realm.RealmObject;
 
-public class Data_alam extends RealmObject {
-    double latitude,longitude;
-    String name;
-    int icon;
-    String memo;
+public class Data_alam extends RealmObject {  //-- 저장된 메모
+    double latitude,longitude; //-- 저장된 각 위치의 위,경도 위치 ( 사용자에게는 안보이는 부분 )
+    String name; //-- 사용자가 입력한 위치 이름 ( 제목 부분 )
+    int icon;  //-- 사용자가 설정한 Icon  ( 제목 부분 )
+    String memo; //-- 사용자가 등록한 메모 ( 내용 부분)
 
 
     public double getLatitude() {

@@ -13,9 +13,9 @@ import com.example.placememo_project.databinding.ActivityInserticonBinding;
 
 import java.util.ArrayList;
 
-public class IconActivity extends AppCompatActivity implements View.OnClickListener {
+public class IconActivity extends AppCompatActivity implements View.OnClickListener {   //-- 아이콘추가시 실행되는 액티비티
     private final static String TAG = "IconActivity : ";
-    private int icon,clickicon;
+    private int icon,clickicon;   //-- 클릭되기전 아이콘과 이후 아이콘 구분
     ActivityInserticonBinding iBinding;
     ArrayList<Integer> locationButton = new ArrayList<>(); // -- 클릭 되기 전 버튼 이미지
     ArrayList<Integer> locationButtonClick = new ArrayList<>(); // -- 클릭 된 이후 버튼 이미지
@@ -56,6 +56,8 @@ public class IconActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void addButton() {
+
+        //-- 기본으로 사용자에게 추가될 버튼이미지 부탁 ( 수정 전.. 수정할 예정 )
         btnlocation.add(iBinding.btnLocation1);
         btnlocation.add(iBinding.btnLocation2);
         btnlocation.add(iBinding.btnLocation3);

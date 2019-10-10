@@ -1,9 +1,9 @@
 package com.example.placememo_project;
 
-public class RecyclerItem {
-    String type,title,memo;
-    int icon;
-    int color;
+public class RecyclerItem {  //-- 메모에 추가되는 아이템
+    String type,title,memo;    //-- 메뉴인지,메모인지 구분하는 type 변수 ,  위치에 이름 , 메모
+    int icon;  //-- 위치에 대한 Icon
+    int color;  //-- 메뉴판에 색깔
 
     public int getColor() {
         return color;

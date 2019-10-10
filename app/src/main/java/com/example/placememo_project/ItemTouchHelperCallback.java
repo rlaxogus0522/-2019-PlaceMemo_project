@@ -12,7 +12,6 @@ public  class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback{
 
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        Log.d("지금이니!!","1");
         return makeMovementFlags(0, ItemTouchHelper.START);
     }
 
@@ -27,7 +26,7 @@ public  class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback{
     }
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        if(viewHolder.getLayoutPosition()==0) {
+        if(viewHolder.getLayoutPosition()==0) {   //-- 저장된 알람 메뉴에 대한 스와이프 기능에 필요한 x 위치 설정
             RecyclerAdapter.ViewHolder1 holder1 = (RecyclerAdapter.ViewHolder1) viewHolder;
             if (viewHolder instanceof RecyclerAdapter.ItemSwipeWithActionWidthNoSpringViewHolder1) {
                 if (dX < -holder1.mActionContainer1.getWidth()) {
@@ -40,7 +39,7 @@ public  class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback{
                 holder1.mViewContent1.setTranslationX(dX);
 
             }
-        }else{
+        }else{ //-- 저장된 알람 메모에 대한 스와이프 기능에 필요한 x 위치 설정
             RecyclerAdapter.ViewHolder2 holder2 = (RecyclerAdapter.ViewHolder2) viewHolder;
             if (viewHolder instanceof RecyclerAdapter.ItemSwipeWithActionWidthNoSpringViewHolder2) {
                 if (dX < -holder2.mActionContainer2.getWidth()) {
@@ -52,7 +51,6 @@ public  class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback{
 
             if (viewHolder instanceof RecyclerAdapter.ViewHolder2) {
                 holder2.mViewContent2.setTranslationX(dX);
-                Log.d("++-++-",dX+"");
 
             }
         }

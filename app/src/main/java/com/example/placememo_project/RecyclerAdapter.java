@@ -25,7 +25,7 @@ import static com.example.placememo_project.MainActivity.titlename;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     ArrayList<RecyclerItem> items = new ArrayList<>();
-    private static final int VIEW_TYPE_A = 0;   // -- view 타입을 2개로 구분 (  구분선 /  아이템 )
+    private static final int VIEW_TYPE_A = 0;   // -- view 타입을 2개로 구분 (  메뉴 /  메모 )
     private static final int VIEW_TYPE_B = 1;
     int color;
     Context mcontext;
@@ -72,15 +72,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, final int position) {
         if (viewHolder instanceof ItemSwipeWithActionWidthViewHolder1) {
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewDelete1.setOnClickListener(new View.OnClickListener() {
+            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewDelete1.setOnClickListener(new View.OnClickListener() {  //-- 메뉴에 삭제버튼을 클릭한다면
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(mcontext,"삭제 버튼 클릭",Toast.LENGTH_LONG).show();
-                    remove(0);
+                    remove(0);  //-- 해당 메뉴에 해당하는 메모 전부 삭제
                     ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.setTranslationX(0f);
                 }
             });
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewEdit1.setOnClickListener(new View.OnClickListener() {
+            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewEdit1.setOnClickListener(new View.OnClickListener() { //-- 메뉴에 편집버튼을 클릭한다면
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(mcontext,"편집 버튼 클릭",Toast.LENGTH_LONG).show();
@@ -90,18 +89,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ItemSwipeWithActionWidthViewHolder1) viewHolder).imageView.setImageResource(items.get(position).getIcon());
 
         } else if (viewHolder instanceof ItemSwipeWithActionWidthViewHolder2) {
-            ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mActionViewDelete2.setOnClickListener(new View.OnClickListener() {
+            ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mActionViewDelete2.setOnClickListener(new View.OnClickListener() {  //-- 메모에 삭제버튼을 클릭한다면
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(mcontext,"삭제 버튼 클릭",Toast.LENGTH_LONG).show();
                     deletMessage = ((ItemSwipeWithActionWidthViewHolder2) viewHolder).textView2.getText().toString();
-                    Log.d("//**//**",deletMessage);
-                    remove(position);
+                    remove(position);  //-- 해당하는 메모만 삭제
                     ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mViewContent2.setTranslationX(0f);
 
                 }
             });
-            ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mActionViewEdit2.setOnClickListener(new View.OnClickListener() {
+            ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mActionViewEdit2.setOnClickListener(new View.OnClickListener() { //-- 메모에 편집버튼을 클릭한다면
                 @Override
                 public void onClick(View view) {
                     Toast.makeText(mcontext,"편집 버튼 클릭",Toast.LENGTH_LONG).show();
@@ -122,7 +119,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void remove(int i){
-        if(i==0){
+        if(i==0){  //-- 변수가 0이라면  내용 전부 삭제
             while(true){
                 if(items.size()==0){
                     break;
@@ -141,7 +138,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 items.remove(items.size()-1);
             }
             notifyDataSetChanged();  // --  업데이트
-        }else{
+        }else{  //-- 아니라면 받은 위치에 값만 삭제
             items.remove(i);
             RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("memo",deletMessage).findAll();
             myRealm.beginTransaction();
@@ -157,7 +154,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             notifyDataSetChanged();  // --  업데이트
         }
-        ((MainActivity) mContext).checkNoImage();
+        ((MainActivity) mContext).checkNoImage();  //-- 삭제 후  확인하고 메인 엑티비티에 No Memo 이미지 띄우기
         myRealm.close();
     }
 
@@ -202,9 +199,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
     /*---------------------------------------------------------------------------------------------------------------------------*/
     class ItemSwipeWithActionWidthViewHolder1 extends ViewHolder1 implements Extension {
-
         View mActionViewDelete1;
         View mActionViewEdit1;
+
 
 
         public ItemSwipeWithActionWidthViewHolder1(View itemView) {

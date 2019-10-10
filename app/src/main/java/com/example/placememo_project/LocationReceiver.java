@@ -27,29 +27,23 @@ import static android.content.Context.ALARM_SERVICE;
 public class LocationReceiver extends BroadcastReceiver {
     double latitude;
     double longitude;
-    double distance = 0f;
+    double minDistance = 0f;  //-- 최소거리 확인용
   
     LocationManager manager;
     Context rContext;
     private final static String TAG = "LocationReceiver : ";
-    long startTime;
-    int alamCycle;
+    long startTime;  //-- 현재시간 저장용
+    int alamCycle;  //-- 초단위 저장용
     @Override
     public void onReceive(Context context, Intent intent) {
         Realm.init(context);
         this.rContext = context;
-
-
-
-
-
         Log.d(TAG,"locationSerch Broadcast Receiver시작");
-
-        doBackgroundWork();
+        doBackgroundWork();  //-- 백그라운드에서 실행될 Task 메소드
     }
 
     private void doBackgroundWork() {
-        startLocation();
+        startLocation();  //-- 내 위치 정보 가져오기
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -60,16 +54,16 @@ public class LocationReceiver extends BroadcastReceiver {
                     Log.d(TAG, String.valueOf(e));
                 }
                 while (true) {
-                    if (latitude == 0.0 && longitude == 0.0) {
+                    if (latitude == 0.0 && longitude == 0.0) {  //-- 위치 정보를 가져오지 못했다면
                         try {
                             Log.d(TAG,"위치 받아오는중");
-                            Thread.sleep(1000);
+                            Thread.sleep(1000);  //-- 1초대기후 반복 대기
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                    }else break;
+                    }else break;  //-- 위치 정보를 가져왔다면 탈출
                 }
-                distanceMain(myRealm);
+                distanceMain(myRealm);  //-- 거리확인 메소드 실행
             }
         }).start();
     }
@@ -77,37 +71,54 @@ public class LocationReceiver extends BroadcastReceiver {
     private void distanceMain(Realm myRealm) {
         try {
             RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
-            Log.d(TAG,""+data_alams);
-            for (Data_alam data_alam : data_alams) {
-                Log.d(data_alam.getName(),getDistance(data_alam.getLatitude(),data_alam.getLongitude(),this.latitude,this.longitude)+"Km");
-                if(distance == 0f){
-                    distance = getDistance(data_alam.getLatitude(), data_alam.getLongitude(), this.latitude, this.longitude);
-                }else if(distance > getDistance(data_alam.getLatitude(),data_alam.getLongitude(),this.latitude,this.longitude)) {
-                   distance = getDistance(data_alam.getLatitude(), data_alam.getLongitude(), this.latitude, this.longitude);
+            for (Data_alam data_alam : data_alams) {  //-- DB에 저장된 알람을 원하는 위치와 현재 위치를 비교
+                Log.d(data_alam.getName(),getDistance(data_alam.getLatitude(),data_alam.getLongitude(),this.latitude,this.longitude)+"Km");  //-- 저장된 메모에따른 거리 보여주기위한 Log
+                if(minDistance == 0f){  //-- 만약 최소거리가 0이라면 첫번째임을 알수있음
+                    minDistance = getDistance(data_alam.getLatitude(), data_alam.getLongitude(), this.latitude, this.longitude);  //-- 최소거리에 첫번째 가져온 위치에 대한 거리를 저장
+                }else if(minDistance > getDistance(data_alam.getLatitude(),data_alam.getLongitude(),this.latitude,this.longitude)) {  //-- 최소거리가 0이아니라면 그다음에 가져오는 위치에대한 거리를 저장되어있던 최소거리와 비교후 더 가까운 거리를 저장
+                   minDistance = getDistance(data_alam.getLatitude(), data_alam.getLongitude(), this.latitude, this.longitude);
                }
             }
         } catch (NullPointerException e) {
             Log.d(TAG,"NullPointerException");
         }
-         if (distance > 1000){
+         if (minDistance > 1000){  //-- 거리에따른 알람 시간을 재설정 ( 세부조정 및 확인 필요  (예시))
             alamCycle = 10000;
-        }else if( distance > 500){
+        }else if( minDistance > 500){
             alamCycle = 5000;
-        }else if ( distance >100 ){
+        }else if ( minDistance >100 ){
             alamCycle = 2000;
-        }else if(distance >10){
+        }else if(minDistance >10){
              alamCycle = 500;
-        }else if(distance > 1){
+        }else if(minDistance > 1){
              alamCycle = 100;
-        }else if(distance >0.5){
+        }else if(minDistance >0.5){
              alamCycle = 60;
-        }else if (distance > 0.1){
+        }else if (minDistance > 0.1){
              alamCycle = 10;
         }
 
-        startTime = SystemClock.elapsedRealtime() + alamCycle * 1000;
-        locationSerch();
-        myRealm.close();
+        startTime = SystemClock.elapsedRealtime() + alamCycle * 1000;  //-- 알람받을 시간 설정
+        locationSerch();  //--  내위치 찾기 알람매니저 재실행 설정
+        myRealm.close();  //-- 사용끝난 Realm DB close
+    }
+
+    public void locationSerch(){
+        Intent intent = new Intent("AlarmService");
+        PendingIntent sender = PendingIntent.getBroadcast(rContext, 0, intent, 0);
+        AlarmManager am = (AlarmManager) rContext.getSystemService(ALARM_SERVICE);
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                //API 19 이상 API 23미만
+                am.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, startTime, sender) ;
+            } else {
+                //API 19미만
+                am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, startTime, sender);
+            }
+        } else {
+            //API 23 이상
+            am.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, startTime, sender);
+        }
     }
 
     public double getDistance(double lat1 , double lng1 , double lat2 , double lng2 ){
@@ -123,7 +134,7 @@ public class LocationReceiver extends BroadcastReceiver {
 
         distance = locationA.distanceTo(locationB);
 
-        return distance/1000;
+        return distance/1000;  //-- Km 단위로 환산
     }
 
 
@@ -170,21 +181,5 @@ public class LocationReceiver extends BroadcastReceiver {
 
         }
     };
-    public void locationSerch(){
-        Intent intent = new Intent("AlarmService");
-        PendingIntent sender = PendingIntent.getBroadcast(rContext, 0, intent, 0);
-        AlarmManager am = (AlarmManager) rContext.getSystemService(ALARM_SERVICE);
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                //API 19 이상 API 23미만
-                am.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, startTime, sender) ;
-            } else {
-                //API 19미만
-                am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, startTime, sender);
-            }
-        } else {
-            //API 23 이상
-            am.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, startTime, sender);
-        }
-    }
+
 }

@@ -38,24 +38,22 @@ import static com.example.placememo_project.IntroActivity.permission;
 
 public class LocationActivity extends AppCompatActivity implements View.OnClickListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     private final static String TAG = "LocationActivity : ";
-    public static Context lContext;
     ActivityLocationBinding lBinding;
-    private int icon, clickicon;
+    private int icon, clickicon;  //--  아이콘 추가시 클릭/미클릭 이미지 구분
     private GoogleMap mMap;
     LocationManager manager;
     double longitude;
     double latitude;
-    private boolean iconcheck = false;
-    final Geocoder geocoder = new Geocoder(this);
+    private boolean isIconcheck = false;  //-- 사용자가 아이콘을 선택했는지 구분
+    final Geocoder geocoder = new Geocoder(this);  //-- 지역검색을 위한 메소드
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         lBinding = DataBindingUtil.setContentView(this, R.layout.activity_location);
-        lContext = this;
         lBinding.btnAddIcon.setOnClickListener(this);
         lBinding.btnAddlocation.setOnClickListener(this);
         lBinding.btnSerch.setOnClickListener(this);
         lBinding.btnMylocation.setOnClickListener(this);
-        lBinding.serchLocation.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        lBinding.serchLocation.setOnEditorActionListener(new TextView.OnEditorActionListener() {  //-- 사용자 키보드 엔터버튼을 검색으로 설정
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                if(i== EditorInfo.IME_ACTION_SEARCH){
@@ -64,7 +62,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
                 return false;
             }
         });
-        lBinding.locationName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        lBinding.locationName.setOnFocusChangeListener(new View.OnFocusChangeListener() {  //-- 사용자가 포커싱을 하면 해당내용 비워줌
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
@@ -85,11 +83,10 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         manager.removeUpdates(mLocation);
     }
 
-    public void startLocation() {
+    public void startLocation() { //-- 위치 검색 시작
         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         long minTime = 0;
         float minDistance = 0;
@@ -101,7 +98,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
         manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, mLocation);
     }
 
-    private void stopLocation() {
+    private void stopLocation() { //--  위치 검색 종료
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -117,8 +114,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
             longitude = location.getLongitude();
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
             mapFragment.getMapAsync(LocationActivity.this);
-            Toast.makeText(getApplicationContext(),latitude + ", " + longitude,Toast.LENGTH_SHORT).show();
-            stopLocation();
+            stopLocation();  //-- 위치를 가져온 후 위치 검색 종료
         }
 
         @Override
@@ -144,9 +140,9 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
         mMap.setOnMarkerClickListener(this);
         LatLng selectLocation = new LatLng(latitude, longitude);
         marker(selectLocation);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectLocation, 15));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectLocation, 15));   //-- 현재 내 위치로 마커 이동
 
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {  //-- 클릭한 위치에 마커표시 후 해당 위,경도 저장
             @Override
             public void onMapClick(LatLng latLng) {
                 MarkerOptions mOptions = new MarkerOptions();
@@ -159,7 +155,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    private void marker(LatLng selectLocation) {
+    private void marker(LatLng selectLocation) {  //-- 다른 곳을 클릭했을시 호출되는 메소드 기존 마커를 지워주고 새로 찍어주는 역할
         mMap.clear();
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(selectLocation);
@@ -174,14 +170,13 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         if (v == lBinding.btnSerch) {
             locationSerch();
-
-        } else if (v == lBinding.btnMylocation) {
+        } else if (v == lBinding.btnMylocation) {  //-- 현재 내위치를 가져오는 메소드
             startLocation();
         } else if (v == lBinding.btnAddIcon) {
             Intent intent = new Intent(this, IconActivity.class);
             startActivityForResult(intent, 0522);
-        } else if (v == lBinding.btnAddlocation) {
-            if(!locationName.contains(lBinding.locationName.getText().toString()) && iconcheck) {
+        } else if (v == lBinding.btnAddlocation) {  //-- 최종 위치 추가를 클릭했을시 해당하는 내용 위치추가버튼을 눌렀던 메모추가액티비티로 전송
+            if(!locationName.contains(lBinding.locationName.getText().toString()) && isIconcheck) {  //-- 만약 위치를 선택했다면
                 Intent intent = new Intent();
                 intent.putExtra("name", lBinding.locationName.getText().toString());
                 intent.putExtra("icon", icon);
@@ -192,7 +187,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
                 finish();
             }else{
                 if(locationName.contains(lBinding.locationName.getText().toString())) Toast.makeText(this,"이미 존재하는 장소명 입니다.",Toast.LENGTH_LONG).show();
-                if(!iconcheck) Toast.makeText(this,"아이콘을 선택해주세요.",Toast.LENGTH_LONG).show();
+                if(!isIconcheck) Toast.makeText(this,"아이콘을 선택해주세요.",Toast.LENGTH_LONG).show();
             }
         }
 
@@ -227,13 +222,13 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {  //-- 사용자가 선택한 아이콘 정보를 가져와서 보여줌
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             icon = data.getIntExtra("icon", -1);
             clickicon = data.getIntExtra("clickicon", -1);
             lBinding.btnAddIcon.setBackgroundResource(data.getIntExtra("icon", -1));
-            iconcheck = true;
+            isIconcheck = true;
         } else {
             Log.d(TAG, String.valueOf(resultCode));
         }

@@ -6,12 +6,11 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 
 public class Data_Icon extends RealmObject {
-    int button;
-    int buttonclick;
-    String name;
-    double longitude;
-    double latitude;
-
+    int button; //-- 사용자가 메모입력시 선택하는 버튼
+    int buttonclick;  //-- 사용자가  메모입력시 선택하는 버튼에 클릭된 모양
+    String name;  //--  사용자가 메모 입력시 미리 작성해둔 위치이름
+    double longitude;  //-- 최종적으로 메모를 저장할때 넘겨주는 경도
+    double latitude;   //-- 최종적으로 메모를 저장할때 넘겨주는 위도
     public double getLongitude() {
         return longitude;
     }
