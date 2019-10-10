@@ -1,5 +1,7 @@
 package com.example.placememo_project;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -7,7 +9,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 
@@ -43,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     AlertDialog alamreset;
     public ItemTouchHelperExtension[] mItemTouchHelper;
     public ItemTouchHelperExtension.Callback[] mCallback;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,44 +124,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         dataUpdate();
         checkNoImage();
-        scheduleJob();
-
+        locationSerch();
     }
 
-    public void scheduleJob(){
-        ComponentName componentName = new ComponentName(this,JobService.class);
-        JobInfo info = new JobInfo.Builder(522,componentName)
-                .setPersisted(true)
-                .setPeriodic(15 * 60 * 1000)
-                .build();
-        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        int resultCode = scheduler.schedule(info);
-        if (resultCode == JobScheduler.RESULT_SUCCESS){
-            Log.d("","Job 시작");
-        }else {
-            Log.d("","Job 실패");
+    @Override
+    protected void onPause() {
+        super.onPause();
+        myRealm.close();
+    }
+
+    public void locationSerch() {
+        Intent intent = new Intent("AlarmService");
+        PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+        long firstTime = SystemClock.elapsedRealtime();
+        firstTime += 10 * 1000; //10초 후 알람 이벤트 발생
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                //API 19 이상 API 23미만
+                am.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, sender);
+            } else {
+                //API 19미만
+                am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, sender);
+            }
+        } else {
+            //API 23 이상
+            am.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, sender);
         }
+    }
 
-    }
-    public void cancleJob(){
-        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-        scheduler.cancel(522);
-        Log.d(""," Job 종료");
-    }
 
     private void dataUpdate() {
         Log.d("dataUpdate 실행됨", "");
         try {
             RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll();
             for (Data_alam data_alam : results) {
-//                new Gson().toJson(myRealm.copyFromRealm(data_alam));
-//                data_alam.toString();
                 String jsonData = new Gson().toJson(myRealm.copyFromRealm(data_alam));
                 Log.d("====", jsonData);
-//                Log.d("data_alam.getName()",data_alam.getName());
-//                Log.d("data_alam.getIcon()",String.valueOf(data_alam.getIcon()));
-//                Log.d("data_alam.getMemo()",data_alam.getMemo());
-//                Log.d("data_alam.getMemo()",data_alam.getMemo());
+
 
                 /*----------------------------------------------------------------------------------------------------*/
 
@@ -244,29 +249,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        // TODO Auto-generated method stub
-//        if( event.getAction() == KeyEvent.ACTION_DOWN ){ //키 다운 액션 감지
-//            if( keyCode == KeyEvent.KEYCODE_BACK ){ //BackKey 다운일 경우만 처리
-//                Log.d("+++",String.valueOf(isdrawer));
-//                if(isdrawer) {
-//                    drawerLayout.closeDrawers();
-//
-//                    return false;
-//                }else{
-//                    finish();
-//                    return true;
-//                }
-//                 // 리턴이 true인 경우 기존 BackKey의 기본액션이 그대로 행해 지게 됩니다.
-//                // 리턴을 false로 할 경우 기존 BackKey의 기본액션이 진행 되지 않습니다.
-//                // 따라서 별도의 종료처리 혹은 다이얼로그 처리를 통한
-//                //BackKey기본액션을 구현 해주셔야 합니다.
-//            }
-//        }
-//        return super.onKeyDown( keyCode, event );
-//    }
-
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -334,4 +316,3 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 }
-///

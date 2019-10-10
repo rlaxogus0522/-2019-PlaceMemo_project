@@ -158,6 +158,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             notifyDataSetChanged();  // --  업데이트
         }
         ((MainActivity) mContext).checkNoImage();
+        myRealm.close();
     }
 
     public String getTitle(){
