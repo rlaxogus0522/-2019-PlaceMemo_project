@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private View drawView;
     private boolean isdrawer = false;
     int color[] = new int[]{0xFFE8EE9C, 0xFFE4B786, 0xFF97E486, 0xFF86E4D1, 0xFFE48694};  //-- 저장된 메모 메뉴에 표시할 색깔 등록해두기
-    static public ArrayList<String> titlename = new ArrayList<>();  //-- 등록된 알람이있는지 체크하기위한 변수
+    static public ArrayList<String> titlename = new ArrayList<>();  //-- 등록된 알람이있는지 체크하기위한 변수( 메뉴용 )
     RecyclerView[] recyclerViews;  //-- 5개의 리싸이클러뷰 생성
     RecyclerAdapter[] adapters;  //-- 그에 맞는 어댑터 생성
     Realm myRealm;
@@ -135,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-        myRealm.close();   //-- 화면에서 벗어나면 DB 닫아주기
     }
 
     public void locationSerch() {
@@ -231,13 +230,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void alamReset() {  //-- 알람 리셋을 누른다면
         for (int i = 0; i < titlename.size(); i++) {
             adapters[i].remove(0);  //-- 모든 리스트에 내용 비우고
+            Log.d("titlename:",String.valueOf(titlename));
         }
         titlename.clear();  //-- 확인용으로 저장된 메뉴 지우고
         checkNoImage();  //-- 저장된 알람 없다는것을 체크하여 No Memo 이미지를 띄우고
-        RealmResults<Data_alam> realmDataBases = myRealm.where(Data_alam.class).findAll();
-        myRealm.beginTransaction();
-        realmDataBases.deleteAllFromRealm(); // 데이터베이스에 내용 전부 제거
-        myRealm.commitTransaction();
     }
 
     @Override

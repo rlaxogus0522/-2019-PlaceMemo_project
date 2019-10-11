@@ -35,12 +35,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerAdapter(Context context){
         this.mcontext = context;
         Realm.init(context);
-        try {
-            myRealm = Realm.getDefaultInstance();
-
-        } catch (Exception e) {
-            Log.d(TAG, "myRealm = null");
-        }
     }
     @NonNull
     @Override
@@ -119,6 +113,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void remove(int i){
+        try {
+            myRealm = Realm.getDefaultInstance();
+
+        } catch (Exception e) {
+            Log.d(TAG, "myRealm = null");
+        }
         if(i==0){  //-- 변수가 0이라면  내용 전부 삭제
             while(true){
                 if(items.size()==0){
@@ -155,7 +155,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             notifyDataSetChanged();  // --  업데이트
         }
         ((MainActivity) mContext).checkNoImage();  //-- 삭제 후  확인하고 메인 엑티비티에 No Memo 이미지 띄우기
-        myRealm.close();
     }
 
     public String getTitle(){

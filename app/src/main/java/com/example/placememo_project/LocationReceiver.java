@@ -33,7 +33,7 @@ public class LocationReceiver extends BroadcastReceiver {
     Context rContext;
     private final static String TAG = "LocationReceiver : ";
     long startTime;  //-- 현재시간 저장용
-    int alamCycle;  //-- 초단위 저장용
+    int alamCycle = 15;  //-- 초단위 저장용
     @Override
     public void onReceive(Context context, Intent intent) {
         Realm.init(context);
@@ -82,22 +82,26 @@ public class LocationReceiver extends BroadcastReceiver {
         } catch (NullPointerException e) {
             Log.d(TAG,"NullPointerException");
         }
-         if (minDistance > 1000){  //-- 거리에따른 알람 시간을 재설정 ( 세부조정 및 확인 필요  (예시))
-            alamCycle = 10000;
-        }else if( minDistance > 500){
-            alamCycle = 5000;
-        }else if ( minDistance >100 ){
-            alamCycle = 2000;
-        }else if(minDistance >10){
-             alamCycle = 500;
-        }else if(minDistance > 1){
-             alamCycle = 100;
-        }else if(minDistance >0.5){
-             alamCycle = 60;
-        }else if (minDistance > 0.1){
-             alamCycle = 10;
-        }
 
+        /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
+                                                            // 테스트 코딩 --  < Example > //
+//         if (minDistance > 1000){
+//            alamCycle = 10000;
+//        }else if( minDistance > 500){
+//            alamCycle = 5000;
+//        }else if ( minDistance >100 ){
+//            alamCycle = 2000;
+//        }else if(minDistance >10){
+//             alamCycle = 500;
+//        }else if(minDistance > 1){
+//             alamCycle = 100;
+//        }else if(minDistance >0.5){
+//             alamCycle = 60;
+//        }else if (minDistance > 0.1){
+//             alamCycle = 15;
+//        }
+                                                            // 테스트 코딩 --  < Example > //
+        /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
         startTime = SystemClock.elapsedRealtime() + alamCycle * 1000;  //-- 알람받을 시간 설정
         locationSerch();  //--  내위치 찾기 알람매니저 재실행 설정
         myRealm.close();  //-- 사용끝난 Realm DB close
