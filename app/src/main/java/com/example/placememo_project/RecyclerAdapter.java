@@ -20,7 +20,6 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 import static android.content.ContentValues.TAG;
-import static com.example.placememo_project.MainActivity.mContext;
 import static com.example.placememo_project.MainActivity.titlename;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -35,6 +34,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public RecyclerAdapter(Context context){
         this.mcontext = context;
         Realm.init(context);
+        try {
+            myRealm = Realm.getDefaultInstance();
+
+        } catch (Exception e) {
+            Log.d(TAG, "myRealm = null");
+        }
     }
     @NonNull
     @Override
@@ -66,11 +71,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, final int position) {
         if (viewHolder instanceof ItemSwipeWithActionWidthViewHolder1) {
+            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewDelete1.setEnabled(false);
             ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewDelete1.setOnClickListener(new View.OnClickListener() {  //-- 메뉴에 삭제버튼을 클릭한다면
                 @Override
                 public void onClick(View view) {
-                    remove(0);  //-- 해당 메뉴에 해당하는 메모 전부 삭제
-                    ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.setTranslationX(0f);
+                    if (((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.getWidth() != 0f) {
+                        remove(0);  //-- 해당 메뉴에 해당하는 메모 전부 삭제
+//                    titlename.remove(getTitle());
+                        ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.setTranslationX(0f);
+                    }
                 }
             });
             ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewEdit1.setOnClickListener(new View.OnClickListener() { //-- 메뉴에 편집버튼을 클릭한다면
@@ -83,13 +92,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ItemSwipeWithActionWidthViewHolder1) viewHolder).imageView.setImageResource(items.get(position).getIcon());
 
         } else if (viewHolder instanceof ItemSwipeWithActionWidthViewHolder2) {
+            ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mActionViewDelete2.setEnabled(false);
             ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mActionViewDelete2.setOnClickListener(new View.OnClickListener() {  //-- 메모에 삭제버튼을 클릭한다면
                 @Override
                 public void onClick(View view) {
-                    deletMessage = ((ItemSwipeWithActionWidthViewHolder2) viewHolder).textView2.getText().toString();
-                    remove(position);  //-- 해당하는 메모만 삭제
-                    ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mViewContent2.setTranslationX(0f);
-
+                    if(  ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mViewContent2.getWidth() != 0f) {
+                        deletMessage = ((ItemSwipeWithActionWidthViewHolder2) viewHolder).textView2.getText().toString();
+                        remove(position);  //-- 해당하는 메모만 삭제
+                        ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mViewContent2.setTranslationX(0f);
+                    }
                 }
             });
             ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mActionViewEdit2.setOnClickListener(new View.OnClickListener() { //-- 메모에 편집버튼을 클릭한다면
@@ -113,12 +124,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void remove(int i){
-        try {
-            myRealm = Realm.getDefaultInstance();
 
-        } catch (Exception e) {
-            Log.d(TAG, "myRealm = null");
-        }
         if(i==0){  //-- 변수가 0이라면  내용 전부 삭제
             while(true){
                 if(items.size()==0){
@@ -140,6 +146,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             notifyDataSetChanged();  // --  업데이트
         }else{  //-- 아니라면 받은 위치에 값만 삭제
             items.remove(i);
+            notifyDataSetChanged();  // --  업데이트
             RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("memo",deletMessage).findAll();
             myRealm.beginTransaction();
             data_alams.deleteAllFromRealm();
@@ -151,10 +158,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 myRealm.commitTransaction();
                 titlename.remove(getTitle());
                 items.remove(0);
+
             }
             notifyDataSetChanged();  // --  업데이트
         }
-        ((MainActivity) mContext).checkNoImage();  //-- 삭제 후  확인하고 메인 엑티비티에 No Memo 이미지 띄우기
+
+        ((MainActivity) mcontext).checkNoImage();  //-- 삭제 후  확인하고 메인 엑티비티에 No Memo 이미지 띄우기
     }
 
     public String getTitle(){
@@ -192,7 +201,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             textView2 = itemView.findViewById(R.id.text_list_main_title);
             mViewContent2 = itemView.findViewById(R.id.view_list_main_content);
             mActionContainer2 = itemView.findViewById(R.id.view_list_repo_action_container);
-
         }
 
     }
@@ -210,7 +218,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         @Override
-        public float getActionWidth() { return mActionContainer1.getWidth(); }
+        public float getActionWidth() {
+            return mActionContainer1.getWidth(); }
     }
     class ItemSwipeWithActionWidthNoSpringViewHolder1 extends ItemSwipeWithActionWidthViewHolder1 implements Extension {
 

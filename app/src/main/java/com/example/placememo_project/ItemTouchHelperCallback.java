@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 public  class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback{
 
+
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         return makeMovementFlags(0, ItemTouchHelper.START);
+
     }
 
     @Override
@@ -22,8 +24,10 @@ public  class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback{
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int i) {
-
     }
+
+
+
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
         if(viewHolder.getLayoutPosition()==0) {   //-- 저장된 알람 메뉴에 대한 스와이프 기능에 필요한 x 위치 설정
@@ -51,7 +55,6 @@ public  class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback{
 
             if (viewHolder instanceof RecyclerAdapter.ViewHolder2) {
                 holder2.mViewContent2.setTranslationX(dX);
-
             }
         }
 

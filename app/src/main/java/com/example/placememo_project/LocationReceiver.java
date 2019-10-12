@@ -107,9 +107,10 @@ public class LocationReceiver extends BroadcastReceiver {
         myRealm.close();  //-- 사용끝난 Realm DB close
     }
 
+
     public void locationSerch(){
         Intent intent = new Intent("AlarmService");
-        PendingIntent sender = PendingIntent.getBroadcast(rContext, 0, intent, 0);
+        PendingIntent sender = PendingIntent.getBroadcast(rContext, 0, intent, 0); //flag 종류
         AlarmManager am = (AlarmManager) rContext.getSystemService(ALARM_SERVICE);
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

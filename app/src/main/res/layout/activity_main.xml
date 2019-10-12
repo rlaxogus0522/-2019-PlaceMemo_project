@@ -52,7 +52,7 @@
                         android:layout_height="60dp"
                         android:background="@drawable/plus"/>
                 </LinearLayout>
-                <ScrollView
+                <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                 <LinearLayout
@@ -111,7 +111,7 @@
                         android:textStyle="italic|bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/image_no_memo" /></LinearLayout></ScrollView>
+                        app:layout_constraintTop_toBottomOf="@+id/image_no_memo" /></LinearLayout></androidx.core.widget.NestedScrollView>
 
             </LinearLayout>
 

@@ -32,9 +32,9 @@ import java.util.ArrayList;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
     ActivityMainBinding mainBinding;
-    public static Context mContext;  //-- 메인엑티비티에 있는 메소드를 다른곳에서 사용하기위해 사용
+    public Context mContext;  //-- 메인엑티비티에 있는 메소드를 다른곳에서 사용하기위해 사용
     private final static String TAG = "MainActivity======";
     private DrawerLayout drawerLayout;  //-- 옵션창 레이아웃
     private View drawView;
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         dataUpdate();   //-- DB에 정보 가져오기
         checkNoImage();   //-- 처음에 저장된 메모가 있는지 없는지 여부에 따라 메모 없다고 표시
-        locationSerch();   //-- 내위치 검색 알람매니저 실행
+        locationSerch(this);   //-- 내위치 검색 알람매니저 실행
     }
 
     @Override
@@ -137,25 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onPause();
     }
 
-    public void locationSerch() {
-        Intent intent = new Intent("AlarmService");
-        PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-        long firstTime = SystemClock.elapsedRealtime();
-        firstTime += 10 * 1000; //10초 후 알람 이벤트 발생
-        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                //API 19 이상 API 23미만
-                am.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, sender);
-            } else {
-                //API 19미만
-                am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, sender);
-            }
-        } else {
-            //API 23 이상
-            am.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, sender);
-        }
-    }
+
 
 
     private void dataUpdate() {   //-- DB에 있는 정보 가져오기
@@ -228,13 +210,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void alamReset() {  //-- 알람 리셋을 누른다면
-        for (int i = 0; i < titlename.size(); i++) {
+        int count = titlename.size();
+        for (int i = 0; i < count; i++) {
             adapters[i].remove(0);  //-- 모든 리스트에 내용 비우고
             Log.d("titlename:",String.valueOf(titlename));
         }
-        titlename.clear();  //-- 확인용으로 저장된 메뉴 지우고
         checkNoImage();  //-- 저장된 알람 없다는것을 체크하여 No Memo 이미지를 띄우고
     }
+
+    // - 문제발견 수정필요
 
     @Override
     public void onBackPressed() {  //-- 옵션창이 켜져있는상태에서 사용자가 백키를 눌렀을때
@@ -279,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void settingToggleButton(View view) {
+    private void settingToggleButton(View view) { // seletor Item
         if (view.getId() == R.id.sort_name) {
             mainBinding.menu.sortAlams.setTextColor(Color.rgb(0, 0, 0));
             mainBinding.menu.sortUpdate.setTextColor(Color.rgb(0, 0, 0));
@@ -314,4 +298,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+//    private String getUserName()
+//    {
+//        return getIntent().getStringExtra(USER_NAME);
+//    }
+//
+//    static public final String USER_NAME = "user_name";
+//    static public void start(Context ct, String arg)
+//    {
+//        Intent it = new Intent(ct, MainActivity.class);
+//        it.putExtra( USER_NAME,it);
+//        ct.startActivity(it );
+//    }
+//
 }
