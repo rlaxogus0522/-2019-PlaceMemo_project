@@ -85,7 +85,7 @@ public class IntroActivity extends AppCompatActivity {
     Runnable newRunnable = new Runnable() {
         @Override
         public void run() {
-            Intent intent = new Intent(IntroActivity.this, MainActivity.class);
+            Intent intent = new Intent(IntroActivity.this, TestActivity.class);
             startActivity(intent);
             finish();
         }
