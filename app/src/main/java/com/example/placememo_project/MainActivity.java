@@ -9,24 +9,25 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
 
 import com.example.placememo_project.databinding.ActivityMainBinding;
-import com.example.placememo_project.databinding.ItemTestItemBinding;
-import com.example.placememo_project.databinding.ItemTestTitleBinding;
+import com.example.placememo_project.databinding.ItemToItemBinding;
 import com.example.placememo_project.databinding.ViewListMainContentBinding;
 import com.example.placememo_project.databinding.ViewListMainTitleContentBinding;
 import com.google.gson.Gson;
@@ -43,14 +44,11 @@ import io.realm.RealmResults;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     ActivityMainBinding mainBinding;
-    public Context mContext;  //-- 메인엑티비티에 있는 메소드를 다른곳에서 사용하기위해 사용
     private final static String TAG = "MainActivity======";
     private DrawerLayout drawerLayout;  //-- 옵션창 레이아웃
     private View drawView;
     private boolean isdrawer = false;
-    int color[] = new int[]{0xFFE8EE9C, 0xFFE4B786, 0xFF97E486, 0xFF86E4D1, 0xFFE48694};  //-- 저장된 메모 메뉴에 표시할 색깔 등록해두기
     static public ArrayList<String> titlename = new ArrayList<>();  //-- 등록된 알람이있는지 체크하기위한 변수( 메뉴용 )
-    ArrayList<RecyclerItem> arraryItem = new ArrayList<>();
     GroupAdapter<GroupieViewHolder> adapter = new GroupAdapter<>();
     Realm myRealm;
     AlertDialog alamreset;  //-- 설정창에서 모든 알람 초기화시 경고 메시지 용
@@ -68,7 +66,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } catch (Exception e) {
             Log.d(TAG, "myRealm = null");
         }
-        mContext = this;
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mainBinding.recycleerView.setAdapter(adapter);
         mainBinding.recycleerView.setLayoutManager(new LinearLayoutManager(this));
@@ -109,7 +106,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //        drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
 //        drawView = (View) findViewById(R.id.drawer);
         /*------------------------------------------------------------*/
-
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
+        drawView = (View) findViewById(R.id.drawer);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
         // 제목셋팅
@@ -138,57 +136,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         });
         alamreset = alertDialogBuilder.create();
 
-//        dataUpdate();   //-- DB에 정보 가져오기
+        dataUpdate();   //-- DB에 정보 가져오기
         checkNoImage();   //-- 처음에 저장된 메모가 있는지 없는지 여부에 따라 메모 없다고 표시
         locationSerch(this);   //-- 내위치 검색 알람매니저 실행
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-
 
 
     private void dataUpdate() {   //-- DB에 있는 정보 가져오기
-        Log.d("dataUpdate 실행됨", "");
-        try {
-            RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll();
-            for (Data_alam data_alam : results) {
-                String jsonData = new Gson().toJson(myRealm.copyFromRealm(data_alam));
-                Log.d("====", jsonData);   //-- 들어있는 정보 확인용 Log
-
-                /*----------------------------------------------------------------------------------------------------*/
-
-                if (titlename.contains(data_alam.getName())) {   //--메뉴제목에 DB에 저장된 알람목록이 이미 저장되어 있다면
-                    for (int i = 0; i < titlename.size(); i++) {
-                        if (titlename.get(i).equals(data_alam.getName())) {
-//                            adapters[i].addItem(new RecyclerItem(data_alam.getMemo(), "B"));   //-- 그 하위에 내용만 추가
-                        }
-                    }
-                } else { //--메뉴제목에 DB에 저장된 알람목록이 저장되어 있지않다면
-                    titlename.add(data_alam.getName());  //-- 메뉴제목에 DB 에 저장된 목록을 추가하고
-                    for (int i = 0; i < titlename.size(); i++) {
-                        try {
-                            if (titlename.get(i).equals(data_alam.getName())) {
-//                                adapters[i].addItem(new RecyclerItem(data_alam.getIcon(), data_alam.getName(), color[i], "A"));
-//                                adapters[i].addItem(new RecyclerItem(data_alam.getMemo(), "B"));  //-- 메뉴 + 내용을 동시에 추가
-                            }
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
-                            Log.d(TAG, e.toString());
-                        }
-                    }
-
-                }
-
-
-                /*-------------------------------------------------------------------------------------------------------------------*/
-            }
-        } catch (NullPointerException e) {
-            Log.d(TAG, String.valueOf(e));
-        }
+    ShowAlamUi();
     }
 
 
@@ -223,13 +179,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void alamReset() {  //-- 알람 리셋을 누른다면
         titlename.clear();
         RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
-                myRealm.beginTransaction();
-                data_alams.deleteAllFromRealm();
-                myRealm.commitTransaction();
+        myRealm.beginTransaction();
+        data_alams.deleteAllFromRealm();
+        myRealm.commitTransaction();
+        adapter.clear();
         checkNoImage();  //-- 저장된 알람 없다는것을 체크하여 No Memo 이미지를 띄우고
     }
 
     // - 문제발견 수정필요
+
 
     @Override
     public void onBackPressed() {  //-- 옵션창이 켜져있는상태에서 사용자가 백키를 눌렀을때
@@ -243,105 +201,53 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) { //--  사용자가 메모를 추가가 성공적이었다면
-                RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll();
-                for (Data_alam data_alam : results) {
-                   if(!titlename.contains(data_alam.getName())){
-                       titlename.add(data_alam.getName());
-                   }
-                }
-            for (int i = 0; i < titlename.size() ; i++) {
-                RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name",titlename.get(i)).findAll();
-                Data_alam data_alam_first = results2.first();
-                Section section = new Section();
-                TitleHolder titleHolder = new TitleHolder(data_alam_first);
-                section.add(titleHolder);
-                for(Data_alam data_alam : results2){
-                    ItemHolder itemHolder = new ItemHolder(data_alam);
-                    section.add(itemHolder);
-                }
-                adapter.add(section);
+            ShowAlamUi();
+        }
+    }
+
+    private void ShowAlamUi() {
+        adapter.clear();
+        RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll();
+        for (Data_alam data_alam : results) {
+            if (!titlename.contains(data_alam.getName())) {
+                titlename.add(data_alam.getName());
             }
-
-
-
-
-
-//            if (!titlename.contains(data.getStringExtra("nName"))) {//-- 사용자가 추가하는 메모에 해당하는 위치가있다면
-//                titlename.add(data.getStringExtra("nName"));
-//                for (int i = 0; i < titlename.size(); i++) {
-////                    if (titlename.get(i).equals(data.getStringExtra("nName"))) {
-//                        Section section = new Section();
-//                        TitleHolder titleHolder = new TitleHolder(arraryItem.get(0));
-//                        section.add(titleHolder);
-//                    for (int j = 0; j <  ; j++) {
-//
-//                    }
-//
-//                        adapters[i].addItem(new RecyclerItem(data.getStringExtra("memo"), "B"));  //-- 내용만 추가
-//                    }
-//                }
-//            }
-//            else { //-- 사용자가 추가하는 메모에 해당하는 위치가없다면
-//                titlename.add(data.getStringExtra("nName"));
-//                checkNoImage();
-//                for (int i = 0; i < titlename.size(); i++) {
-//                    try {
-//                        if (titlename.get(i).equals(data.getStringExtra("nName"))) {  //-- 메뉴 + 내용을 추가
-////                            adapters[i].addItem(new RecyclerItem(data.getIntExtra("nicon", -1), data.getStringExtra("nName"), color[i], "A"));  //-- 메뉴바에 색깔도 지정
-////                            adapters[i].addItem(new RecyclerItem(data.getStringExtra("memo"), "B"));
-//                        }
-//                    } catch (NullPointerException e) {
-//                    }
-//                    Log.d(TAG, "NullPointerException");
-//
-//                }
-//
-//            }
-
         }
+        for (int i = 0; i < titlename.size(); i++) {
+            RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
+            Data_alam data_alam_first = results2.first();
+            Section section = new Section();
+            TitleHolder titleHolder = new TitleHolder(data_alam_first, i);
+            section.add(titleHolder);
+            for (Data_alam data_alam : results2) {
+                ItemHolder itemHolder = new ItemHolder(data_alam);
+                section.add(itemHolder);
+            }
+            BetweenHolder betweenHolder = new BetweenHolder();
+            section.add(betweenHolder);
+            adapter.add(section);
+        }
+        checkNoImage();
     }
 
-/*--------------------------------------------------------------------------------------------------------------*/
-    class ItemHolder extends BindableItem<ViewListMainContentBinding> {
-        Data_alam mItem;
+    /*--------------------------------------------------------------------------------------------------------------*/
 
-        ItemHolder(Data_alam item) {
-            mItem = item;
-        }
+
+
+
+
+    class BetweenHolder extends BindableItem<ItemToItemBinding> {
 
         @Override
-        public void bind(@NonNull ViewListMainContentBinding viewBinding, int position) {
-            viewBinding.textListMainTitle.setText(mItem.getMemo());
+        public void bind(@NonNull ItemToItemBinding viewBinding, int position) {
         }
 
         @Override
         public int getLayout() {
-            return R.layout.view_list_main_content;
-        }
-    }
-
-
-
-    class TitleHolder extends BindableItem<ViewListMainTitleContentBinding> {
-        Data_alam mItem;
-
-        TitleHolder(Data_alam item) {
-            mItem = item;
-        }
-
-        @Override
-        public void bind(@NonNull ViewListMainTitleContentBinding viewBinding, int position) {
-            viewBinding.tvTitle.setText(mItem.getName());
-            viewBinding.titleImage.setImageResource(mItem.getIcon());
-        }
-
-        @Override
-        public int getLayout() {
-            return R.layout.view_list_main_title_content;
+            return R.layout.item_to_item;
         }
     }
 

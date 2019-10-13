@@ -39,6 +39,7 @@
             <LinearLayout
                 android:gravity="center"
                 android:orientation="vertical"
+                android:background="#ffffff"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <LinearLayout
@@ -52,14 +53,15 @@
                         android:layout_height="60dp"
                         android:background="@drawable/plus"/>
                 </LinearLayout>
-                <androidx.core.widget.NestedScrollView
+                <ScrollView
+                    android:layout_gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                 <LinearLayout
                     android:orientation="vertical"
                     android:gravity="center"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent">
                     <androidx.recyclerview.widget.RecyclerView
                         android:layout_margin="20dp"
                         android:id="@+id/recycleerView"
@@ -88,7 +90,7 @@
                         android:textStyle="italic|bold"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/image_no_memo" /></LinearLayout></androidx.core.widget.NestedScrollView>
+                        app:layout_constraintTop_toBottomOf="@+id/image_no_memo" /></LinearLayout></ScrollView>
 
             </LinearLayout>
 
