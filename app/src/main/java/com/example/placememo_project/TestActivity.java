@@ -56,6 +56,12 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
+
+
+
+
+
+
         if(view == binding.Buttoon){
             Section section = new Section();
             TitleHolder title = new TitleHolder(arrItems.get(0));
@@ -67,7 +73,13 @@ public class TestActivity extends AppCompatActivity implements View.OnClickListe
             adapter.add(section);
             Toast.makeText(this,""+section.getGroup(0),Toast.LENGTH_LONG).show();
 
-        }else if(view == binding.ButtoonInsert){
+        }
+
+
+
+
+
+        else if(view == binding.ButtoonInsert){
             UserItem item = new UserItem();
             item.setUserName("쿄쿄쿄쿄");
             arrItems.add(item);

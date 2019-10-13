@@ -191,9 +191,9 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                         myRealm.commitTransaction();
                         /*----------------------------------------------------*/
                         Intent intent = new Intent();   //-- 메인액티비티에 Result 값으로 위치 아이콘과 위치명, 메모내용을 전송
-                        intent.putExtra("nicon", nicon);
-                        intent.putExtra("nName", nName);
-                        intent.putExtra("memo", imbinding.EditMemo.getText().toString());
+//                        intent.putExtra("nicon", nicon);
+//                        intent.putExtra("nName", nName);
+//                        intent.putExtra("memo", imbinding.EditMemo.getText().toString());
                         setResult(RESULT_OK, intent);
                         finish();
                     } catch (NullPointerException e) {

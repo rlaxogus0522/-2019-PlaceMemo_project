@@ -66,30 +66,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/recycle"/>
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_margin="20dp"
-                        android:id="@+id/recycleerView2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/recycle"/>
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_margin="20dp"
-                        android:id="@+id/recycleerView3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/recycle"/>
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_margin="20dp"
-                        android:id="@+id/recycleerView4"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/recycle"/>
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_margin="20dp"
-                        android:id="@+id/recycleerView5"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/recycle"/>
+
 
                     <ImageView
                         android:id="@+id/image_no_memo"

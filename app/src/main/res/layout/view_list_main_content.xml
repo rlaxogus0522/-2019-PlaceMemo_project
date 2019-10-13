@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><layout>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/view_list_main_content"
@@ -43,5 +43,5 @@
         android:text="← 삭제/편집"
         android:textColor="@android:color/darker_gray"
         android:textSize="10dp" />
-</RelativeLayout>
+</RelativeLayout></layout>
 
