@@ -1,6 +1,7 @@
 package com.example.placememo_project;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -26,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.placememo_project.databinding.ActivityMainBinding;
 import com.example.placememo_project.databinding.ItemToItemBinding;
 
+import com.loopeer.itemtouchhelperextension.Extension;
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.GroupieViewHolder;
@@ -41,6 +43,7 @@ import io.realm.RealmResults;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     ActivityMainBinding mainBinding;
+    public static Context mainContext;
     private final static String TAG = "MainActivity======";
     private DrawerLayout drawerLayout;  //-- 옵션창 레이아웃
     private View drawView;
@@ -64,6 +67,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } catch (Exception e) {
             Log.d(TAG, "myRealm = null");
         }
+        mainContext = this;
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mainBinding.recycleerView.setAdapter(adapter);
         mainBinding.recycleerView.setLayoutManager(new LinearLayoutManager(this));
@@ -184,7 +188,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    private void ShowAlamUi() {
+    public void ShowAlamUi() {
         adapter.clear();
         RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll();
         for (Data_alam data_alam : results) {
@@ -207,6 +211,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             adapter.add(section);
         }
         checkNoImage();
+    }
+
+    public void remove(){
+        for (int i = 0; i < titlename.size(); i++) {
+            RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
+           if(results2.size() == 1){
+               titlename.remove(i);
+               myRealm.beginTransaction();
+               results2.deleteAllFromRealm();
+               myRealm.commitTransaction();
+           }
+        }
     }
 
 
@@ -250,11 +266,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         @Override
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
             Object holderItem = viewHolder.itemView.getTag();
-            ItemHolder holder = (ItemHolder) holderItem;
-            if (dX < -holder.mActionContainer2.getWidth()) {
-                dX = -holder.mActionContainer2.getWidth();
+            if(holderItem.getClass()==ItemHolder.class){
+                ItemHolder holder = (ItemHolder) holderItem;
+                if (dX < -holder.mActionContainer2.getWidth()) {
+                    dX = -holder.mActionContainer2.getWidth();
+                }
+                holder.mViewContent2.setTranslationX(dX);
+            }else if(holderItem.getClass() == TitleHolder.class){
+                TitleHolder holder = (TitleHolder) holderItem;
+                if (dX < -holder.mActionContainer1.getWidth()) {
+                    dX = -holder.mActionContainer1.getWidth();
+                }
+                holder.mViewContent1.setTranslationX(dX);
             }
-            holder.mViewContent2.setTranslationX(dX);
         }
 
         /*------------------------------------------------------------------------------------------------------------------------------------------*/

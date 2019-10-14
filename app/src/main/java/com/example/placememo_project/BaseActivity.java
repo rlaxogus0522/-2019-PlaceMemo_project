@@ -16,6 +16,8 @@ import android.os.SystemClock;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import java.util.ArrayList;
+
 public class BaseActivity extends AppCompatActivity {
     public void locationSerch(Context context) {
         Intent intent = new Intent("AlarmService");
