@@ -3,6 +3,7 @@ package com.example.placememo_project;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.Color;
 
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.placememo_project.databinding.ActivityMainBinding;
@@ -197,7 +199,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             TitleHolder titleHolder = new TitleHolder(data_alam_first, i);
             section.add(titleHolder);
             for (Data_alam data_alam : results2) {
-                ItemHolder itemHolder = new ItemHolder(data_alam);
+                ItemHolder itemHolder = new ItemHolder(data_alam,this);
                 section.add(itemHolder);
             }
             BetweenHolder betweenHolder = new BetweenHolder();
@@ -223,6 +225,42 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+
+
+    /*------------------------------------------------------------------------------------------------------------------------------------------*/
+    /*------------------------------------------------------------------------------------------------------------------------------------------*/
+    /*------------------------------------------------------------------------------------------------------------------------------------------*/
+    public  class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback{
+
+        @Override
+        public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+            return makeMovementFlags(0, ItemTouchHelper.START);
+        }
+
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder viewHolder1) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int i) {
+
+        }
+
+        @Override
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            Object holderItem = viewHolder.itemView.getTag();
+            ItemHolder holder = (ItemHolder) holderItem;
+            if (dX < -holder.mActionContainer2.getWidth()) {
+                dX = -holder.mActionContainer2.getWidth();
+            }
+            holder.mViewContent2.setTranslationX(dX);
+        }
+
+        /*------------------------------------------------------------------------------------------------------------------------------------------*/
+    }
+    /*------------------------------------------------------------------------------------------------------------------------------------------*/
+    /*------------------------------------------------------------------------------------------------------------------------------------------*/
     /*--------------------------------------------------------------------------------------------------------------*/
     private void settingToggleButton(View view) { // seletor Item
         if (view.getId() == R.id.sort_name) {
