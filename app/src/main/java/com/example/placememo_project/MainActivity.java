@@ -1,20 +1,14 @@
 package com.example.placememo_project;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
-import android.content.Context;
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Rect;
-import android.os.Build;
+
 import android.os.Bundle;
-import android.os.SystemClock;
+
 import android.util.Log;
-import android.view.MotionEvent;
+
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -23,14 +17,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 
 import com.example.placememo_project.databinding.ActivityMainBinding;
 import com.example.placememo_project.databinding.ItemToItemBinding;
-import com.example.placememo_project.databinding.ViewListMainContentBinding;
-import com.example.placememo_project.databinding.ViewListMainTitleContentBinding;
-import com.google.gson.Gson;
+
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.GroupieViewHolder;
@@ -38,6 +31,8 @@ import com.xwray.groupie.Section;
 import com.xwray.groupie.databinding.BindableItem;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -52,8 +47,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     GroupAdapter<GroupieViewHolder> adapter = new GroupAdapter<>();
     Realm myRealm;
     AlertDialog alamreset;  //-- 설정창에서 모든 알람 초기화시 경고 메시지 용
-    public ItemTouchHelperExtension[] mItemTouchHelper;
-    public ItemTouchHelperExtension.Callback[] mCallback;
+    ItemTouchHelperExtension mitemTouchHelper;
+    ItemTouchHelperExtension.Callback mCallback;
+
 
 
     @Override
@@ -82,30 +78,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mainBinding.menu.btnClose.setOnClickListener(this);
         mainBinding.menu.btnReset.setOnClickListener(this);
         mainBinding.btnInsertMemo.setOnClickListener(this);
-        /*------------------------------------------------------------*/
-//        recyclerViews = new RecyclerView[5];
-//        recyclerViews[0] = findViewById(R.id.recycleerView);
-//        recyclerViews[1] = findViewById(R.id.recycleerView2);
-//        recyclerViews[2] = findViewById(R.id.recycleerView3);
-//        recyclerViews[3] = findViewById(R.id.recycleerView4);
-//        recyclerViews[4] = findViewById(R.id.recycleerView5);
-        /*------------------------------------------------------------*/
-//        adapters = new RecyclerAdapter[5];
-//        mCallback = new ItemTouchHelperCallback[5];
-//        mItemTouchHelper = new ItemTouchHelperExtension[5];
-        /*------------------------------------------------------------*/
-//        for (int i = 0; i < recyclerViews.length; i++) {
-//            mCallback[i] = new ItemTouchHelperCallback();
-//            mItemTouchHelper[i] = new ItemTouchHelperExtension(mCallback[i]);
-//            adapters[i] = new RecyclerAdapter(this);
-//            recyclerViews[i].setLayoutManager(new LinearLayoutManager(this));
-//            recyclerViews[i].setAdapter(adapters[i]);
-//            mItemTouchHelper[i].attachToRecyclerView(recyclerViews[i]);
-//        }
-        /*------------------------------------------------------------*/
-//        drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
-//        drawView = (View) findViewById(R.id.drawer);
-        /*------------------------------------------------------------*/
+
         drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
         drawView = (View) findViewById(R.id.drawer);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -136,24 +109,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         });
         alamreset = alertDialogBuilder.create();
 
+        mCallback = new ItemTouchHelperCallback();
+        mitemTouchHelper = new ItemTouchHelperExtension(mCallback);
+        mitemTouchHelper.attachToRecyclerView(mainBinding.recycleerView);
+
         dataUpdate();   //-- DB에 정보 가져오기
         checkNoImage();   //-- 처음에 저장된 메모가 있는지 없는지 여부에 따라 메모 없다고 표시
         locationSerch(this);   //-- 내위치 검색 알람매니저 실행
     }
 
 
-
     private void dataUpdate() {   //-- DB에 있는 정보 가져오기
-    ShowAlamUi();
+        ShowAlamUi();
     }
 
 
     void checkNoImage() {  //-- 등록된 알람이 없는지 체크
         if (titlename.size() == 0) {
-            mainBinding.imageNoMemo.setAlpha(1.0f);
             mainBinding.TextViewNoMemo.setAlpha(1);
         } else {
-            mainBinding.imageNoMemo.setAlpha(0.0f);
             mainBinding.TextViewNoMemo.setAlpha(0);
         }
     }
@@ -233,10 +207,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         checkNoImage();
     }
 
+
     /*--------------------------------------------------------------------------------------------------------------*/
-
-
-
 
 
     class BetweenHolder extends BindableItem<ItemToItemBinding> {
@@ -287,18 +259,4 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-
-//    private String getUserName()
-//    {
-//        return getIntent().getStringExtra(USER_NAME);
-//    }
-//
-//    static public final String USER_NAME = "user_name";
-//    static public void start(Context ct, String arg)
-//    {
-//        Intent it = new Intent(ct, MainActivity.class);
-//        it.putExtra( USER_NAME,it);
-//        ct.startActivity(it );
-//    }
-//
 }

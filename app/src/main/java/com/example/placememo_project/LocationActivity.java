@@ -71,8 +71,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
             }
         });
         if (permission) {  // --  위치기능을 켯다면 위치정보를 받아오는 메소드 실행
-            Toast.makeText(this, "위치 정보 받아오는중..", Toast.LENGTH_SHORT).show();
-            startLocation();
+            startLastLocation();
         } else {  // --  키지않았다면 기본 지도 표시
             Toast.makeText(this, "위치 기능 사용 불가", Toast.LENGTH_SHORT).show();
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -83,7 +82,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        manager.removeUpdates(mLocation);
+//        manager.removeUpdates(mLocation);
     }
 
     public void startLocation() { //-- 위치 검색 시작
@@ -96,6 +95,32 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
         }
         manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, mLocation);
         manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, mLocation);
+
+    }
+
+    public void startLastLocation() { //-- 위치 검색 시작
+        manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location location1 = manager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        if(location != null){
+            setMyLocation(location);
+        }else if(location1 != null){
+            setMyLocation(location1);
+        }else{
+            startLocation();
+        }
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(LocationActivity.this);
+    }
+
+    private  void setMyLocation(Location location){
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
     }
 
     private void stopLocation() { //--  위치 검색 종료
@@ -172,6 +197,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
             locationSerch();
         } else if (v == lBinding.btnMylocation) {  //-- 현재 내위치를 가져오는 메소드
             startLocation();
+            Toast.makeText(this, "위치 정보 받아오는중..", Toast.LENGTH_SHORT).show();
         } else if (v == lBinding.btnAddIcon) {
             Intent intent = new Intent(this, IconActivity.class);
             startActivityForResult(intent, 0522);

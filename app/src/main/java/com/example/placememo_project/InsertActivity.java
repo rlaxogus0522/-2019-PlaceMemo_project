@@ -207,7 +207,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                 }
             } else if (view == imbinding.btnBack) {   //-- 백버튼 액티비티 종료
                 finish();
-            } else {   //-- 위치 버튼을 클릭했다면 클릭한 위치 버튼 클릭이미지로 변경
+            } else if (view == imbinding.btnLocation1 || view == imbinding.btnLocation2 || view == imbinding.btnLocation3 || view == imbinding.btnLocation4 || view == imbinding.btnLocation5 ) {   //-- 위치 버튼을 클릭했다면 클릭한 위치 버튼 클릭이미지로 변경
                 imageChange(view);   //-- 이미지 변경 메소드
             }
 
@@ -331,4 +331,36 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
 
         }
     }
+
+
+
+
+    void asdf(String argument)
+    {
+
+
+        switch (argument)
+        {
+            case "홍길동":
+                break;
+            case "장길산":
+                break;
+        }
+
+
+        View v = new View(this);
+
+
+        v.setOnClickListener(this);
+
+
+    }
+
+
+    public void myOnClick(View v)
+    {
+        Log.d("==","==");
+    }
+
+
 }

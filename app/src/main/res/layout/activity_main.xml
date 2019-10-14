@@ -51,7 +51,7 @@
                         android:id="@+id/btn_insertMemo"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
-                        android:background="@drawable/plus"/>
+                        android:background="@drawable/nomemo"/>
                 </LinearLayout>
                 <ScrollView
                     android:layout_gravity="center"
@@ -70,27 +70,17 @@
                         android:background="@drawable/recycle"/>
 
 
-                    <ImageView
-                        android:id="@+id/image_no_memo"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/nomemo" />
 
                     <TextView
                         android:id="@+id/TextView_no_memo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="150dp"
                         android:layout_marginEnd="8dp"
                         android:text="No Memo"
-                        android:textSize="20dp"
-                        android:textStyle="italic|bold"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/image_no_memo" /></LinearLayout></ScrollView>
+                        android:textSize="40dp"
+                        android:textStyle="italic|bold" /></LinearLayout></ScrollView>
 
             </LinearLayout>
 
