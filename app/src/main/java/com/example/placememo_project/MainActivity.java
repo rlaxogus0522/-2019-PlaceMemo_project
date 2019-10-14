@@ -196,33 +196,37 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 titlename.add(data_alam.getName());
             }
         }
-        for (int i = 0; i < titlename.size(); i++) {
-            RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
-            Data_alam data_alam_first = results2.first();
-            Section section = new Section();
-            TitleHolder titleHolder = new TitleHolder(data_alam_first, i);
-            section.add(titleHolder);
-            for (Data_alam data_alam : results2) {
-                ItemHolder itemHolder = new ItemHolder(data_alam,this);
-                section.add(itemHolder);
+        if(titlename.size()!=0) {
+            for (int i = 0; i < titlename.size(); i++) {
+                RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
+                Data_alam data_alam_first = results2.first();
+                Section section = new Section();
+                TitleHolder titleHolder = new TitleHolder(data_alam_first, i , this);
+                section.add(titleHolder);
+                for (Data_alam data_alam : results2) {
+                    ItemHolder itemHolder = new ItemHolder(data_alam, this);
+                    section.add(itemHolder);
+                }
+                BetweenHolder betweenHolder = new BetweenHolder();
+                section.add(betweenHolder);
+                adapter.add(section);
             }
-            BetweenHolder betweenHolder = new BetweenHolder();
-            section.add(betweenHolder);
-            adapter.add(section);
         }
         checkNoImage();
     }
 
     public void remove(){
-        for (int i = 0; i < titlename.size(); i++) {
-            RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
-           if(results2.size() == 1){
-               titlename.remove(i);
-               myRealm.beginTransaction();
-               results2.deleteAllFromRealm();
-               myRealm.commitTransaction();
-           }
-        }
+            for (int i = 0; i < titlename.size(); i++) {
+                RealmResults<Data_alam> results = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
+
+                if (results.size() == 0) {
+                    titlename.remove(i);
+                    myRealm.beginTransaction();
+                    results.deleteAllFromRealm();
+                    myRealm.commitTransaction();
+                }
+            }
+
     }
 
 
