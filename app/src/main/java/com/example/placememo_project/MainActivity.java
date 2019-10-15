@@ -1,6 +1,7 @@
 package com.example.placememo_project;
 
 
+import android.app.AlarmManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,8 +36,6 @@ import com.xwray.groupie.Section;
 import com.xwray.groupie.databinding.BindableItem;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -121,7 +120,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         dataUpdate();   //-- DB에 정보 가져오기
         checkNoImage();   //-- 처음에 저장된 메모가 있는지 없는지 여부에 따라 메모 없다고 표시
-        locationSerch(this);   //-- 내위치 검색 알람매니저 실행
     }
 
 
@@ -133,11 +131,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     void checkNoImage() {  //-- 등록된 알람이 없는지 체크
         if (titlename.size() == 0) {
             mainBinding.TextViewNoMemo.setAlpha(1);
+            if(sender!=null) {
+                am.cancel(sender);
+                sender = null;
+            }
         } else {
             mainBinding.TextViewNoMemo.setAlpha(0);
+            if(sender== null) locationSerch(this);   //-- 내위치 검색 알람매니저 실행
         }
     }
 
+    void startEdit(String memo,View view){
+        view.setTranslationX(0f);
+        Intent intent = new Intent(this,EditMemoActivity.class);
+        intent.putExtra("memo",memo);
+        startActivity(intent);
+    }
     @Override
     public void onClick(View view) {
         if (view == mainBinding.btnSetting) {  //-- 옵션을 클릭한다면
@@ -165,8 +174,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         adapter.clear();
         checkNoImage();  //-- 저장된 알람 없다는것을 체크하여 No Memo 이미지를 띄우고
     }
-
-    // - 문제발견 수정필요
 
 
     @Override
@@ -254,7 +261,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         @Override
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            return makeMovementFlags(0, ItemTouchHelper.START);
+            return makeMovementFlags(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT);
         }
 
         @Override
@@ -270,19 +277,36 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         @Override
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
             Object holderItem = viewHolder.itemView.getTag();
-            if(holderItem.getClass()==ItemHolder.class){
-                ItemHolder holder = (ItemHolder) holderItem;
-                if (dX < -holder.mActionContainer2.getWidth()) {
-                    dX = -holder.mActionContainer2.getWidth();
+            try {
+                if(holderItem.getClass()==ItemHolder.class){
+                    ItemHolder holder = (ItemHolder) holderItem;
+                    if( dX < 0)
+                    {
+                        Log.d("==+1", "down : " + holder.down + "   " + dX);
+                        if (dX < -holder.mActionContainer2.getWidth()) {
+                            dX = -holder.mActionContainer2.getWidth();
+                        }
+                        holder.mViewContent2.setTranslationX(dX);
+                        Log.d("==+2", dX + "");
+                    }
+                    else
+                    {
+                        Log.d("==+1", "down : " + holder.down + "   " + dX);
+                        if (dX > 0) {
+                            dX = 0;
+                        }
+//                        holder.mViewContent2.getTranslationX();
+                        holder.mViewContent2.setTranslationX(dX);
+                        Log.d("==+2", dX + "");
+                    }
+                }else if(holderItem.getClass() == TitleHolder.class){
+                    TitleHolder holder = (TitleHolder) holderItem;
+                    if (dX < -holder.mActionContainer1.getWidth()) {
+                        dX = -holder.mActionContainer1.getWidth();
+                    }
+                    holder.mViewContent1.setTranslationX(dX);
                 }
-                holder.mViewContent2.setTranslationX(dX);
-            }else if(holderItem.getClass() == TitleHolder.class){
-                TitleHolder holder = (TitleHolder) holderItem;
-                if (dX < -holder.mActionContainer1.getWidth()) {
-                    dX = -holder.mActionContainer1.getWidth();
-                }
-                holder.mViewContent1.setTranslationX(dX);
-            }
+            }catch (NullPointerException e){ }
         }
 
         /*------------------------------------------------------------------------------------------------------------------------------------------*/

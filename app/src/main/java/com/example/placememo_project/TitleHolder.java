@@ -3,6 +3,7 @@ package com.example.placememo_project;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -50,6 +51,7 @@ public class TitleHolder extends BindableItem<ListItemTitleBinding> implements V
         mActionContainer1 = viewBinding.viewListTitleActionContainer;
 
         viewBinding.viewListTitleActionDelete.setOnClickListener(this);
+
     }
 
     @Override
@@ -61,15 +63,15 @@ public class TitleHolder extends BindableItem<ListItemTitleBinding> implements V
     @Override
     public void onClick(View view) {
         if(view == itemTitleBinding.viewListTitleActionDelete){
-            RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("name",mItem.getName()).findAll();
-            titlename.remove(mItem.getName());
-            for (Data_alam data_alam : data_alams) {
+            if(mViewContent1.getTranslationX() == -480f) {
+                RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("name", mItem.getName()).findAll();
+                titlename.remove(mItem.getName());
                 myRealm.beginTransaction();
                 data_alams.deleteAllFromRealm();
                 myRealm.commitTransaction();
+                ((MainActivity) mainContext).ShowAlamUi();
+                mViewContent1.setTranslationX(0f);
             }
-            ((MainActivity)mainContext).ShowAlamUi();
-            mViewContent1.setTranslationX(0f);
         }
     }
 }

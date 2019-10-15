@@ -1,6 +1,8 @@
 package com.example.placememo_project;
 
 import android.content.Context;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -21,6 +23,9 @@ public class ItemHolder extends BindableItem<ListItemMainBinding> implements Vie
     Context mContext;
     Realm myRealm;
 
+    boolean down = false;
+    float x=0;
+    float moveX=0;
 
     ItemHolder(Data_alam item,Context context) {
         mItem = item;
@@ -39,6 +44,28 @@ public class ItemHolder extends BindableItem<ListItemMainBinding> implements Vie
         mActionContainer2 = viewBinding.viewListRepoActionContainer;
 
         viewBinding.viewListRepoActionDelete.setOnClickListener(this);
+        viewBinding.viewListRepoActionEdit.setOnClickListener(this);
+        viewBinding.item.viewListMainContent.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    moveX = 0;
+                    x = motionEvent.getRawX();
+                    down = true;
+                }
+                else if(motionEvent.getAction() == MotionEvent.ACTION_MOVE)
+                {
+                    //moveX = x - motionEvent.getRawX();
+                }
+                else if(motionEvent.getAction() == MotionEvent.ACTION_UP)
+                {
+                    down = false;
+                }
+                return false;
+            }
+        });
     }
 
 
@@ -50,14 +77,22 @@ public class ItemHolder extends BindableItem<ListItemMainBinding> implements Vie
     @Override
     public void onClick(View view) {
         if(view == mainBinding.viewListRepoActionDelete ){
-            Toast.makeText(mContext,"삭제누름",Toast.LENGTH_LONG).show();
-            RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("memo",mItem.getMemo()).findAll();
-            myRealm.beginTransaction();
-            data_alams.deleteAllFromRealm();
-            myRealm.commitTransaction();
-            ((MainActivity) mainContext).remove();
-            ((MainActivity) mainContext).ShowAlamUi();
-            mViewContent2.setTranslationX(0f);
+            if(mViewContent2.getTranslationX() == -mActionContainer2.getWidth()) {
+                Toast.makeText(mContext, "삭제누름", Toast.LENGTH_LONG).show();
+                RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("memo", mItem.getMemo()).findAll();
+                myRealm.beginTransaction();
+                data_alams.deleteAllFromRealm();
+                myRealm.commitTransaction();
+                ((MainActivity) mainContext).remove();
+                ((MainActivity) mainContext).ShowAlamUi();
+                mViewContent2.setTranslationX(0f);
+            }
+        }else if ( view == mainBinding.viewListRepoActionEdit){
+            if(mViewContent2.getTranslationX() == -mActionContainer2.getWidth()) {
+                ((MainActivity) mainContext).startEdit(mItem.getMemo(), mViewContent2);
+                Log.d("==", "실행완료");
+                mViewContent2.setTranslationX(0f);
+            }
         }
 
     }

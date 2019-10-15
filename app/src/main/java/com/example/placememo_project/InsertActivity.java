@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+import static com.example.placememo_project.MainActivity.titlename;
+
 public class InsertActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {   //-- 메모를 추가하는 액티비티
     private final static String TAG = "InsertActivity-------";
     private boolean isEditMode = false;   //--  사용자가 등록한 아이콘을 삭제할때 롱클릭시 에디트모드로 변경
@@ -149,6 +151,17 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    boolean CheckDBinMemo(String title){
+        boolean isAlready= false;
+            RealmResults<Data_alam> Data_alams = myRealm.where(Data_alam.class).equalTo("name",title).findAll();
+            for(Data_alam data_alam : Data_alams){
+                if(imbinding.EditMemo.getText().toString().equals(data_alam.getMemo())){
+                    isAlready = true;
+                    break;
+                }
+            }
+            return isAlready;
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -178,7 +191,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                     Toast.makeText(this, "위치는 최대 5개까지 등록 가능합니다.", Toast.LENGTH_LONG).show();   //-- 5개가 이미 등록되어있다면 불가능하다는 메시지
                 }
             } else if (view == imbinding.btnSave) { // 최종 저장버튼 을 클릭한다면
-                if (isLocationCheck && !imbinding.EditMemo.getText().toString().equals("")) {   //-- 알림받을위치를 설정하였고 메모내용이 비어있지않다면
+                if (isLocationCheck && !imbinding.EditMemo.getText().toString().equals("") && !CheckDBinMemo(nName)) {   //-- 알림받을위치를 설정하였고 메모내용이 비어있지않다면
                     try {
                         /*-----------------------------------------------------*/
                         myRealm.beginTransaction();   //-- DB 에 저장되어있는 내용 불러와서 임시 변수에 저장
@@ -204,6 +217,8 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                         Toast.makeText(this, "알람을 받을 장소를 선택해주세요.", Toast.LENGTH_LONG).show();
                     if (imbinding.EditMemo.getText().toString().equals(""))  //--  메모내용이 비어있을때
                         Toast.makeText(this, "메모를 설정해주세요.", Toast.LENGTH_LONG).show();
+                    if (CheckDBinMemo(nName))  //--  메모내용이 이미 있을때
+                        Toast.makeText(this, "메모가 이미 존재합니다.", Toast.LENGTH_LONG).show();
                 }
             } else if (view == imbinding.btnBack) {   //-- 백버튼 액티비티 종료
                 finish();
@@ -273,6 +288,8 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                         locationButton.remove(i);
                         locationButtonClick.remove(i);
                         locationName.remove(i);
+                        latitude.remove(i);
+                        longitutde.remove(i);
                         btndelete[locationButton.size()].setAlpha((float) 0.0);
                         btnlocation[locationButton.size()].setAlpha((float) 1.0);
                         btnlocation[locationButton.size()].setBackgroundResource(android.R.color.transparent);

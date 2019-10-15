@@ -2,20 +2,26 @@ package com.example.placememo_project;
 
 import android.Manifest;
 import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -69,15 +75,23 @@ public class LocationReceiver extends BroadcastReceiver {
     }
 
     private void distanceMain(Realm myRealm) {
+        double distance;
+        int notiNum=1;
         try {
             RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
             for (Data_alam data_alam : data_alams) {  //-- DB에 저장된 알람을 원하는 위치와 현재 위치를 비교
-                Log.d(data_alam.getName(),getDistance(data_alam.getLatitude(),data_alam.getLongitude(),this.latitude,this.longitude)+"Km");  //-- 저장된 메모에따른 거리 보여주기위한 Log
+                distance = getDistance(data_alam.getLatitude(),data_alam.getLongitude(),this.latitude,this.longitude);
+                Log.d(data_alam.getName(),distance +" Km");  //-- 저장된 메모에따른 거리 보여주기위한 Log
                 if(minDistance == 0f){  //-- 만약 최소거리가 0이라면 첫번째임을 알수있음
-                    minDistance = getDistance(data_alam.getLatitude(), data_alam.getLongitude(), this.latitude, this.longitude);  //-- 최소거리에 첫번째 가져온 위치에 대한 거리를 저장
+                    minDistance = distance;  //-- 최소거리에 첫번째 가져온 위치에 대한 거리를 저장
                 }else if(minDistance > getDistance(data_alam.getLatitude(),data_alam.getLongitude(),this.latitude,this.longitude)) {  //-- 최소거리가 0이아니라면 그다음에 가져오는 위치에대한 거리를 저장되어있던 최소거리와 비교후 더 가까운 거리를 저장
-                   minDistance = getDistance(data_alam.getLatitude(), data_alam.getLongitude(), this.latitude, this.longitude);
+                   minDistance = distance;
                }
+                if(distance<0.3){
+                  new Notification(data_alam.getName(),data_alam.getMemo(),rContext,notiNum);
+                  notiNum++;
+                  WakeLock();
+                }
             }
         } catch (NullPointerException e) {
             Log.d(TAG,"NullPointerException");
@@ -142,6 +156,12 @@ public class LocationReceiver extends BroadcastReceiver {
         return distance/1000;  //-- Km 단위로 환산
     }
 
+    void WakeLock(){
+        PowerManager pm = (PowerManager) rContext.getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP,TAG);
+        wl.acquire(3000);
+        wl.release();
+    }
 
     public void startLocation() {
         manager = (LocationManager) rContext.getSystemService(Context.LOCATION_SERVICE);
@@ -186,5 +206,7 @@ public class LocationReceiver extends BroadcastReceiver {
 
         }
     };
+
+
 
 }
