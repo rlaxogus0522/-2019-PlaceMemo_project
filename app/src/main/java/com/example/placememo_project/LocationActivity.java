@@ -232,7 +232,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
         try{
             list = geocoder.getFromLocationName(address,10);
         }catch (IOException e){
-            Log.d(TAG,"btnSerch");
+            Log.d(TAG,e+"");
         }
         if(list != null){
             if(list.size() == 0) {

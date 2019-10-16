@@ -53,6 +53,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     AlertDialog alamreset;  //-- 설정창에서 모든 알람 초기화시 경고 메시지 용
     ItemTouchHelperExtension mitemTouchHelper;
     ItemTouchHelperExtension.Callback mCallback;
+    boolean checkAlam;
 
 
 
@@ -132,13 +133,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     void checkNoImage() {  //-- 등록된 알람이 없는지 체크
         if (titlename.size() == 0) {
+            checkAlam = false;
             mainBinding.TextViewNoMemo.setVisibility(View.VISIBLE);
-            mainBinding.TextViewNoMemo.setAlpha(1);
             if(sender!=null) {
                 am.cancel(sender);
                 sender = null;
             }
         } else {
+            checkAlam = true;
             mainBinding.TextViewNoMemo.setVisibility(View.GONE);
             if(sender== null) locationSerch(this);   //-- 내위치 검색 알람매니저 실행
         }

@@ -26,6 +26,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 import static android.content.Context.ALARM_SERVICE;
+import static com.example.placememo_project.MainActivity.mainContext;
 
 /*---------------------------------------------------------*/
 
@@ -44,8 +45,7 @@ public class LocationReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Realm.init(context);
         this.rContext = context;
-        Log.d(TAG,"locationSerch Broadcast Receiver시작");
-        doBackgroundWork();  //-- 백그라운드에서 실행될 Task 메소드
+        if(((MainActivity)mainContext).checkAlam) doBackgroundWork();  //-- 백그라운드에서 실행될 Task 메소드
     }
 
     private void doBackgroundWork() {

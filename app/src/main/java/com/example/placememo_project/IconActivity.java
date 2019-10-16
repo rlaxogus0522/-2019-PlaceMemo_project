@@ -51,7 +51,6 @@ public class IconActivity extends AppCompatActivity implements View.OnClickListe
                 icon = locationButton.get(i);
                 clickicon = locationButtonClick.get(i);
             }
-            Log.d(TAG, String.valueOf(i));
         }
     }
 

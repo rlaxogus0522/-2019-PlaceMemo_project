@@ -1,6 +1,7 @@
 package com.example.placememo_project;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
@@ -22,6 +24,8 @@ import java.util.ArrayList;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+import static com.example.placememo_project.MainActivity.mainContext;
+import static com.example.placememo_project.MainActivity.sort;
 import static com.example.placememo_project.MainActivity.titlename;
 
 public class InsertActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {   //-- 메모를 추가하는 액티비티
@@ -40,7 +44,9 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
     private double nlat, nlong;   //--  현재 선택된 위치의 위 경도 저장용
     ActivityInsertmemoBinding imbinding;
     private boolean isLocationCheck = false;   //-- 메모 추가시 알림 받을 위치를 선택했는지 체크용
+    int clickNum;
     Realm myRealm;
+    AlertDialog alamreset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +70,34 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
         } catch (Exception e) {
             Log.d(TAG, "myRealm = null");
         }
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // 제목셋팅
+        alertDialogBuilder.setTitle("모든 알람 초기화");
+
+        // AlertDialog 셋팅
+        alertDialogBuilder
+                .setMessage("해당위치에 등록된 메모가 있습니다. \n 해당위치와 메모를 모두 지우시겠습니까?")
+                .setCancelable(false)
+                .setPositiveButton("삭제",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(
+                                    DialogInterface dialog, int id) {
+                                    deletLocationAndDB(clickNum);
+
+                            }
+                        })
+                .setNegativeButton("취소",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(
+                                    DialogInterface dialog, int id) {
+                                // 다이얼로그를 취소한다
+                                dialog.cancel();
+                            }
+                        });
+        alamreset = alertDialogBuilder.create();
+
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         imbinding.btnSave.setOnClickListener(this);
         imbinding.btnAddlocation.setOnClickListener(this);
@@ -115,7 +149,6 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                 }   //--  데이터베이스에서 가져온 위치를 리스트에 추가
                 latitude.add(data_icon.getLatitude());   //-- 데이터베이스에서 위도가져와서 추가
                 longitutde.add(data_icon.getLongitude());   //--  데이터베이스에서 경도가져와서  추가
-                Log.d("////", String.valueOf(locationButton));
 
             }
         } catch (NullPointerException e) {
@@ -136,8 +169,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                 myRealm.commitTransaction();
             }
         } catch (NullPointerException e) {
-            Log.d(TAG, "NullPointerException" + locationButton);
-            Log.d(TAG, "NullPointerException" + locationButtonClick);
+            Log.d(TAG, "NullPointerException");
         }
 
     }
@@ -281,27 +313,49 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
             } else {   //-- 사용자의 다른 특별한동작이아니고 에디트모드에서 버튼을 클릭한다면 해당 버튼 삭제
                 for (int i = 0; i < locationButton.size(); i++) {
                     if (view == btnlocation[i]) {
-                        //     RealmResults<Data_Icon> delete = myRealm.where(Data_Icon.class).equalTo("nicon",locationButton.get(i)).findAll();
-                        //    myRealm.beginTransaction();
-                        //    delete.deleteAllFromRealm();
-                        //    myRealm.commitTransaction();
-
-                        locationButton.remove(i);
-                        locationButtonClick.remove(i);
-                        locationName.remove(i);
-                        latitude.remove(i);
-                        longitutde.remove(i);
-                        btndelete[locationButton.size()].setAlpha((float) 0.0);
-                        btnlocation[locationButton.size()].setAlpha((float) 1.0);
-                        btnlocation[locationButton.size()].setBackgroundResource(android.R.color.transparent);
-                        refreshButtonImage();
-                    } else {
-
+                        RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("name",locationName.get(i)).findAll();
+                        if(data_alams.size()>0){
+                            clickNum = i;
+                            alamreset.show();
+                        }else{
+                            deletLocation(i);
+                        }
                     }
                 }
             }
         }
     }
+
+    private void deletLocation(int i) {
+        locationButton.remove(i);
+        locationButtonClick.remove(i);
+        locationName.remove(i);
+        latitude.remove(i);
+        longitutde.remove(i);
+        btndelete[locationButton.size()].setAlpha((float) 0.0);
+        btnlocation[locationButton.size()].setAlpha((float) 1.0);
+        btnlocation[locationButton.size()].setBackgroundResource(android.R.color.transparent);
+        refreshButtonImage();
+    }
+    private void deletLocationAndDB(int i) {
+        RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("name",locationName.get(i)).findAll();
+        for(Data_alam data_alam : data_alams){
+            myRealm.beginTransaction();
+            data_alam.deleteFromRealm();
+            myRealm.commitTransaction();
+        }
+        locationButton.remove(i);
+        locationButtonClick.remove(i);
+        locationName.remove(i);
+        latitude.remove(i);
+        longitutde.remove(i);
+        btndelete[locationButton.size()].setAlpha((float) 0.0);
+        btnlocation[locationButton.size()].setAlpha((float) 1.0);
+        btnlocation[locationButton.size()].setBackgroundResource(android.R.color.transparent);
+        refreshButtonImage();
+        ((MainActivity)mainContext).ShowAlamUi(sort);
+    }
+
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {   //-- 위치 추가를 누른후 Location 액티비티에서의 반환값을 반영
         super.onActivityResult(requestCode, resultCode, data);
@@ -329,7 +383,6 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                 nlong = longitutde.get(i);
                 nName = locationName.get(i);
             }
-            Log.d(TAG, String.valueOf(i));
         }
     }
 
@@ -349,36 +402,4 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
 
         }
     }
-
-
-
-
-    void asdf(String argument)
-    {
-
-
-        switch (argument)
-        {
-            case "홍길동":
-                break;
-            case "장길산":
-                break;
-        }
-
-
-        View v = new View(this);
-
-
-        v.setOnClickListener(this);
-
-
-    }
-
-
-    public void myOnClick(View v)
-    {
-        Log.d("==","==");
-    }
-
-
 }
