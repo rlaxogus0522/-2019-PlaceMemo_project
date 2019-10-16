@@ -15,6 +15,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 import static com.example.placememo_project.MainActivity.mainContext;
+import static com.example.placememo_project.MainActivity.sort;
 
 public class EditMemoActivity extends AppCompatActivity implements View.OnClickListener {
     ActivityEditMemoBinding editMemoBinding;
@@ -44,7 +45,7 @@ public class EditMemoActivity extends AppCompatActivity implements View.OnClickL
             data_alams.first().setMemo(editMemoBinding.EditMemo.getText().toString());
             myRealm.commitTransaction();
             finish();
-            ((MainActivity)mainContext).ShowAlamUi();
+            ((MainActivity)mainContext).ShowAlamUi(sort);
         }
     }
 }

@@ -7,7 +7,15 @@ public class Data_alam extends RealmObject {  //-- 저장된 메모
     String name; //-- 사용자가 입력한 위치 이름 ( 제목 부분 )
     int icon;  //-- 사용자가 설정한 Icon  ( 제목 부분 )
     String memo; //-- 사용자가 등록한 메모 ( 내용 부분)
+    boolean isAlamOn;
 
+    public boolean getisAlamOn() {
+        return isAlamOn;
+    }
+
+    public void setAlamOn(boolean alamOn) {
+        isAlamOn = alamOn;
+    }
 
     public double getLatitude() {
         return latitude;

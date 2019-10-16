@@ -16,6 +16,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 import static com.example.placememo_project.MainActivity.mainContext;
+import static com.example.placememo_project.MainActivity.sort;
 import static com.example.placememo_project.MainActivity.titlename;
 
 
@@ -69,7 +70,7 @@ public class TitleHolder extends BindableItem<ListItemTitleBinding> implements V
                 myRealm.beginTransaction();
                 data_alams.deleteAllFromRealm();
                 myRealm.commitTransaction();
-                ((MainActivity) mainContext).ShowAlamUi();
+                ((MainActivity) mainContext).ShowAlamUi(sort);
                 mViewContent1.setTranslationX(0f);
             }
         }

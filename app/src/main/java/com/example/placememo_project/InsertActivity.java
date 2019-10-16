@@ -201,6 +201,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                         dataalam.setIcon(nicon);
                         dataalam.setLatitude(nlat);
                         dataalam.setLongitude(nlong);
+                        dataalam.setAlamOn(true);
                         myRealm.commitTransaction();
                         /*----------------------------------------------------*/
                         Intent intent = new Intent();   //-- 메인액티비티에 Result 값으로 위치 아이콘과 위치명, 메모내용을 전송

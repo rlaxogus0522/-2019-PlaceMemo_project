@@ -1,7 +1,6 @@
 package com.example.placememo_project;
 
 
-import android.app.AlarmManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -27,8 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.placememo_project.databinding.ActivityMainBinding;
 import com.example.placememo_project.databinding.ItemToItemBinding;
-
-import com.loopeer.itemtouchhelperextension.Extension;
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.GroupieViewHolder;
@@ -40,6 +38,7 @@ import java.util.ArrayList;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     ActivityMainBinding mainBinding;
     public static Context mainContext;
@@ -47,6 +46,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private DrawerLayout drawerLayout;  //-- 옵션창 레이아웃
     private View drawView;
     private boolean isdrawer = false;
+    static String sort="sort_update";
     static public ArrayList<String> titlename = new ArrayList<>();  //-- 등록된 알람이있는지 체크하기위한 변수( 메뉴용 )
     GroupAdapter<GroupieViewHolder> adapter = new GroupAdapter<>();
     Realm myRealm;
@@ -114,9 +114,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         });
         alamreset = alertDialogBuilder.create();
 
+        mainBinding.recycleerView.setLayoutManager(new LinearLayoutManager(this));
         mCallback = new ItemTouchHelperCallback();
         mitemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mitemTouchHelper.attachToRecyclerView(mainBinding.recycleerView);
+
 
         dataUpdate();   //-- DB에 정보 가져오기
         checkNoImage();   //-- 처음에 저장된 메모가 있는지 없는지 여부에 따라 메모 없다고 표시
@@ -124,19 +126,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
     private void dataUpdate() {   //-- DB에 있는 정보 가져오기
-        ShowAlamUi();
+        ShowAlamUi(sort);
     }
 
 
     void checkNoImage() {  //-- 등록된 알람이 없는지 체크
         if (titlename.size() == 0) {
+            mainBinding.TextViewNoMemo.setVisibility(View.VISIBLE);
             mainBinding.TextViewNoMemo.setAlpha(1);
             if(sender!=null) {
                 am.cancel(sender);
                 sender = null;
             }
         } else {
-            mainBinding.TextViewNoMemo.setAlpha(0);
+            mainBinding.TextViewNoMemo.setVisibility(View.GONE);
             if(sender== null) locationSerch(this);   //-- 내위치 검색 알람매니저 실행
         }
     }
@@ -191,16 +194,49 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) { //--  사용자가 메모를 추가가 성공적이었다면
-            ShowAlamUi();
+            ShowAlamUi(sort);
         }
     }
 
-    public void ShowAlamUi() {
+    public void ShowAlamUi(String sort) {
+        Toast.makeText(mainContext, "실행됨", Toast.LENGTH_SHORT).show();
         adapter.clear();
-        RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll();
-        for (Data_alam data_alam : results) {
-            if (!titlename.contains(data_alam.getName())) {
-                titlename.add(data_alam.getName());
+        titlename.clear();
+        if(sort.equals("sort_name")) {
+            RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll().sort("name");
+            for (Data_alam data_alam : results) {
+                if (!titlename.contains(data_alam.getName())) {
+                    titlename.add(data_alam.getName());
+                }
+            }
+        }else if(sort.equals("sort_update")){
+            RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll();
+            for (Data_alam data_alam : results) {
+                if (!titlename.contains(data_alam.getName())) {
+                    titlename.add(data_alam.getName());
+                }
+            }
+        }else if(sort.equals("sort_alams")){
+            RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll().sort("name");
+            for(Data_alam data_alam : results){
+                if (!titlename.contains(data_alam.getName())) {
+                    titlename.add(data_alam.getName());
+                }
+            }
+            ArrayList<String> arrayList = new ArrayList<>();
+            arrayList.addAll(titlename);
+            titlename.clear();
+            for (int j = 0; j < arrayList.size() ; j++) {
+                int check = 0;
+                for (int i = 0; i < arrayList.size(); i++) {
+                    RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", arrayList.get(i)).findAll();
+                    if (check < results2.size()) {
+                        if(!titlename.contains(results2.first().getName())) {
+                            titlename.add(j, results2.first().getName());
+                            check = results2.size();
+                        }
+                    }
+                }
             }
         }
         if(titlename.size()!=0) {
@@ -257,11 +293,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
-    public  class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback{
-
+    public class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback {
+        ItemHolder holder;
         @Override
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            return makeMovementFlags(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT);
+            return makeMovementFlags(0, ItemTouchHelper.LEFT);
         }
 
         @Override
@@ -278,28 +314,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
             Object holderItem = viewHolder.itemView.getTag();
             try {
-                if(holderItem.getClass()==ItemHolder.class){
+                if(holderItem instanceof ItemHolder){
+                    holder =  (ItemHolder) holderItem;
                     ItemHolder holder = (ItemHolder) holderItem;
-                    if( dX < 0)
-                    {
-                        Log.d("==+1", "down : " + holder.down + "   " + dX);
-                        if (dX < -holder.mActionContainer2.getWidth()) {
-                            dX = -holder.mActionContainer2.getWidth();
-                        }
-                        holder.mViewContent2.setTranslationX(dX);
-                        Log.d("==+2", dX + "");
+                    if (dX < -holder.mActionContainer2.getWidth()) {
+                        dX = -holder.mActionContainer2.getWidth();
                     }
-                    else
-                    {
-                        Log.d("==+1", "down : " + holder.down + "   " + dX);
-                        if (dX > 0) {
-                            dX = 0;
-                        }
-//                        holder.mViewContent2.getTranslationX();
-                        holder.mViewContent2.setTranslationX(dX);
-                        Log.d("==+2", dX + "");
-                    }
-                }else if(holderItem.getClass() == TitleHolder.class){
+                    holder.mViewContent2.setTranslationX(dX);
+
+                }else if(holderItem instanceof TitleHolder){
                     TitleHolder holder = (TitleHolder) holderItem;
                     if (dX < -holder.mActionContainer1.getWidth()) {
                         dX = -holder.mActionContainer1.getWidth();
@@ -307,7 +330,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     holder.mViewContent1.setTranslationX(dX);
                 }
             }catch (NullPointerException e){ }
+//
         }
+
 
         /*------------------------------------------------------------------------------------------------------------------------------------------*/
     }
@@ -316,17 +341,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /*--------------------------------------------------------------------------------------------------------------*/
     private void settingToggleButton(View view) { // seletor Item
         if (view.getId() == R.id.sort_name) {
+            sort = "sort_name";
             mainBinding.menu.sortAlams.setTextColor(Color.rgb(0, 0, 0));
             mainBinding.menu.sortUpdate.setTextColor(Color.rgb(0, 0, 0));
             mainBinding.menu.sortName.setTextColor(Color.rgb(70, 160, 220));
+            ShowAlamUi(sort);
         } else if (view.getId() == R.id.sort_alams) {
+            sort = "sort_alams";
             mainBinding.menu.sortAlams.setTextColor(Color.rgb(70, 160, 220));
             mainBinding.menu.sortUpdate.setTextColor(Color.rgb(0, 0, 0));
             mainBinding.menu.sortName.setTextColor(Color.rgb(0, 0, 0));
+            ShowAlamUi(sort);
         } else if (view.getId() == R.id.sort_update) {
+            sort = "sort_update";
             mainBinding.menu.sortAlams.setTextColor(Color.rgb(0, 0, 0));
             mainBinding.menu.sortUpdate.setTextColor(Color.rgb(70, 160, 220));
             mainBinding.menu.sortName.setTextColor(Color.rgb(0, 0, 0));
+            ShowAlamUi(sort);
         } else if (view.getId() == R.id.loof_1) {
 
             mainBinding.menu.loof1.setTextColor(Color.rgb(70, 160, 220));

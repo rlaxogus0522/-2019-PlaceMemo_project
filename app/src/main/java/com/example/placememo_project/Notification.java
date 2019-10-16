@@ -12,7 +12,11 @@ import android.os.PowerManager;
 import androidx.core.app.NotificationCompat;
 
 public class Notification {
-    public Notification(String title, String memo, Context rContext, int notiNum){
+    Context rContext;
+    private final static String TAG = "Notification : ";
+
+    public Notification(String title, String memo, Context rContext, int notiNum, boolean isAlamOn){
+        this.rContext = rContext;
         NotificationCompat.Builder builder = new NotificationCompat.Builder(rContext, "default");
 
         PendingIntent intent = PendingIntent.getActivity(rContext,0,new Intent(rContext,IntroActivity.class),0);
@@ -35,8 +39,18 @@ public class Notification {
 
         // id값은
         // 정의해야하는 각 알림의 고유한 int값
-        notificationManager.notify(notiNum, builder.build());
+        if(isAlamOn) {
+            notificationManager.notify(notiNum, builder.build());
+            WakeLock();
+        }
 
+    }
+
+    void WakeLock(){
+        PowerManager pm = (PowerManager) rContext.getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP,TAG);
+        wl.acquire(3000);
+        wl.release();
     }
 
 }

@@ -46,7 +46,7 @@
             android:background="@android:color/transparent"
             style="?android:attr/borderlessButtonStyle"
             android:textSize="13dp"
-            android:textColor="#46A0DC"
+
             android:text="이름 순" />
 
         <Button
@@ -56,6 +56,7 @@
             android:layout_weight="1"
             style="?android:attr/borderlessButtonStyle"
             android:background="@android:color/transparent"
+            android:textColor="#46A0DC"
             android:textSize="13dp"
             android:text="추가된 순" />
 

@@ -88,9 +88,9 @@ public class LocationReceiver extends BroadcastReceiver {
                    minDistance = distance;
                }
                 if(distance<0.3){
-                  new Notification(data_alam.getName(),data_alam.getMemo(),rContext,notiNum);
+                  new Notification(data_alam.getName(),data_alam.getMemo(),rContext,notiNum,data_alam.getisAlamOn());
                   notiNum++;
-                  WakeLock();
+                  RealmResults<Data_alam> data_alams1 = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
                 }
             }
         } catch (NullPointerException e) {
@@ -156,12 +156,7 @@ public class LocationReceiver extends BroadcastReceiver {
         return distance/1000;  //-- Km 단위로 환산
     }
 
-    void WakeLock(){
-        PowerManager pm = (PowerManager) rContext.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP,TAG);
-        wl.acquire(3000);
-        wl.release();
-    }
+
 
     public void startLocation() {
         manager = (LocationManager) rContext.getSystemService(Context.LOCATION_SERVICE);
