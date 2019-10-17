@@ -44,6 +44,8 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
     private double nlat, nlong;   //--  현재 선택된 위치의 위 경도 저장용
     ActivityInsertmemoBinding imbinding;
     private boolean isLocationCheck = false;   //-- 메모 추가시 알림 받을 위치를 선택했는지 체크용
+    int colors[] = new int[]{0xFFE8EE9C, 0xFFE4B786, 0xFF97E486, 0xFF86E4D1, 0xFFE48694};  //-- 저장된 메모 메뉴에 표시할 색깔 등록해두기
+    int setColor;
     int clickNum;
     Realm myRealm;
     AlertDialog alamreset;
@@ -226,20 +228,18 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                 if (isLocationCheck && !imbinding.EditMemo.getText().toString().equals("") && !CheckDBinMemo(nName)) {   //-- 알림받을위치를 설정하였고 메모내용이 비어있지않다면
                     try {
                         /*-----------------------------------------------------*/
-                        myRealm.beginTransaction();   //-- DB 에 저장되어있는 내용 불러와서 임시 변수에 저장
+                        myRealm.beginTransaction();
                         Data_alam dataalam = myRealm.createObject(Data_alam.class);
                         dataalam.setName(nName);
                         dataalam.setMemo(imbinding.EditMemo.getText().toString());
                         dataalam.setIcon(nicon);
                         dataalam.setLatitude(nlat);
                         dataalam.setLongitude(nlong);
+                        dataalam.setColor(setColor);
                         dataalam.setAlamOn(true);
                         myRealm.commitTransaction();
                         /*----------------------------------------------------*/
                         Intent intent = new Intent();   //-- 메인액티비티에 Result 값으로 위치 아이콘과 위치명, 메모내용을 전송
-//                        intent.putExtra("nicon", nicon);
-//                        intent.putExtra("nName", nName);
-//                        intent.putExtra("memo", imbinding.EditMemo.getText().toString());
                         setResult(RESULT_OK, intent);
                         finish();
                     } catch (NullPointerException e) {
@@ -294,6 +294,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                         dataalam.setIcon(nicon);
                         dataalam.setLatitude(nlat);
                         dataalam.setLongitude(nlong);
+                        dataalam.setColor(setColor);
                         myRealm.commitTransaction();
                         Intent intent = new Intent();
                         intent.putExtra("nicon", nicon);
@@ -382,6 +383,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                 nlat = latitude.get(i);
                 nlong = longitutde.get(i);
                 nName = locationName.get(i);
+                setColor = colors[i];
             }
         }
     }

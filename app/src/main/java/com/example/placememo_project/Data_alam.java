@@ -8,7 +8,16 @@ public class Data_alam extends RealmObject {  //-- 저장된 메모
     int icon;  //-- 사용자가 설정한 Icon  ( 제목 부분 )
     String memo; //-- 사용자가 등록한 메모 ( 내용 부분)
     boolean isAlamOn;
+    int color;
 
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
     public boolean getisAlamOn() {
         return isAlamOn;
     }

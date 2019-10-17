@@ -46,8 +46,9 @@ public class TitleHolder extends BindableItem<ListItemTitleBinding> implements V
         itemTitleBinding = viewBinding;
         viewBinding.title.tvTitle.setText(mItem.getName());
         viewBinding.title.titleImage.setImageResource(mItem.getIcon());
-        viewBinding.title.viewListTitleContent.setBackgroundColor(color[colorNum]);
-        viewBinding.viewListTitleActionContainer.setBackgroundColor(color[colorNum]);
+        RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("name",mItem.getName()).findAll();
+        viewBinding.title.viewListTitleContent.setBackgroundColor(data_alams.first().getColor());
+        viewBinding.viewListTitleActionContainer.setBackgroundColor(data_alams.first().getColor());
         mViewContent1 = viewBinding.title.viewListTitleContent;
         mActionContainer1 = viewBinding.viewListTitleActionContainer;
 

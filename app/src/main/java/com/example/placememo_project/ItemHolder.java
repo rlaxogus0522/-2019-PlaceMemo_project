@@ -2,11 +2,16 @@ package com.example.placememo_project;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ItemTouchHelper;
+
 import com.example.placememo_project.databinding.ListItemMainBinding;
 
+import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
+import com.xwray.groupie.Item;
 import com.xwray.groupie.databinding.BindableItem;
 
 import java.util.Objects;
@@ -26,6 +31,7 @@ public class ItemHolder extends BindableItem<ListItemMainBinding> implements Vie
     ListItemMainBinding mainBinding;
     Context mContext;
     Realm myRealm;
+    int position;
 
     ItemHolder(Data_alam item,Context context) {
         mItem = item;
@@ -44,7 +50,9 @@ public class ItemHolder extends BindableItem<ListItemMainBinding> implements Vie
         mainBinding.item.alam.setOnClickListener(this);
         viewBinding.viewListRepoActionDelete.setOnClickListener(this);
         viewBinding.viewListRepoActionEdit.setOnClickListener(this);
+        this.position = position;
     }
+
 
 
     @Override
@@ -52,6 +60,10 @@ public class ItemHolder extends BindableItem<ListItemMainBinding> implements Vie
         return R.layout.list_item_main;
     }
 
+
+    public int getPosition() {
+        return position;
+    }
 
     @Override
     public void onClick(View view) {
@@ -88,6 +100,5 @@ public class ItemHolder extends BindableItem<ListItemMainBinding> implements Vie
             Toast.makeText(mContext, "헤헿", Toast.LENGTH_SHORT).show();
         }
     }
-
 
 }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -30,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.placememo_project.databinding.ActivityMainBinding;
 import com.example.placememo_project.databinding.ItemToItemBinding;
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
+import com.xwray.groupie.Group;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.GroupieViewHolder;
 import com.xwray.groupie.Section;
@@ -55,7 +57,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     AlertDialog alamreset;  //-- 설정창에서 모든 알람 초기화시 경고 메시지 용
     ItemTouchHelperExtension mitemTouchHelper;
     ItemTouchHelperExtension.Callback mCallback;
-    boolean checkAlam;
+    boolean checkAlam = false;
 
 
 
@@ -126,6 +128,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         dataUpdate();   //-- DB에 정보 가져오기
         checkNoImage();   //-- 처음에 저장된 메모가 있는지 없는지 여부에 따라 메모 없다고 표시
+
+
+
     }
 
 
@@ -247,9 +252,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if(titlename.size()!=0) {
             for (int i = 0; i < titlename.size(); i++) {
                 RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
+                Log.d("color",results2.first().getColor()+"");
                 Data_alam data_alam_first = results2.first();
                 Section section = new Section();
-                PinHolder pinHolder = new PinHolder(i);
+                PinHolder pinHolder = new PinHolder(data_alam_first);
                 section.add(pinHolder);
                 TitleHolder titleHolder = new TitleHolder(data_alam_first, i , this);
                 section.add(titleHolder);
@@ -284,51 +290,81 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
 
-
-
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
     public class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback {
-        ItemHolder holder;
+        ItemHolder holder,holder1;
+        int position;
+
+
         @Override
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            return makeMovementFlags(0, ItemTouchHelper.LEFT);
+            Object holderItem = viewHolder.itemView.getTag();
+            int dragFlag = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+            int swipeFlag = ItemTouchHelper.LEFT;
+            if(holderItem instanceof TitleHolder) {
+               return makeMovementFlags(0,swipeFlag);
+            }
+
+            return makeMovementFlags(dragFlag, swipeFlag);
         }
 
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder viewHolder1) {
-            return false;
+            Object holderItem = viewHolder.itemView.getTag();
+            Object holderItem2 = viewHolder1.itemView.getTag();
+            holder = (ItemHolder) holderItem;
+            holder1 = (ItemHolder) holderItem2;
+            try {
+                adapter.onItemMoved(adapter.getGroup(0),holder.getPosition(),holder1.getPosition());
+                Log.d("holder",holder.getPosition()+"");
+                Log.d("holder1",holder1.getPosition()+"");
+            }catch (Exception e){
+
+            }
+
+            return true;
         }
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int i) {
+        }
 
+        @Override
+        public boolean isLongPressDragEnabled() {
+            return true;
         }
 
         @Override
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            if(dX == 0 && dY != 0){
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+
             Object holderItem = viewHolder.itemView.getTag();
-            try {
-                if(holderItem instanceof ItemHolder){
-                    holder =  (ItemHolder) holderItem;
-                    ItemHolder holder = (ItemHolder) holderItem;
-                    if (dX < -holder.mActionContainer2.getWidth()) {
-                        dX = -holder.mActionContainer2.getWidth();
-                    }
-                    holder.mViewContent2.setTranslationX(dX);
+                try {
+                    if (holderItem instanceof ItemHolder) {
+                        holder = (ItemHolder) holderItem;
+                        ItemHolder holder = (ItemHolder) holderItem;
+                        if (dX < -holder.mActionContainer2.getWidth()) {
+                            dX = -holder.mActionContainer2.getWidth();
+                        }
+                        holder.mViewContent2.setTranslationX(dX);
 
-                }else if(holderItem instanceof TitleHolder){
-                    TitleHolder holder = (TitleHolder) holderItem;
-                    if (dX < -holder.mActionContainer1.getWidth()) {
-                        dX = -holder.mActionContainer1.getWidth();
+                    } else if (holderItem instanceof TitleHolder) {
+                        TitleHolder holder = (TitleHolder) holderItem;
+                        if (dX < -holder.mActionContainer1.getWidth()) {
+                            dX = -holder.mActionContainer1.getWidth();
+                        }
+                        holder.mViewContent1.setTranslationX(dX);
                     }
-                    holder.mViewContent1.setTranslationX(dX);
+                } catch (NullPointerException e) {
+
                 }
-            }catch (NullPointerException e){ }
 //
-        }
 
+        }
 
         /*------------------------------------------------------------------------------------------------------------------------------------------*/
     }
