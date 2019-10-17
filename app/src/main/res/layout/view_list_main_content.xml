@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/memo"
     android:orientation="horizontal"
-    android:layout_margin="5dp"
+    android:layout_margin="8dp"
     tools:showIn="@layout/list_item_main"
 
     >

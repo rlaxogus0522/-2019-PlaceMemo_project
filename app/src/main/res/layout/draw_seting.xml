@@ -2,7 +2,7 @@
 <layout>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer"
-    android:background="#ffffff"
+    android:background="@drawable/papertexture"
     android:layout_width="260dp"
     android:layout_height="match_parent"
     android:layout_gravity="end"
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:text="설정"
+        android:text="정렬 기준"
         android:textColor="#000000"
         android:textSize="15dp"
         android:textStyle="bold" />
@@ -46,7 +46,7 @@
             android:background="@android:color/transparent"
             style="?android:attr/borderlessButtonStyle"
             android:textSize="13dp"
-
+            android:textStyle="bold"
             android:text="이름 순" />
 
         <Button
@@ -58,6 +58,7 @@
             android:background="@android:color/transparent"
             android:textColor="#46A0DC"
             android:textSize="13dp"
+            android:textStyle="bold"
             android:text="추가된 순" />
 
         <Button
@@ -65,6 +66,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textStyle="bold"
             style="?android:attr/borderlessButtonStyle"
             android:background="@android:color/transparent"
             android:textSize="13dp"
@@ -92,6 +94,7 @@
             android:layout_weight="1"
             android:text="1회"
             android:textColor="#46A0DC"
+            android:textStyle="bold"
             android:textSize="13dp" />
 
         <Button
@@ -101,6 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
+            android:textStyle="bold"
             style="?android:attr/borderlessButtonStyle"
 
             android:text="3회" />
@@ -112,6 +116,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
+            android:textStyle="bold"
             style="?android:attr/borderlessButtonStyle"
             android:text="무한 반복" />
     </LinearLayout>
@@ -130,6 +135,7 @@
 
         <Button
             android:id="@+id/wiget_on"
+            android:textStyle="bold"
             android:textSize="13dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -146,6 +152,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@android:color/transparent"
+            android:textStyle="bold"
             style="?android:attr/borderlessButtonStyle"
             android:text="끄기" />
 

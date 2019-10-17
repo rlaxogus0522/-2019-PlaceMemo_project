@@ -9,50 +9,38 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity"
         >
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.appcompat.widget.Toolbar
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="#FF9D60B7">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:text="Place 메모"
-                    android:textColor="#ffffff"
-                    android:textSize="17dp"
-                    android:textStyle="bold" />
-
-                <ImageButton
-                    android:id="@+id/btn_setting"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="right|center"
-                    android:background="@drawable/settings" />
-            </androidx.appcompat.widget.Toolbar>
-
-
             <LinearLayout
+                android:background="@drawable/recycling"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:background="#ffffff"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <LinearLayout
-                    android:gravity="right|center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
                     <ImageButton
-                        android:layout_margin="10dp"
+                        android:layout_margin="15dp"
                         android:id="@+id/btn_insertMemo"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:background="@drawable/nomemo"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:gravity="right"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent">
+                    <ImageButton
+                        android:layout_margin="10dp"
+                        android:id="@+id/btn_setting"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/settings" />
+                    </LinearLayout>
                 </LinearLayout>
                 <ScrollView
                     android:layout_gravity="center"
@@ -70,7 +58,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="20dp"
-                        android:background="@drawable/recycle" />
+                        android:background="@android:color/transparent" />
 
                     <TextView
                         android:id="@+id/TextView_no_memo"
@@ -84,8 +72,6 @@
                         android:textStyle="italic|bold" /></LinearLayout></ScrollView>
 
             </LinearLayout>
-
-        </LinearLayout>
         <include
             android:id="@+id/menu"
             layout="@layout/draw_seting"

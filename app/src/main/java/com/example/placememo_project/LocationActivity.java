@@ -45,10 +45,11 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
     double longitude;
     double latitude;
     private boolean isIconcheck = false;  //-- 사용자가 아이콘을 선택했는지 구분
-    final Geocoder geocoder = new Geocoder(this);  //-- 지역검색을 위한 메소드
+    Geocoder geocoder;   //-- 지역검색을 위한 메소드
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         lBinding = DataBindingUtil.setContentView(this, R.layout.activity_location);
+        geocoder= new Geocoder(this);
         lBinding.btnAddIcon.setOnClickListener(this);
         lBinding.btnAddlocation.setOnClickListener(this);
         lBinding.btnSerch.setOnClickListener(this);

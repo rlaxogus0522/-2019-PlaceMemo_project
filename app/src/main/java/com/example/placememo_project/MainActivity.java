@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import android.util.Log;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -119,6 +121,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mCallback = new ItemTouchHelperCallback();
         mitemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mitemTouchHelper.attachToRecyclerView(mainBinding.recycleerView);
+
 
 
         dataUpdate();   //-- DB에 정보 가져오기
@@ -278,17 +281,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /*--------------------------------------------------------------------------------------------------------------*/
 
 
-    class BetweenHolder extends BindableItem<ItemToItemBinding> {
-
-        @Override
-        public void bind(@NonNull ItemToItemBinding viewBinding, int position) {
-        }
-
-        @Override
-        public int getLayout() {
-            return R.layout.item_to_item;
-        }
-    }
 
 
 

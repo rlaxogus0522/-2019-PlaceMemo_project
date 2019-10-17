@@ -64,7 +64,7 @@ public class TitleHolder extends BindableItem<ListItemTitleBinding> implements V
     @Override
     public void onClick(View view) {
         if(view == itemTitleBinding.viewListTitleActionDelete){
-            if(mViewContent1.getTranslationX() == -480f) {
+            if(mViewContent1.getTranslationX()  == -mActionContainer1.getWidth()) {
                 RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("name", mItem.getName()).findAll();
                 titlename.remove(mItem.getName());
                 myRealm.beginTransaction();

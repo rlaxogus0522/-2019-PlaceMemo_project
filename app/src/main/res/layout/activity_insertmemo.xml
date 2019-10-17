@@ -5,14 +5,47 @@
         android:id="@+id/insert_layout"
         android:layout_width="match_parent"
         android:layout_height="320dp"
-        android:background="@drawable/insertmemo"
+        android:background="@drawable/papertexture"
         android:orientation="vertical"
         android:padding="10dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center|left">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:background="@drawable/simpebox"
+                    android:textSize="20dp"
+                    android:padding="5dp"
+                    android:textColor="#ffffff"
+                    android:text="메모 추가" />
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:gravity="right"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent">
+
+
         <ImageButton
             android:id="@+id/btn_back"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:background="@drawable/close"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"

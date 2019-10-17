@@ -1,10 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?><layout>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
     <View
-        android:background="#ffffff"
+        android:id="@+id/between"
+        android:background="@android:color/transparent"
         android:layout_width="match_parent"
         android:layout_height="20dp"/>
 
-</LinearLayout></layout>
+</layout>
