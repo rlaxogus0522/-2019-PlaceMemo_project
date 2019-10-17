@@ -91,6 +91,7 @@ public class LocationReceiver extends BroadcastReceiver {
                   new Notification(data_alam.getName(),data_alam.getMemo(),rContext,notiNum,data_alam.getisAlamOn());
                   notiNum++;
                   RealmResults<Data_alam> data_alams1 = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
+                  if(data_alams1.size()==0) ((MainActivity)mainContext).checkAlam = false;
                 }
             }
         } catch (NullPointerException e) {

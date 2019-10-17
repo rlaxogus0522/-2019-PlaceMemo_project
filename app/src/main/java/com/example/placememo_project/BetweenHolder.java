@@ -5,8 +5,7 @@ import androidx.annotation.NonNull;
 import com.example.placememo_project.databinding.ItemToItemBinding;
 import com.xwray.groupie.databinding.BindableItem;
 
-public
-class BetweenHolder extends BindableItem<ItemToItemBinding> {
+public class BetweenHolder extends BindableItem<ItemToItemBinding> {
 
     @Override
     public void bind(@NonNull ItemToItemBinding viewBinding, int position) {

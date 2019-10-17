@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#ffffff"
-
     >
+
     <LinearLayout
         android:layout_margin="8dp"
         android:id="@+id/view_list_repo_action_container"
@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:padding="12dp"
-            android:text="수정"
+            android:text="내용 수정"
             android:background="@drawable/edit_memo"
             android:textColor="@android:color/white"/>
 

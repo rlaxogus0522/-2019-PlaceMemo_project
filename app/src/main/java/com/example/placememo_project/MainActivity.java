@@ -249,6 +249,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
                 Data_alam data_alam_first = results2.first();
                 Section section = new Section();
+                PinHolder pinHolder = new PinHolder(i);
+                section.add(pinHolder);
                 TitleHolder titleHolder = new TitleHolder(data_alam_first, i , this);
                 section.add(titleHolder);
                 for (Data_alam data_alam : results2) {
