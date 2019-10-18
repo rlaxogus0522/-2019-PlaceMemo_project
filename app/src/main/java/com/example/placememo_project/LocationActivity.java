@@ -83,7 +83,6 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        manager.removeUpdates(mLocation);
     }
 
     public void startLocation() { //-- 위치 검색 시작
@@ -136,11 +135,14 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
     LocationListener mLocation = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-            mapFragment.getMapAsync(LocationActivity.this);
-            stopLocation();  //-- 위치를 가져온 후 위치 검색 종료
+            try {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                mapFragment.getMapAsync(LocationActivity.this);
+                stopLocation();  //-- 위치를 가져온 후 위치 검색 종료
+            }catch (Exception e){}
+
         }
 
         @Override

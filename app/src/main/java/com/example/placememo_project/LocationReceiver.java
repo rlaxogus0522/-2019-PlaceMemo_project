@@ -35,7 +35,7 @@ public class LocationReceiver extends BroadcastReceiver {
     double latitude;
     double longitude;
     double minDistance = 0f;  //-- 최소거리 확인용
-  
+
     LocationManager manager;
     Context rContext;
     private final static String TAG = "LocationReceiver : ";
@@ -44,8 +44,12 @@ public class LocationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Realm.init(context);
+        Realm myRealm2;
+        myRealm2 = Realm.getDefaultInstance();
         this.rContext = context;
-        if(((MainActivity)mainContext).checkAlam) doBackgroundWork();  //-- 백그라운드에서 실행될 Task 메소드
+        RealmResults<Data_alam> data_alams = myRealm2.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
+            if(data_alams.size()>0) doBackgroundWork();  //-- 백그라운드에서 실행될 Task 메소드
+        myRealm2.close();
     }
 
     private void doBackgroundWork() {
@@ -54,11 +58,7 @@ public class LocationReceiver extends BroadcastReceiver {
             @Override
             public void run() {
                 Realm myRealm = null;
-                try {
-                    myRealm = Realm.getDefaultInstance();
-                }catch (Exception e){
-                    Log.d(TAG, String.valueOf(e));
-                }
+                myRealm = Realm.getDefaultInstance();
                 while (true) {
                     if (latitude == 0.0 && longitude == 0.0) {  //-- 위치 정보를 가져오지 못했다면
                         try {
@@ -78,7 +78,7 @@ public class LocationReceiver extends BroadcastReceiver {
         double distance;
         int notiNum=1;
         try {
-            RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
+            RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
             for (Data_alam data_alam : data_alams) {  //-- DB에 저장된 알람을 원하는 위치와 현재 위치를 비교
                 distance = getDistance(data_alam.getLatitude(),data_alam.getLongitude(),this.latitude,this.longitude);
                 Log.d(data_alam.getName(),distance +" Km");  //-- 저장된 메모에따른 거리 보여주기위한 Log
@@ -118,6 +118,7 @@ public class LocationReceiver extends BroadcastReceiver {
                                                             // 테스트 코딩 --  < Example > //
         /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
         startTime = SystemClock.elapsedRealtime() + alamCycle * 1000;  //-- 알람받을 시간 설정
+        RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
         locationSerch();  //--  내위치 찾기 알람매니저 재실행 설정
         myRealm.close();  //-- 사용끝난 Realm DB close
     }
@@ -169,6 +170,7 @@ public class LocationReceiver extends BroadcastReceiver {
         }
         manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, mLocation);
         manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, mLocation);
+        manager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, minTime, minDistance, mLocation);
     }
 
     private void stopLocation() {
@@ -184,6 +186,8 @@ public class LocationReceiver extends BroadcastReceiver {
         public void onLocationChanged(Location location) {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
+            Log.d("latitude",location.getLatitude()+"");
+            Log.d("longitude",location.getLongitude()+"");
             stopLocation();
         }
 

@@ -51,7 +51,7 @@ public class TitleHolder extends BindableItem<ListItemTitleBinding> implements V
         viewBinding.viewListTitleActionContainer.setBackgroundColor(data_alams.first().getColor());
         mViewContent1 = viewBinding.title.viewListTitleContent;
         mActionContainer1 = viewBinding.viewListTitleActionContainer;
-
+        viewBinding.title.titleAddItem.setOnClickListener(this);
         viewBinding.viewListTitleActionDelete.setOnClickListener(this);
 
     }
@@ -74,6 +74,10 @@ public class TitleHolder extends BindableItem<ListItemTitleBinding> implements V
                 ((MainActivity) mainContext).ShowAlamUi(sort);
                 mViewContent1.setTranslationX(0f);
             }
+        }else if ( view == itemTitleBinding.title.titleAddItem){
+            ((MainActivity)mainContext).startTitleAddItem(mItem.getName());
+
+
         }
     }
 }

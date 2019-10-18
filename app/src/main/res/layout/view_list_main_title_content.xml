@@ -19,7 +19,12 @@
         android:id="@+id/title_image"
         android:layout_width="40dp"
         android:layout_height="40dp" />
-
+    <ImageButton
+        android:id="@+id/title_add_item"
+        android:layout_alignParentRight="true"
+        android:layout_width="44dp"
+        android:layout_height="match_parent"
+       android:background="@drawable/add_title"/>
 
 </RelativeLayout></layout>
 

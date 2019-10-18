@@ -19,7 +19,7 @@
                 android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text = "수정 내용 입력"
+                android:text = "메모 추가"
                 android:background="@drawable/simpebox"
                 android:padding="10dp"
                 android:textColor="#ffffff"
@@ -74,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:background="#9468C4"
-                    android:text="수정"
+                    android:text="메모 추가"
                     android:textColor="#ffffff"
                     android:textStyle="bold" />
             </LinearLayout>

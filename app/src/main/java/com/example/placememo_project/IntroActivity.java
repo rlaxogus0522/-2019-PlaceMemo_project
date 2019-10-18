@@ -12,6 +12,8 @@ import android.os.Handler;
 import android.widget.Toast;
 
 
+import com.airbnb.lottie.L;
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
@@ -41,13 +43,16 @@ public class IntroActivity extends AppCompatActivity {
     private GoogleApiClient googleApiClient;
     final static int REQUEST_LOCATION = 199;
     Handler handler = new Handler();
-
+    LottieAnimationView animationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
         checkPermission(); // --  권한 체크 시작
         titlename.clear();
+        animationView = (LottieAnimationView) findViewById(R.id.animation_view);
+        animationView.setAnimation("locations.json");
+        animationView.loop(false);
     }
 
     @Override
@@ -97,6 +102,7 @@ public class IntroActivity extends AppCompatActivity {
             Toast.makeText(IntroActivity.this, "위치기능이 꺼져있습니다.\n위치기능이 꺼져있어도 작동하는데 문제는없지만\n위치기능이 켜져있을시 더 정확한 알림을 받으실 수 있습니다.!", Toast.LENGTH_SHORT).show();
             enableLoc(); // --  위치기능이 꺼져있다면 기능을 킬수있도록 알려주는 팝업
         } else {
+            animationView.playAnimation();
             handler.postDelayed(newRunnable, 3000);
             permission = true; // --  현재위치 위,경도 를 받아오기 위해 위치기능을 킨사람과 키지않은사람을 구분
         }

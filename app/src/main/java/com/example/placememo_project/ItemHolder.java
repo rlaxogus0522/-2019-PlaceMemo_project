@@ -51,6 +51,13 @@ public class ItemHolder extends BindableItem<ListItemMainBinding> implements Vie
         viewBinding.viewListRepoActionDelete.setOnClickListener(this);
         viewBinding.viewListRepoActionEdit.setOnClickListener(this);
         this.position = position;
+
+        RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn", false).findAll();
+        for(Data_alam data_alam : data_alams){
+            if(mItem.getMemo().equals(data_alam.getMemo()))
+            viewBinding.item.alam.setImageResource(R.drawable.baseline_notifications_off_white_48dp);
+        }
+
     }
 
 
@@ -95,9 +102,8 @@ public class ItemHolder extends BindableItem<ListItemMainBinding> implements Vie
                 myRealm.beginTransaction();
                 Objects.requireNonNull(data_alams.first()).setAlamOn(true);
                 myRealm.commitTransaction();
+                ((MainActivity)mainContext).locationSerch(mContext);
             }
-
-            Toast.makeText(mContext, "헤헿", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -160,6 +160,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         intent.putExtra("memo",memo);
         startActivity(intent);
     }
+
+    void startTitleAddItem(String name){
+        Intent intent = new Intent(this,TitleAddItemActivity.class);
+        intent.putExtra("titlename",name);
+        startActivity(intent);
+    }
+
+
     @Override
     public void onClick(View view) {
         if (view == mainBinding.btnSetting) {  //-- 옵션을 클릭한다면
@@ -205,11 +213,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) { //--  사용자가 메모를 추가가 성공적이었다면
             ShowAlamUi(sort);
+            RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
+            if(data_alams.size() == 1) locationSerch(this);
         }
     }
 
     public void ShowAlamUi(String sort) {
-        Toast.makeText(mainContext, "실행됨", Toast.LENGTH_SHORT).show();
         adapter.clear();
         titlename.clear();
         if(sort.equals("sort_name")) {

@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         tools:context=".IntroActivity">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/intro"
-                android:scaleType="fitXY"/>
+     <com.airbnb.lottie.LottieAnimationView
+         android:id="@+id/animation_view"
+         android:background="#855FC9"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         app:lottie_loop="false"
+         app:lottie_autoPlay="true"
+         app:lottie_fileName="locations.json"/>
 
 
 

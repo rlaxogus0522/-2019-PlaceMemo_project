@@ -32,4 +32,6 @@ public class BaseActivity extends AppCompatActivity {
             am.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, sender);
         }
     }
+
+
 }

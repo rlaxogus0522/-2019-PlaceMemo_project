@@ -17,19 +17,20 @@ public class Notification {
 
     public Notification(String title, String memo, Context rContext, int notiNum, boolean isAlamOn){
         this.rContext = rContext;
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(rContext, "default");
-
         PendingIntent intent = PendingIntent.getActivity(rContext,0,new Intent(rContext,IntroActivity.class),0);
-
-
-        builder.setSmallIcon(R.drawable.nomemo);
-        builder.setContentTitle(title);
-        builder.setContentText(memo);
-        builder.setContentIntent(intent);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(rContext, "default")
+        .setSmallIcon(R.drawable.nomemo)
+        .setContentTitle(title)
+        .setContentText(memo)
+        .setContentIntent(intent)
+        .setDefaults(NotificationCompat.DEFAULT_VIBRATE);
 
         builder.setColor(Color.RED);
         // 사용자가 탭을 클릭하면 자동 제거
         builder.setAutoCancel(true);
+
+
+
 
         // 알림 표시
         NotificationManager notificationManager = (NotificationManager) rContext.getSystemService(Context.NOTIFICATION_SERVICE);
