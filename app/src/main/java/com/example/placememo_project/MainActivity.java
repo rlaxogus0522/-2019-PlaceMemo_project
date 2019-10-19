@@ -65,11 +65,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     ItemTouchHelperExtension mitemTouchHelper;
     ItemTouchHelperExtension.Callback mCallback;
     boolean checkAlam = false;
-    View view;
-    TextView TextViewNoMemo;
-    RecyclerView recycleerView;
+    View locationView,nomalView;
+    TextView TextViewNoMemo,TextViewNoMemo_nomal;
+    RecyclerView recycleerView,recyclerView_nomal;
     FragmentManager fragmentManager;
     private Fragment locaion;
+    RecyclerAdapter nomaladapters;
+    public ItemTouchHelperExtension mItemTouchHelper_nomal;
+    public ItemTouchHelperExtension.Callback mCallback_nomal;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,11 +86,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         fragmentManager = getSupportFragmentManager();
         locaion = new Location_Memo_Activity();
         fragmentManager.beginTransaction().replace(R.id.frame,locaion).commit();
-        fragmentManager.findFragmentById(R.id.recycleerView);
         mainContext = this;
-        view  = getLayoutInflater().inflate(R.layout.location_framelatout,null,false);
-        recycleerView = view.findViewById(R.id.recycleerView);
-        TextViewNoMemo = view.findViewById(R.id.TextView_no_memo);
+        locationView  = getLayoutInflater().inflate(R.layout.location_framelatout,null,false);
+        nomalView  = getLayoutInflater().inflate(R.layout.nomal_framelayout,null,false);
+        recycleerView = locationView.findViewById(R.id.recycleerView);
+        recyclerView_nomal = nomalView.findViewById(R.id.nomal_recyclerview);
+        TextViewNoMemo = locationView.findViewById(R.id.TextView_no_memo);
+        TextViewNoMemo_nomal = nomalView.findViewById(R.id.TextView_no_memo);
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         recycleerView.setAdapter(adapter);
         /*------------------------------------------------------------*/
@@ -105,10 +110,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mainBinding.btnInsertMemo.setOnClickListener(this);
         mainBinding.locationTab.setOnClickListener(this);
         mainBinding.nomalTab.setOnClickListener(this);
-
+        mainBinding.btnNomalInsertMemo.setOnClickListener(this);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
         drawView = (View) findViewById(R.id.drawer);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        mCallback_nomal = new ItemTouchHelperCallback2();
+        mItemTouchHelper_nomal = new ItemTouchHelperExtension(mCallback_nomal);
+
+
+
+        nomaladapters = new RecyclerAdapter(this);
+        recyclerView_nomal.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView_nomal.setAdapter(nomaladapters);
+        mItemTouchHelper_nomal.attachToRecyclerView(recyclerView_nomal);
 
         // 제목셋팅
         alertDialogBuilder.setTitle("모든 알람 초기화");
@@ -149,19 +164,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
     }
-
-//    class locationFragmemnt extends Fragment{
-//        public locationFragmemnt(){
+// public void nomalMemoSetting(){
+//        nomaladapters.clear();
+//     RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll();
+//     for(Data_nomal data_nomal : results){
+//         Log.d("data_nomal",data_nomal.getMemo());
+//         nomaladapters.addItem(data_nomal.getMemo());
+//     }
 //
-//        }
-//
-//        @Nullable
-//        @Override
-//        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-//            return inflater.inflate(R.layout,container,false);
-//        }
-//    }
-
+// }
 
     private void dataUpdate() {   //-- DB에 있는 정보 가져오기
         ShowAlamUi(sort);
@@ -180,6 +191,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             checkAlam = true;
             TextViewNoMemo.setVisibility(View.GONE);
             if(sender== null) locationSerch(this);   //-- 내위치 검색 알람매니저 실행
+        }
+    }
+
+    void checkNoImage_nomal() {  //-- 등록된 알람이 없는지 체크
+        RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll();
+        if (results.size() == 0) {
+            TextViewNoMemo_nomal.setVisibility(View.VISIBLE);
+
+        } else {
+            TextViewNoMemo_nomal.setVisibility(View.GONE);
         }
     }
 
@@ -216,10 +237,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             transaction.replace(R.id.frame,location_memo_activity);
             transaction.commit();
         }else if (view == mainBinding.nomalTab){
+            nomaladapters.clear();
+            RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll();
+            for(Data_nomal data_nomals : results) {
+            nomaladapters.addItem(data_nomals.getMemo(),data_nomals.getColor());
+            }
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             Nomal_Memo_Activity nomal_memo_activity = new Nomal_Memo_Activity();
             transaction.replace(R.id.frame,nomal_memo_activity);
             transaction.commit();
+            checkNoImage_nomal();
+        }else if( view == mainBinding.btnNomalInsertMemo){
+            Intent intent = new Intent(this,Activity_NomalMemo_Inset.class);
+            startActivity(intent);
         }
 
         settingToggleButton(view);  //-- 옵션창에 버튼설정

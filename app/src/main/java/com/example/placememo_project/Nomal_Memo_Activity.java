@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import static com.example.placememo_project.MainActivity.mainContext;
 
 public class Nomal_Memo_Activity extends Fragment {
+
     public Nomal_Memo_Activity(){
 
     }
@@ -17,6 +19,6 @@ public class Nomal_Memo_Activity extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.nomal_framelayout,container,false);
+        return ((MainActivity)mainContext).nomalView;
     }
 }

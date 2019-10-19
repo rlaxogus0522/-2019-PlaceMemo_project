@@ -21,6 +21,8 @@
         </activity>
         <activity android:name=".TitleAddItemActivity"
             android:theme="@style/Theme.MyDialog"/>
+        <activity android:name=".Activity_NomalMemo_Inset"
+            android:theme="@style/Theme.MyDialog"/>
         <activity android:name=".MainActivity" />
         <activity
             android:name=".EditMemoActivity"
