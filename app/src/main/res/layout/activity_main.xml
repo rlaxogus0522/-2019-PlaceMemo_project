@@ -23,7 +23,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content">
                     <ImageButton
-                        android:layout_margin="15dp"
+                        android:layout_margin="10dp"
                         android:id="@+id/btn_insertMemo"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
@@ -42,38 +42,31 @@
                         android:background="@drawable/settings" />
                     </LinearLayout>
                 </LinearLayout>
-                <ScrollView
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:gravity="center"
+                    android:gravity="left"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recycleerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="20dp"
-                        android:background="@android:color/transparent" />
-
-                    <TextView
-                        android:id="@+id/TextView_no_memo"
+                    <Button
+                        android:text="위치"
+                        android:id="@+id/location_tab"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="150dp"
-                        android:layout_marginEnd="8dp"
-                        android:text="No Memo"
-                        android:textSize="40dp"
-                        android:textStyle="italic|bold" /></LinearLayout></ScrollView>
+                        android:layout_height="wrap_content"/>
+                    <Button
+                        android:text="노멀"
+                        android:id="@+id/nomal_tab"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+                <FrameLayout
+                    android:id="@+id/frame"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+              </FrameLayout>
 
             </LinearLayout>
         <include
             android:id="@+id/menu"
             layout="@layout/draw_seting"
             />
+
     </androidx.drawerlayout.widget.DrawerLayout></layout>

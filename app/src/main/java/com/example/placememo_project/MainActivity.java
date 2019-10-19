@@ -13,16 +13,23 @@ import android.os.Bundle;
 
 import android.util.Log;
 
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -58,9 +65,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     ItemTouchHelperExtension mitemTouchHelper;
     ItemTouchHelperExtension.Callback mCallback;
     boolean checkAlam = false;
-
-
-
+    View view;
+    TextView TextViewNoMemo;
+    RecyclerView recycleerView;
+    FragmentManager fragmentManager;
+    private Fragment locaion;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,10 +80,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } catch (Exception e) {
             Log.d(TAG, "myRealm = null");
         }
+        fragmentManager = getSupportFragmentManager();
+        locaion = new Location_Memo_Activity();
+        fragmentManager.beginTransaction().replace(R.id.frame,locaion).commit();
+        fragmentManager.findFragmentById(R.id.recycleerView);
         mainContext = this;
+        view  = getLayoutInflater().inflate(R.layout.location_framelatout,null,false);
+        recycleerView = view.findViewById(R.id.recycleerView);
+        TextViewNoMemo = view.findViewById(R.id.TextView_no_memo);
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        mainBinding.recycleerView.setAdapter(adapter);
-        mainBinding.recycleerView.setLayoutManager(new LinearLayoutManager(this));
+        recycleerView.setAdapter(adapter);
         /*------------------------------------------------------------*/
         mainBinding.btnSetting.setOnClickListener(this);
         mainBinding.menu.sortName.setOnClickListener(this);
@@ -88,6 +103,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mainBinding.menu.btnClose.setOnClickListener(this);
         mainBinding.menu.btnReset.setOnClickListener(this);
         mainBinding.btnInsertMemo.setOnClickListener(this);
+        mainBinding.locationTab.setOnClickListener(this);
+        mainBinding.nomalTab.setOnClickListener(this);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
         drawView = (View) findViewById(R.id.drawer);
@@ -119,10 +136,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         });
         alamreset = alertDialogBuilder.create();
 
-        mainBinding.recycleerView.setLayoutManager(new LinearLayoutManager(this));
+        recycleerView.setLayoutManager(new LinearLayoutManager(this));
         mCallback = new ItemTouchHelperCallback();
         mitemTouchHelper = new ItemTouchHelperExtension(mCallback);
-        mitemTouchHelper.attachToRecyclerView(mainBinding.recycleerView);
+        mitemTouchHelper.attachToRecyclerView(recycleerView);
 
 
 
@@ -133,6 +150,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     }
 
+//    class locationFragmemnt extends Fragment{
+//        public locationFragmemnt(){
+//
+//        }
+//
+//        @Nullable
+//        @Override
+//        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+//            return inflater.inflate(R.layout,container,false);
+//        }
+//    }
+
 
     private void dataUpdate() {   //-- DB에 있는 정보 가져오기
         ShowAlamUi(sort);
@@ -142,14 +171,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     void checkNoImage() {  //-- 등록된 알람이 없는지 체크
         if (titlename.size() == 0) {
             checkAlam = false;
-            mainBinding.TextViewNoMemo.setVisibility(View.VISIBLE);
+            TextViewNoMemo.setVisibility(View.VISIBLE);
             if(sender!=null) {
                 am.cancel(sender);
                 sender = null;
             }
         } else {
             checkAlam = true;
-            mainBinding.TextViewNoMemo.setVisibility(View.GONE);
+            TextViewNoMemo.setVisibility(View.GONE);
             if(sender== null) locationSerch(this);   //-- 내위치 검색 알람매니저 실행
         }
     }
@@ -181,6 +210,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             startActivityForResult(in, 0522);  //-- 메모추가 액티비티로 이동
         } else if (view == mainBinding.menu.btnReset) {
             alamreset.show();  //-- 모든 알람 초기화를 누른다면 알람리셋 팝업창 보여주기
+        }else if (view == mainBinding.locationTab){
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            Location_Memo_Activity location_memo_activity = new Location_Memo_Activity();
+            transaction.replace(R.id.frame,location_memo_activity);
+            transaction.commit();
+        }else if (view == mainBinding.nomalTab){
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            Nomal_Memo_Activity nomal_memo_activity = new Nomal_Memo_Activity();
+            transaction.replace(R.id.frame,nomal_memo_activity);
+            transaction.commit();
         }
 
         settingToggleButton(view);  //-- 옵션창에 버튼설정
