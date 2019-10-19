@@ -70,8 +70,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewEdit1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(mcontext,"헤헿",Toast.LENGTH_LONG).show();
-
+                    if(((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.getTranslationX() <=  -(((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionContainer1.getWidth())) {
+                        Toast.makeText(mcontext, "헤헿", Toast.LENGTH_LONG).show();
+                    }
                 }
             });
 

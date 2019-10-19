@@ -110,6 +110,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mainBinding.btnInsertMemo.setOnClickListener(this);
         mainBinding.locationTab.setOnClickListener(this);
         mainBinding.nomalTab.setOnClickListener(this);
+        mainBinding.expandButton.setOnClickListener(this);
         mainBinding.btnNomalInsertMemo.setOnClickListener(this);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
         drawView = (View) findViewById(R.id.drawer);
@@ -250,6 +251,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }else if( view == mainBinding.btnNomalInsertMemo){
             Intent intent = new Intent(this,Activity_NomalMemo_Inset.class);
             startActivity(intent);
+        }else if (view == mainBinding.expandButton){
+            if(mainBinding.hideMenu.getVisibility() == View.VISIBLE){
+                mainBinding.hideMenu.setVisibility(View.GONE);
+            }else{
+                mainBinding.hideMenu.setVisibility(View.VISIBLE);
+            }
         }
 
         settingToggleButton(view);  //-- 옵션창에 버튼설정

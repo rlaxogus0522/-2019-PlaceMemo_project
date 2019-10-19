@@ -22,18 +22,32 @@
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content">
-                    <ImageButton
-                        android:layout_margin="10dp"
-                        android:id="@+id/btn_insertMemo"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:background="@drawable/nomemo"/>
-                        <ImageButton
-                            android:layout_margin="10dp"
-                            android:id="@+id/btn_nomal_insertMemo"
+                        <Button
+                            android:id="@+id/expand_button"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:background="@drawable/nomemo"/>
+                            android:background="@drawable/plus"/>
+                        <LinearLayout
+                            android:id="@+id/hide_menu"
+                            android:paddingRight="10dp"
+                            android:visibility="gone"
+                            android:background="@drawable/hide_menu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                    <ImageButton
+                        android:layout_marginTop="15dp"
+                        android:layout_marginLeft="10dp"
+                        android:id="@+id/btn_insertMemo"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:background="@drawable/add_location_memo"/>
+                        <ImageButton
+                            android:layout_marginTop="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:id="@+id/btn_nomal_insertMemo"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:background="@drawable/add_nomal_memo"/></LinearLayout>
                     </LinearLayout>
                     <LinearLayout
                         android:gravity="right"

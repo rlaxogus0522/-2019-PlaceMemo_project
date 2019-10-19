@@ -25,35 +25,40 @@
                 android:textColor="#ffffff"
                 />
             <Button
+                android:layout_weight="1"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/color1"
                 android:id="@+id/color1"
-                android:layout_width="40dp"
-                android:layout_height="40dp"/>
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
             <Button
+                android:layout_weight="1"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/color2"
                 android:id="@+id/color2"
-                android:layout_width="40dp"
-                android:layout_height="40dp"/>
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
             <Button
+                android:layout_weight="1"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/color3"
                 android:id="@+id/color3"
-                android:layout_width="40dp"
-                android:layout_height="40dp"/>
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
             <Button
+                android:layout_weight="1"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/color4"
                 android:id="@+id/color4"
-                android:layout_width="40dp"
-                android:layout_height="40dp"/>
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
             <Button
+                android:layout_weight="1"
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/color5"
                 android:id="@+id/color5"
-                android:layout_width="40dp"
-                android:layout_height="40dp"/>
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
 
         </LinearLayout>
         <LinearLayout
