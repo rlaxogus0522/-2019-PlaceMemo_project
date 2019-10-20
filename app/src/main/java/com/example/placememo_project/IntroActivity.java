@@ -99,7 +99,7 @@ public class IntroActivity extends AppCompatActivity {
     private void start() {
         final LocationManager manager = (LocationManager) IntroActivity.this.getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && hasGPSDevice(IntroActivity.this)) {
-            Toast.makeText(IntroActivity.this, "위치기능이 꺼져있습니다.\n위치기능이 꺼져있어도 작동하는데 문제는없지만\n위치기능이 켜져있을시 더 정확한 알림을 받으실 수 있습니다.!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(IntroActivity.this, "위치기능이 꺼져있습니다.\n필수 기능 사용이 불가능합니다.", Toast.LENGTH_LONG).show();
             enableLoc(); // --  위치기능이 꺼져있다면 기능을 킬수있도록 알려주는 팝업
         } else {
             animationView.playAnimation();
@@ -183,11 +183,13 @@ public class IntroActivity extends AppCompatActivity {
                     case Activity.RESULT_OK:
                         Toast.makeText(IntroActivity.this, "성공적으로 위치기능을 켰습니다.", Toast.LENGTH_LONG).show();
                         handler.postDelayed(newRunnable, 3000);
+                        animationView.playAnimation();
                         permission = true; // --  위치기능을 켯다면 true 로 킨 유저임을 인식
                         break;
                     case Activity.RESULT_CANCELED:
                         Toast.makeText(IntroActivity.this, "위치기능을 거부하셔습니다.\n지도기능사용이 불가능합니다.", Toast.LENGTH_SHORT).show();
                         handler.postDelayed(newRunnable, 3000);
+                        animationView.playAnimation();
                         permission = false; // --  위치기능을 안켯다면 false 로 키지않은 유저임을 인식
                         break;
                     default:
