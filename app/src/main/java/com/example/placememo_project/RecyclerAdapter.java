@@ -70,7 +70,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 @Override
                 public void onDoubleClick(View v) {
-                    Toast.makeText(mcontext,+ ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags()+"",Toast.LENGTH_LONG).show();
                     if(((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() != (((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG) ) {
                         ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.setPaintFlags(((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                         RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).equalTo("memo", items.get(position)).findAll();
