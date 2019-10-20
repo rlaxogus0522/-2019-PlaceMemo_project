@@ -1,6 +1,7 @@
 package com.example.placememo_project;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,10 +54,38 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, final int position) {
         if (viewHolder instanceof ItemSwipeWithActionWidthViewHolder1) {
-
+            RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).equalTo("memo", items.get(position)).findAll();
             ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.setText(items.get(position));
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.setBackgroundColor(color.get(position));
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionContainer1.setBackgroundColor(color.get(position));
+            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).colorView.setBackgroundColor(color.get(position));
+            if(data_nomals.first().getFrag()){
+                ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.setPaintFlags(((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }else{
+                ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.setPaintFlags(((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            }
+            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.setOnClickListener(new DoubleClickListener() {
+                @Override
+                public void onSingleClick(View v) {
+                    return;
+                }
+
+                @Override
+                public void onDoubleClick(View v) {
+                    Toast.makeText(mcontext,+ ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags()+"",Toast.LENGTH_LONG).show();
+                    if(((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() != (((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG) ) {
+                        ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.setPaintFlags(((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                        RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).equalTo("memo", items.get(position)).findAll();
+                        myRealm.beginTransaction();
+                        data_nomals.first().setFrag(true);
+                        myRealm.commitTransaction();
+                    }else{
+                        ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.setPaintFlags(((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                        RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).equalTo("memo", items.get(position)).findAll();
+                        myRealm.beginTransaction();
+                        data_nomals.first().setFrag(false);
+                        myRealm.commitTransaction();
+                    }
+                }
+            });
             ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewDelete1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -81,7 +110,26 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         }
     }
+    public abstract class DoubleClickListener implements View.OnClickListener {
 
+        private static final long DOUBLE_CLICK_TIME_DELTA = 300;//milliseconds
+
+        long lastClickTime = 0;
+
+        @Override
+        public void onClick(View v) {
+            long clickTime = System.currentTimeMillis();
+            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA){
+                onDoubleClick(v);
+            } else {
+                onSingleClick(v);
+            }
+            lastClickTime = clickTime;
+        }
+
+        public abstract void onSingleClick(View v);
+        public abstract void onDoubleClick(View v);
+    }
 
 
     @Override
@@ -102,7 +150,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         myRealm.beginTransaction();
         data_nomals.deleteAllFromRealm();
         myRealm.commitTransaction();
-        myRealm.close();
         items.remove(position);
         color.remove(position);
         notifyDataSetChanged();  // -- 업데이트
@@ -121,6 +168,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         TextView textView;
         View mViewContent1;
         View mActionContainer1;
+        View colorView;
 
 
         public ViewHolder1(View itemView) {
@@ -128,7 +176,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             textView = itemView.findViewById(R.id.text_list_item_memo);
             mViewContent1 = itemView.findViewById(R.id.view_list_nomal_content);
             mActionContainer1 = itemView.findViewById(R.id.view_list_memo_container);
-
+            colorView = itemView.findViewById(R.id.liner);
         }
 
 

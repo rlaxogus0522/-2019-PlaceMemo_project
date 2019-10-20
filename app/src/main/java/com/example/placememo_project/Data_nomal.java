@@ -6,6 +6,15 @@ import io.realm.RealmObject;
 public class Data_nomal extends RealmObject {
     String memo;
     int color;
+    boolean frag;
+
+    public boolean getFrag() {
+        return frag;
+    }
+
+    public void setFrag(boolean frag) {
+        this.frag = frag;
+    }
 
     public int getColor() {
         return color;

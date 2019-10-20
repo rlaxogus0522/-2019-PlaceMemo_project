@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +32,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -73,6 +76,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     RecyclerAdapter nomaladapters;
     public ItemTouchHelperExtension mItemTouchHelper_nomal;
     public ItemTouchHelperExtension.Callback mCallback_nomal;
+    Animation animation,animation2,animation3,animation4;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,12 +120,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
         drawView = (View) findViewById(R.id.drawer);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        animation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translate);
+        animation2 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translate2);
+        animation3 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate);
+        animation4 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate2);
+
 
         mCallback_nomal = new ItemTouchHelperCallback2();
         mItemTouchHelper_nomal = new ItemTouchHelperExtension(mCallback_nomal);
 
 
 
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getApplicationContext(),new LinearLayoutManager(this).getOrientation());
+        recyclerView_nomal.addItemDecoration(dividerItemDecoration);
         nomaladapters = new RecyclerAdapter(this);
         recyclerView_nomal.setLayoutManager(new LinearLayoutManager(this));
         recyclerView_nomal.setAdapter(nomaladapters);
@@ -165,15 +177,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
     }
-// public void nomalMemoSetting(){
-//        nomaladapters.clear();
-//     RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll();
-//     for(Data_nomal data_nomal : results){
-//         Log.d("data_nomal",data_nomal.getMemo());
-//         nomaladapters.addItem(data_nomal.getMemo());
-//     }
-//
-// }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        myRealm.close();
+    }
 
     private void dataUpdate() {   //-- DB에 있는 정보 가져오기
         ShowAlamUi(sort);
@@ -199,7 +208,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll();
         if (results.size() == 0) {
             TextViewNoMemo_nomal.setVisibility(View.VISIBLE);
-
         } else {
             TextViewNoMemo_nomal.setVisibility(View.GONE);
         }
@@ -218,6 +226,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         startActivity(intent);
     }
 
+    @Override
+    protected void onResume() {
+        if(mainBinding.hideMenu.getVisibility() == View.VISIBLE)
+            mainBinding.hideMenu.setVisibility(View.GONE);
+        super.onResume();
+    }
 
     @Override
     public void onClick(View view) {
@@ -233,11 +247,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else if (view == mainBinding.menu.btnReset) {
             alamreset.show();  //-- 모든 알람 초기화를 누른다면 알람리셋 팝업창 보여주기
         }else if (view == mainBinding.locationTab){
+            mainBinding.locationTab.setAlpha(1.0f);
+            mainBinding.nomalTab.setAlpha(0.6f);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             Location_Memo_Activity location_memo_activity = new Location_Memo_Activity();
             transaction.replace(R.id.frame,location_memo_activity);
             transaction.commit();
         }else if (view == mainBinding.nomalTab){
+            mainBinding.locationTab.setAlpha(0.6f);
+            mainBinding.nomalTab.setAlpha(1.0f);
             nomaladapters.clear();
             RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll();
             for(Data_nomal data_nomals : results) {
@@ -253,8 +271,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             startActivity(intent);
         }else if (view == mainBinding.expandButton){
             if(mainBinding.hideMenu.getVisibility() == View.VISIBLE){
+                mainBinding.expandButton.startAnimation(animation4);
+                mainBinding.hideMenu.startAnimation(animation2);
                 mainBinding.hideMenu.setVisibility(View.GONE);
             }else{
+                mainBinding.expandButton.startAnimation(animation3);
+                mainBinding.hideMenu.startAnimation(animation);
                 mainBinding.hideMenu.setVisibility(View.VISIBLE);
             }
         }

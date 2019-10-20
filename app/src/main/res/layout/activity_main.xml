@@ -19,23 +19,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <LinearLayout
-                        android:layout_weight="1"
+                        android:padding="10dp"
+                        android:layout_weight="6"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content">
                         <Button
                             android:id="@+id/expand_button"
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:background="@drawable/plus"/>
+                            android:layout_marginTop="5dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:background="@drawable/plus_button_"/>
                         <LinearLayout
                             android:id="@+id/hide_menu"
                             android:paddingRight="10dp"
-                            android:visibility="gone"
-                            android:background="@drawable/hide_menu"
+                            android:visibility="visible"
+
+                            android:background="@android:color/transparent"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
                     <ImageButton
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="10dp"
                         android:layout_marginLeft="10dp"
                         android:id="@+id/btn_insertMemo"
                         android:layout_width="45dp"
@@ -44,9 +48,10 @@
                         <ImageButton
                             android:layout_marginTop="10dp"
                             android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
                             android:id="@+id/btn_nomal_insertMemo"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:background="@drawable/add_nomal_memo"/></LinearLayout>
                     </LinearLayout>
                     <LinearLayout
@@ -75,9 +80,11 @@
                         android:text="위치 메모"
                         android:textSize="10dp" />
                     <Button
+                        android:alpha="0.6"
                         android:text="일반 메모"
                         android:id="@+id/nomal_tab"
                         android:textSize="10dp"
+                        android:backgroundTintMode="src_over"
                         android:background="@drawable/fragment_check"
                         android:layout_width="50dp"
                         android:layout_height="40dp"/>
