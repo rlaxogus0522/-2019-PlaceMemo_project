@@ -51,6 +51,7 @@ import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -126,7 +127,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         animation4 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate2);
 
 
-        mCallback_nomal = new ItemTouchHelperCallback2();
+        mCallback_nomal = new ItemTouchHelperCallback2(this);
         mItemTouchHelper_nomal = new ItemTouchHelperExtension(mCallback_nomal);
 
 
@@ -257,7 +258,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             mainBinding.locationTab.setAlpha(0.6f);
             mainBinding.nomalTab.setAlpha(1.0f);
             nomaladapters.clear();
-            RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll();
+            RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll().sort("order");
             for(Data_nomal data_nomals : results) {
             nomaladapters.addItem(data_nomals.getMemo(),data_nomals.getColor());
             }

@@ -1,6 +1,7 @@
 
 package com.example.placememo_project;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.util.Log;
 
@@ -9,10 +10,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 
+import java.util.Collection;
+import java.util.Collections;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 import static com.example.placememo_project.MainActivity.mainContext;
 
 public  class ItemTouchHelperCallback2 extends ItemTouchHelperExtension.Callback{
-
+    Realm myRealm;
+    public ItemTouchHelperCallback2(Context context){
+        Realm.init(context);
+        myRealm = Realm.getDefaultInstance();
+    }
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         int dragFlag = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
@@ -22,10 +33,41 @@ public  class ItemTouchHelperCallback2 extends ItemTouchHelperExtension.Callback
 
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder viewHolder1) {
+        int fromPosition, toPostition;
+        fromPosition = viewHolder.getAdapterPosition();
+        toPostition = viewHolder1.getAdapterPosition();
+        RealmResults<Data_nomal> from1 = myRealm.where(Data_nomal.class).findAll().sort("order");
+        for (Data_nomal data_nomal : from1) {
+            Log.d("==전 :",data_nomal.getMemo()+"");
+            Log.d("==전 :","   "+data_nomal.getOrder());
+        }
+        Log.d("==fromPosition",fromPosition+"");
+        Log.d("==toPostition",toPostition+"");
+
+        Data_nomal from = myRealm.where(Data_nomal.class).equalTo("order",fromPosition).findFirst();
+        Data_nomal to = myRealm.where(Data_nomal.class).equalTo("order",toPostition).findFirst();
+        Log.d("==중간 :",from.getMemo()+"");
+        Log.d("==중간 :",to.getMemo()+"");
+
+
+        myRealm.beginTransaction();
+        from.setOrder(toPostition);
+        to.setOrder(fromPosition);
+        myRealm.commitTransaction();
+
+
+
+        RealmResults<Data_nomal> from2 = myRealm.where(Data_nomal.class).findAll().sort("order");
+        for (Data_nomal data_nomal : from2) {
+            Log.d("==후 :",data_nomal.getMemo()+"");
+            Log.d("==후 :","   "+data_nomal.getOrder()+"");
+        }
+
+
         ((MainActivity)mainContext).nomaladapters.notifyItemMoved(viewHolder.getPosition(),viewHolder1.getPosition());
-//                onItemMoved(adapter.getGroup(0),holder.getPosition(),holder1.getPosition());
         return true;
     }
+
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int i) {

@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.loopeer.itemtouchhelperextension.Extension;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -26,12 +28,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     ArrayList<String> items = new ArrayList<>();
     ArrayList<Integer> color = new ArrayList<>();
     Realm myRealm;
-    private static final int VIEW_TYPE_A = 0;   // -- view 타입을 2개로 구분 (  메뉴 /  메모 )
-//    private static final int VIEW_TYPE_B = 1;
-//    int color;
+
     Context mcontext;
-//    Realm myRealm;
-//    String deletMessage;
+
 
     public RecyclerAdapter(Context context){
         this.mcontext = context;
@@ -41,7 +40,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @NonNull
     @Override
     public int getItemViewType(int position) {
-            return VIEW_TYPE_A;
+            return 0;
     }
 
     @Override
@@ -54,7 +53,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, final int position) {
         if (viewHolder instanceof ItemSwipeWithActionWidthViewHolder1) {
-            RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).equalTo("memo", items.get(position)).findAll();
+            final RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).equalTo("memo", items.get(position)).findAll();
             ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.setText(items.get(position));
             ((ItemSwipeWithActionWidthViewHolder1) viewHolder).colorView.setBackgroundColor(color.get(position));
             if(data_nomals.first().getFrag()){
@@ -65,7 +64,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.setOnClickListener(new DoubleClickListener() {
                 @Override
                 public void onSingleClick(View v) {
-                    return;
+//                    Toast.makeText(mcontext,data_nomals.get(position).getOrder()+"",Toast.LENGTH_LONG).show();
+
                 }
 
                 @Override
@@ -99,7 +99,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 @Override
                 public void onClick(View view) {
                     if(((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.getTranslationX() <=  -(((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionContainer1.getWidth())) {
-                        Toast.makeText(mcontext, "헤헿", Toast.LENGTH_LONG).show();
+                        Data_nomal data_nomal = myRealm.where(Data_nomal.class).equalTo("memo",items.get(position)).findFirst();
+                        data_nomal
                     }
                 }
             });
@@ -154,7 +155,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyDataSetChanged();  // -- 업데이트
         ((MainActivity)mainContext).checkNoImage_nomal();
     }
-
 
 
     public void clear(){

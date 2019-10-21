@@ -7,6 +7,16 @@ public class Data_nomal extends RealmObject {
     String memo;
     int color;
     boolean frag;
+    int order;
+
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
 
     public boolean getFrag() {
         return frag;

@@ -5,6 +5,7 @@ import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +24,7 @@ public class Activity_NomalMemo_Inset extends AppCompatActivity implements View.
     int color[] = new int[]{0xFFDF8A84, 0xFF8E65D8, 0xFF6CB8DF, 0xFFCBD654, 0xFFE76E97};  //-- 저장된 메모 메뉴에 표시할 색깔 등록해두기
     Button colorButton[] = new Button[5];
     int selectColor = 0xFFFFFFFF;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,19 +48,31 @@ public class Activity_NomalMemo_Inset extends AppCompatActivity implements View.
 
     @Override
     public void onClick(View view) {
-        if(view == nBinding.btnSave){
+        if(view == nBinding.btnSave) {
+            boolean isAledymemo = false;
+            RealmResults<Data_nomal> data_nomals2 = myRealm.where(Data_nomal.class).findAll();
+            for (Data_nomal data_nomal : data_nomals2) {
+                if (nBinding.EditMemo.getText().toString().equals(data_nomal.getMemo())) {
+                    Toast.makeText(this, "이미 같은 메모가 저장되어있습니다.", Toast.LENGTH_LONG).show();
+                    isAledymemo = true;
+                    break;
+                }
+            }
+            if (!isAledymemo){
+                RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll();
             myRealm.beginTransaction();
             Data_nomal data_nomal = myRealm.createObject(Data_nomal.class);
             data_nomal.setMemo(nBinding.EditMemo.getText().toString());
             data_nomal.setColor(selectColor);
+            data_nomal.setOrder(results.size() - 1);
             myRealm.commitTransaction();
-            ((MainActivity)mainContext).nomaladapters.clear();
-            RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll();
-            for(Data_nomal data_nomals : results) {
-                ((MainActivity) mainContext).nomaladapters.addItem(data_nomals.getMemo(),data_nomals.getColor());
+            ((MainActivity) mainContext).nomaladapters.clear();
+            for (Data_nomal data_nomals : results) {
+                ((MainActivity) mainContext).nomaladapters.addItem(data_nomals.getMemo(), data_nomals.getColor());
             }
-            ((MainActivity)mainContext).checkNoImage_nomal();
+            ((MainActivity) mainContext).checkNoImage_nomal();
             finish();
+        }
         }else if(view == nBinding.btnBack){
             finish();
         }else if(view == nBinding.color1){
