@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "320954420853",
+    "firebase_url": "https://sean-638ae.firebaseio.com",
+    "project_id": "sean-638ae",
+    "storage_bucket": "sean-638ae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320954420853:android:08693b7b1e24cc3f78723c",
+        "android_client_info": {
+          "package_name": "com.example.placememo_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "320954420853-7fmuha1a89ln4uninlpedihv403vt7pl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeyokLLIn5BwKqqVRm0weMIU9GOBmfJUc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "320954420853-7fmuha1a89ln4uninlpedihv403vt7pl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

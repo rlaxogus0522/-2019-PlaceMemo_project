@@ -36,6 +36,7 @@
         <activity
             android:name=".IconActivity"
             android:theme="@style/Theme.MyDialog" />
+        <activity android:name=".Activity_Login"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD8K1TetEAh2X26ZFBFQxnilWPXiovnz_A" />

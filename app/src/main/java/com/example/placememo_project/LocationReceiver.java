@@ -99,7 +99,7 @@ public class LocationReceiver extends BroadcastReceiver {
         }
 
         /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
-                                                            // 테스트 코딩 --  < Example > //
+                                                             // 테스트 코딩 --  < Example > //
 //         if (minDistance > 1000){
 //            alamCycle = 10000;
 //        }else if( minDistance > 500){
@@ -186,8 +186,6 @@ public class LocationReceiver extends BroadcastReceiver {
         public void onLocationChanged(Location location) {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            Log.d("latitude",location.getLatitude()+"");
-            Log.d("longitude",location.getLongitude()+"");
             stopLocation();
         }
 
