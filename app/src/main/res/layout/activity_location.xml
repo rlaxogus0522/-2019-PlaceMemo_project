@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_weight="1"
+        android:layout_weight="0.8"
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:padding="5dp"
@@ -69,9 +69,9 @@
             android:textSize="15dp" />
 
         <LinearLayout
-            android:layout_marginRight="15dp"
+            android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -85,9 +85,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textSize="10dp"
-                android:text="아이콘 추가"
+                android:text="아이콘 설정"
                 android:textStyle="bold" />
         </LinearLayout>
+
 
         <Button
             android:id="@+id/btn_addlocation"

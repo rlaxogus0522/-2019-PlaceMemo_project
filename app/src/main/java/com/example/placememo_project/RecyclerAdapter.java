@@ -1,6 +1,7 @@
 package com.example.placememo_project;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,10 +54,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, final int position) {
         if (viewHolder instanceof ItemSwipeWithActionWidthViewHolder1) {
-            final RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).equalTo("memo", items.get(position)).findAll();
+            Log.d("==",items.get(position));
+            Data_nomal data_nomals = myRealm.where(Data_nomal.class).equalTo("memo", items.get(position)).findFirst();
             ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.setText(items.get(position));
             ((ItemSwipeWithActionWidthViewHolder1) viewHolder).colorView.setBackgroundColor(color.get(position));
-            if(data_nomals.first().getFrag()){
+            if(data_nomals.getFrag()){
                 ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.setPaintFlags(((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             }else{
                 ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.setPaintFlags(((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
@@ -99,8 +101,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 @Override
                 public void onClick(View view) {
                     if(((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.getTranslationX() <=  -(((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionContainer1.getWidth())) {
-                        Data_nomal data_nomal = myRealm.where(Data_nomal.class).equalTo("memo",items.get(position)).findFirst();
-                        data_nomal
+//                        Data_nomal data_nomal = myRealm.where(Data_nomal.class).equalTo("memo",items.get(position)).findFirst();
+////                        data_nomal
+                        ((MainActivity)mainContext).startNomalEdit(items.get(position),((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1,position);
+                        view.setTranslationX(0f);
                     }
                 }
             });
@@ -110,6 +114,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         }
     }
+
     public abstract class DoubleClickListener implements View.OnClickListener {
 
         private static final long DOUBLE_CLICK_TIME_DELTA = 300;//milliseconds

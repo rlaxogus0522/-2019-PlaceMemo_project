@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +49,8 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
     Geocoder geocoder;   //-- 지역검색을 위한 메소드
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         lBinding = DataBindingUtil.setContentView(this, R.layout.activity_location);
         geocoder= new Geocoder(this);
         lBinding.btnAddIcon.setOnClickListener(this);

@@ -29,30 +29,58 @@
                             android:layout_marginRight="10dp"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:background="@drawable/plus_button_"/>
+                            android:background="@drawable/write"/>
                         <LinearLayout
+                            android:layout_margin="1dp"
                             android:id="@+id/hide_menu"
                             android:paddingRight="10dp"
-                            android:visibility="visible"
-
-                            android:background="@android:color/transparent"
+                            android:paddingLeft="10dp"
+                            android:visibility="gone"
+                            android:gravity="center"
+                            android:background="@drawable/tap"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_height="match_parent">
                     <ImageButton
-                        android:layout_marginTop="10dp"
-                        android:layout_marginLeft="10dp"
                         android:id="@+id/btn_insertMemo"
-                        android:layout_width="45dp"
-                        android:layout_height="45dp"
-                        android:background="@drawable/add_location_memo"/>
-                        <ImageButton
-                            android:layout_marginTop="10dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:id="@+id/btn_nomal_insertMemo"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:background="@drawable/add_nomal_memo"/></LinearLayout>
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/loc_icon"/>
+                            <TextView
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
+                                android:textSize="11dp"
+                                android:gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text=" 위치 메모 "/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_margin="1dp"
+                            android:layout_marginStart="10dp"
+                            android:id="@+id/hide_menu2"
+                            android:paddingRight="10dp"
+                            android:paddingLeft="10dp"
+                            android:visibility="gone"
+                            android:gravity="center"
+                            android:background="@drawable/tap2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent">
+
+                            <ImageButton
+                                android:id="@+id/btn_nomal_insertMemo"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:background="@drawable/nomal_icons" />
+
+                            <TextView
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginRight="5dp"
+                                android:textSize="11dp"
+                                android:gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text=" 일반 메모 "/>
+                        </LinearLayout>
                     </LinearLayout>
                     <LinearLayout
                         android:gravity="right"
@@ -62,9 +90,9 @@
                     <ImageButton
                         android:layout_margin="10dp"
                         android:id="@+id/btn_setting"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/settings" />
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/option_s" />
                     </LinearLayout>
                 </LinearLayout>
                 <LinearLayout

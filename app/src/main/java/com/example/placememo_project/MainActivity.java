@@ -7,23 +7,17 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import android.util.Log;
 
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import androidx.databinding.DataBindingUtil;
@@ -39,19 +33,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.placememo_project.databinding.ActivityMainBinding;
-import com.example.placememo_project.databinding.ItemToItemBinding;
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
-import com.xwray.groupie.Group;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.GroupieViewHolder;
 import com.xwray.groupie.Section;
-import com.xwray.groupie.databinding.BindableItem;
 
 import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import io.realm.Sort;
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -77,7 +67,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     RecyclerAdapter nomaladapters;
     public ItemTouchHelperExtension mItemTouchHelper_nomal;
     public ItemTouchHelperExtension.Callback mCallback_nomal;
-    Animation animation,animation2,animation3,animation4;
+    Animation animOpen, animClose,animation3,animation4,animOpen2, animClose2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +79,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } catch (Exception e) {
             Log.d(TAG, "myRealm = null");
         }
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         fragmentManager = getSupportFragmentManager();
         locaion = new Location_Memo_Activity();
         fragmentManager.beginTransaction().replace(R.id.frame,locaion).commit();
@@ -113,16 +105,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mainBinding.menu.wigetOff.setOnClickListener(this);
         mainBinding.menu.btnClose.setOnClickListener(this);
         mainBinding.menu.btnReset.setOnClickListener(this);
-        mainBinding.btnInsertMemo.setOnClickListener(this);
         mainBinding.locationTab.setOnClickListener(this);
         mainBinding.nomalTab.setOnClickListener(this);
         mainBinding.expandButton.setOnClickListener(this);
-        mainBinding.btnNomalInsertMemo.setOnClickListener(this);
+        mainBinding.hideMenu.setOnClickListener(this);
+        mainBinding.hideMenu2.setOnClickListener(this);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
         drawView = (View) findViewById(R.id.drawer);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        animation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translate);
-        animation2 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translate2);
+        animOpen = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translate);
+        animClose = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translate2);
+        animOpen2 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translate_1);
+        animClose2 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translate2_1);
         animation3 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate);
         animation4 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate2);
 
@@ -190,6 +184,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
+
     void checkNoImage() {  //-- 등록된 알람이 없는지 체크
         if (titlename.size() == 0) {
             checkAlam = false;
@@ -221,6 +216,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         startActivity(intent);
     }
 
+    void startNomalEdit(String memo,View view,int position){
+        view.setTranslationX(0f);
+        Intent intent = new Intent(this,EditNomalMemoActivity.class);
+        intent.putExtra("memo",memo);
+        intent.putExtra("position",position);
+        startActivity(intent);
+    }
+
     void startTitleAddItem(String name){
         Intent intent = new Intent(this,TitleAddItemActivity.class);
         intent.putExtra("titlename",name);
@@ -229,9 +232,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected void onResume() {
-        if(mainBinding.hideMenu.getVisibility() == View.VISIBLE)
-            mainBinding.hideMenu.setVisibility(View.GONE);
         super.onResume();
+        if(mainBinding.hideMenu.getVisibility() == View.VISIBLE) {
+            mainBinding.expandButton.startAnimation(animation4);
+            mainBinding.hideMenu.startAnimation(animClose);
+            mainBinding.hideMenu2.startAnimation(animClose2);
+            mainBinding.hideMenu.setVisibility(View.GONE);
+            mainBinding.hideMenu2.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -242,7 +250,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else if (view.getId() == R.id.btn_close) {  //-- 옵션창 닫기를 클릭하면
             drawerLayout.closeDrawers();  //-- 드로어를 닫고
             isdrawer = false;  //-- 드로어가 닫힌것으로 변경
-        } else if (view == mainBinding.btnInsertMemo) {  //-- 메모추가를 누른다면
+        } else if (view == mainBinding.hideMenu) {  //-- 메모추가를 누른다면
             Intent in = new Intent(MainActivity.this, InsertActivity.class);
             startActivityForResult(in, 0522);  //-- 메모추가 액티비티로 이동
         } else if (view == mainBinding.menu.btnReset) {
@@ -267,18 +275,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             transaction.replace(R.id.frame,nomal_memo_activity);
             transaction.commit();
             checkNoImage_nomal();
-        }else if( view == mainBinding.btnNomalInsertMemo){
+        }else if( view == mainBinding.hideMenu2){
             Intent intent = new Intent(this,Activity_NomalMemo_Inset.class);
             startActivity(intent);
         }else if (view == mainBinding.expandButton){
             if(mainBinding.hideMenu.getVisibility() == View.VISIBLE){
                 mainBinding.expandButton.startAnimation(animation4);
-                mainBinding.hideMenu.startAnimation(animation2);
+                mainBinding.hideMenu.startAnimation(animClose);
+                mainBinding.hideMenu2.startAnimation(animClose2);
                 mainBinding.hideMenu.setVisibility(View.GONE);
+                mainBinding.hideMenu2.setVisibility(View.GONE);
             }else{
                 mainBinding.expandButton.startAnimation(animation3);
-                mainBinding.hideMenu.startAnimation(animation);
+                mainBinding.hideMenu.startAnimation(animOpen);
+                mainBinding.hideMenu2.startAnimation(animOpen2);
                 mainBinding.hideMenu.setVisibility(View.VISIBLE);
+                mainBinding.hideMenu2.setVisibility(View.VISIBLE);
             }
         }
 
