@@ -1,11 +1,17 @@
 package com.example.placememo_project;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 
 import android.os.Bundle;
 
@@ -38,11 +44,16 @@ import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.GroupieViewHolder;
 import com.xwray.groupie.Section;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+import static com.example.placememo_project.Activity_Login.GU_SIGN_IN;
+import static com.example.placememo_project.Activity_Login.RC_SIGN_OUT;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     ActivityMainBinding mainBinding;
@@ -68,6 +79,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public ItemTouchHelperExtension mItemTouchHelper_nomal;
     public ItemTouchHelperExtension.Callback mCallback_nomal;
     Animation animOpen, animClose,animation3,animation4,animOpen2, animClose2;
+    Bitmap bitmap;
+    String user;
+    long backKeyPressedTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +106,42 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         TextViewNoMemo = locationView.findViewById(R.id.TextView_no_memo);
         TextViewNoMemo_nomal = nomalView.findViewById(R.id.TextView_no_memo);
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        mainBinding.menu.googleImage.setBackground(new ShapeDrawable(new OvalShape()));
+        mainBinding.menu.googleImage.setClipToOutline(true);
         recycleerView.setAdapter(adapter);
+        Intent intent = getIntent();
+        user = intent.getStringExtra("user");
+        if(user.equals("google")) {
+            mainBinding.menu.googleId.setText(intent.getStringExtra("name"));
+            mainBinding.menu.googleEmail.setText(intent.getStringExtra("email"));
+
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Intent intent1 = getIntent();
+                        URL url = new URL(intent1.getStringExtra("photo"));
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setDoInput(true);
+                        conn.connect();
+                        InputStream is = conn.getInputStream();
+                        bitmap = BitmapFactory.decodeStream(is);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            thread.start();
+            try {
+                thread.join();
+                mainBinding.menu.googleImage.setImageBitmap(bitmap);
+            } catch (Exception e) {
+            }
+        }else if(user.equals("guest")){
+            mainBinding.menu.googleLogout.setText("로그인");
+            mainBinding.menu.googleLogout.setBackgroundColor(0xff43BD57);
+        }
+
         /*------------------------------------------------------------*/
         mainBinding.btnSetting.setOnClickListener(this);
         mainBinding.menu.sortName.setOnClickListener(this);
@@ -103,13 +152,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mainBinding.menu.loofInfinity.setOnClickListener(this);
         mainBinding.menu.wigetOn.setOnClickListener(this);
         mainBinding.menu.wigetOff.setOnClickListener(this);
-        mainBinding.menu.btnClose.setOnClickListener(this);
         mainBinding.menu.btnReset.setOnClickListener(this);
         mainBinding.locationTab.setOnClickListener(this);
         mainBinding.nomalTab.setOnClickListener(this);
         mainBinding.expandButton.setOnClickListener(this);
         mainBinding.hideMenu.setOnClickListener(this);
         mainBinding.hideMenu2.setOnClickListener(this);
+        mainBinding.menu.googleLogout.setOnClickListener(this);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
         drawView = (View) findViewById(R.id.drawer);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -247,9 +296,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (view == mainBinding.btnSetting) {  //-- 옵션을 클릭한다면
             mainBinding.drawlayout.openDrawer(mainBinding.menu.drawer);
             isdrawer = true;  //-- 드로어가 열린것으로 변경
-        } else if (view.getId() == R.id.btn_close) {  //-- 옵션창 닫기를 클릭하면
-            drawerLayout.closeDrawers();  //-- 드로어를 닫고
-            isdrawer = false;  //-- 드로어가 닫힌것으로 변경
         } else if (view == mainBinding.hideMenu) {  //-- 메모추가를 누른다면
             Intent in = new Intent(MainActivity.this, InsertActivity.class);
             startActivityForResult(in, 0522);  //-- 메모추가 액티비티로 이동
@@ -292,10 +338,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 mainBinding.hideMenu.setVisibility(View.VISIBLE);
                 mainBinding.hideMenu2.setVisibility(View.VISIBLE);
             }
+        }else if (view == mainBinding.menu.googleLogout){
+            if(user.equals("google")) {
+                Intent intent = new Intent();
+                setResult(RC_SIGN_OUT, intent);
+                finish();
+            }else if(user.equals("guest")){
+                Intent intent = new Intent(this,Activity_Login.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.fadein,R.anim.fadeout);
+                finish();
+            }
         }
 
         settingToggleButton(view);  //-- 옵션창에 버튼설정
     }
+
+
 
     private void alamReset() {  //-- 알람 리셋을 누른다면
         titlename.clear();
@@ -315,12 +374,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             isdrawer = false;
             return;
         } else {
-            super.onBackPressed();
-            finishAffinity();
+
+            if(System.currentTimeMillis()>backKeyPressedTime+2000){
+                backKeyPressedTime = System.currentTimeMillis();
+                Toast.makeText(this, "두번 눌러 앱 종료", Toast.LENGTH_SHORT).show();
+            }
+            //2번째 백버튼 클릭 (종료)
+            else{
+                finishAffinity();
+            }
         }
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) { //--  사용자가 메모를 추가가 성공적이었다면
             ShowAlamUi(sort);

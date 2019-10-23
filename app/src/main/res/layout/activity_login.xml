@@ -6,17 +6,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
+        android:background="@drawable/login_main"
         android:orientation="vertical"
         tools:context=".IntroActivity">
 
+<Button
+    android:padding="10dp"
+    android:layout_margin="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:drawableLeft="@drawable/google_icon_custom"
+    android:background="@drawable/google_button"
+    android:id="@+id/Google_Login"
+    android:textAllCaps="false"
+    android:text="Google 로그인"/>
 
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/Google_Login"
+
+        <Button
+            android:padding="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="15dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"></com.google.android.gms.common.SignInButton>
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/guest_icon_custom"
+            android:background="@drawable/guest_button"
+            android:id="@+id/Guest_Login"
+            android:textAllCaps="false"
+            android:text="Guest로 이용"/>
+
+
+<!--        <com.google.android.gms.common.SignInButton-->
+<!--            android:id="@+id/Google_Login"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_marginBottom="15dp"-->
+<!--            android:layout_marginLeft="25dp"-->
+<!--            android:layout_marginRight="25dp"></com.google.android.gms.common.SignInButton>-->
 
 
         </LinearLayout>

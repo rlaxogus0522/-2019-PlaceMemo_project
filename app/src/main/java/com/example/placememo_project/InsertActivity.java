@@ -221,6 +221,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                 if (locationButton.size() < 5) {   //-- 위치 버튼이 5개 이하라면
                     Intent in = new Intent(InsertActivity.this, LocationActivity.class);
                     startActivityForResult(in, 0522);   //-- 위치 설정 액티비티 실행
+                    overridePendingTransition(R.anim.fadein,R.anim.fadeout);
                 } else {
                     Toast.makeText(this, "위치는 최대 5개까지 등록 가능합니다.", Toast.LENGTH_LONG).show();   //-- 5개가 이미 등록되어있다면 불가능하다는 메시지
                 }

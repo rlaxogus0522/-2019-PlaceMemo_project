@@ -176,6 +176,12 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
 
         mMap = googleMap;
         mMap.setOnMarkerClickListener(this);
+        mMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
+            @Override
+            public void onCameraMoveStarted(int i) {
+                mMap.clear();
+            }
+        });
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
@@ -184,7 +190,6 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
                 latitude = location.latitude;
                 longitude = location.longitude;
                 circle.center(location);
-//                CircleOptions circle = new CircleOptions().center(location) //원점
                 circle.radius(200);      //반지름 단위 : m
                 circle.strokeWidth(0f);  //선너비 0f : 선없음
                 circle.fillColor(Color.parseColor("#500000ff")); //배경색
@@ -192,33 +197,13 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
             }
         });
         LatLng selectLocation = new LatLng(latitude, longitude);
-//        marker(selectLocation);
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectLocation, 15));   //-- 현재 내 위치로 마커 이동
 
-//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {  //-- 클릭한 위치에 마커표시 후 해당 위,경도 저장
-//            @Override
-//            public void onMapClick(LatLng latLng) {
-//                MarkerOptions mOptions = new MarkerOptions();
-//                mOptions.title("마커 좌표");
-//                latitude = latLng.latitude;
-//                longitude = latLng.longitude;
-//                LatLng selectLocation = new LatLng(latitude, longitude);
-//                marker(selectLocation);
-//            }
-//        });
+
     }
 
-//    private void marker(LatLng selectLocation) {  //-- 다른 곳을 클릭했을시 호출되는 메소드 기존 마커를 지워주고 새로 찍어주는 역할
-//        mMap.clear();
-//        MarkerOptions markerOptions = new MarkerOptions();
-//        markerOptions.position(selectLocation);
-//        markerOptions.title("위치");
-//        markerOptions.snippet("메모 알림 위치");
-//
-//        mMap.addMarker(markerOptions);
-//
-//
-//    }
+
 
 
     @Override
