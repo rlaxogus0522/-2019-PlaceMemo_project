@@ -3,7 +3,10 @@ package com.example.placememo_project;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.util.Log;
 import android.view.WindowManager;
+import android.widget.SeekBar;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +39,36 @@ public class Alam_activity extends AppCompatActivity {
         RealmResults<Data_alam> data_alams = myrealm.where(Data_alam.class).equalTo("name",intent.getStringExtra("title")).findAll();
         alamBinding.alamIcon.setImageResource(data_alams.first().getIcon());
         alamBinding.alamName.setText(data_alams.first().getName());
+        alamBinding.seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                Log.d("==",seekBar.getProgress()+"");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if((seekBar.getProgress() > 30  && seekBar.getProgress() < 50 )|| (seekBar.getProgress() < 70 && seekBar.getProgress() > 50)){
+                    seekBar.setProgress(50);
+                    seekBar.setAlpha(1f);
+                }else if(seekBar.getProgress() < 30){
+                    seekBar.setProgress(0);
+                    seekBar.setAlpha(0f);
+                    Toast.makeText(Alam_activity.this, "알림 삭제", Toast.LENGTH_SHORT).show();
+                    finish();
+                }else if(seekBar.getProgress() >70){
+                    seekBar.setProgress(100);
+                    seekBar.setAlpha(0f);
+                    Toast.makeText(Alam_activity.this, "알림 종료", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+
+            }
+        });
         layoutManager = new LinearLayoutManager(this);
         alamBinding.alamRecycler.setLayoutManager(layoutManager);
         alamAdapter = new AlamAdapter();
