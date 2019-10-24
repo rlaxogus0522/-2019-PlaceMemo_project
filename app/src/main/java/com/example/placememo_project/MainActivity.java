@@ -222,6 +222,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     }
 
+//    void Alam(){
+//        Intent intent = new Intent(this,Alam_activity.class);
+//        startActivity(intent);
+//    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
