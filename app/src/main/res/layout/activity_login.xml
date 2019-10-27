@@ -33,7 +33,7 @@
             android:background="@drawable/guest_button"
             android:id="@+id/Guest_Login"
             android:textAllCaps="false"
-            android:text="Guest로 이용"/>
+            android:text="Guest 로그인"/>
 
 
 <!--        <com.google.android.gms.common.SignInButton-->

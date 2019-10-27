@@ -51,8 +51,6 @@ import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-
-import static com.example.placememo_project.Activity_Login.GU_SIGN_IN;
 import static com.example.placememo_project.Activity_Login.RC_SIGN_OUT;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -82,6 +80,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     Bitmap bitmap;
     String user;
     long backKeyPressedTime;
+    boolean pause = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,9 +146,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mainBinding.menu.sortName.setOnClickListener(this);
         mainBinding.menu.sortUpdate.setOnClickListener(this);
         mainBinding.menu.sortAlams.setOnClickListener(this);
-        mainBinding.menu.loof1.setOnClickListener(this);
-        mainBinding.menu.loof3.setOnClickListener(this);
-        mainBinding.menu.loofInfinity.setOnClickListener(this);
         mainBinding.menu.wigetOn.setOnClickListener(this);
         mainBinding.menu.wigetOff.setOnClickListener(this);
         mainBinding.menu.btnReset.setOnClickListener(this);
@@ -253,7 +249,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    void checkNoImage_nomal() {  //-- 등록된 알람이 없는지 체크
+    void checkNoImage_nomal() {
         RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll();
         if (results.size() == 0) {
             TextViewNoMemo_nomal.setVisibility(View.VISIBLE);
@@ -347,11 +343,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 Intent intent = new Intent();
                 setResult(RC_SIGN_OUT, intent);
                 finish();
-            }else if(user.equals("guest")){
-                Intent intent = new Intent(this,Activity_Login.class);
-                startActivity(intent);
                 overridePendingTransition(R.anim.fadein,R.anim.fadeout);
+            }else if(user.equals("guest")){
+                Intent intent = new Intent();
+                setResult(RC_SIGN_OUT, intent);
                 finish();
+                overridePendingTransition(R.anim.fadein,R.anim.fadeout);
             }
         }
 
@@ -583,19 +580,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             mainBinding.menu.sortUpdate.setTextColor(Color.rgb(70, 160, 220));
             mainBinding.menu.sortName.setTextColor(Color.rgb(0, 0, 0));
             ShowAlamUi(sort);
-        } else if (view.getId() == R.id.loof_1) {
-
-            mainBinding.menu.loof1.setTextColor(Color.rgb(70, 160, 220));
-            mainBinding.menu.loof3.setTextColor(Color.rgb(0, 0, 0));
-            mainBinding.menu.loofInfinity.setTextColor(Color.rgb(0, 0, 0));
-        } else if (view.getId() == R.id.loof_3) {
-            mainBinding.menu.loof1.setTextColor(Color.rgb(0, 0, 0));
-            mainBinding.menu.loof1.setTextColor(Color.rgb(70, 160, 220));
-            mainBinding.menu.loofInfinity.setTextColor(Color.rgb(0, 0, 0));
-        } else if (view.getId() == R.id.loof_infinity) {
-            mainBinding.menu.loof1.setTextColor(Color.rgb(0, 0, 0));
-            mainBinding.menu.loof1.setTextColor(Color.rgb(0, 0, 0));
-            mainBinding.menu.loofInfinity.setTextColor(Color.rgb(70, 160, 220));
         } else if (view.getId() == R.id.wiget_on) {
             mainBinding.menu.wigetOn.setTextColor(Color.rgb(70, 160, 220));
             mainBinding.menu.wigetOff.setTextColor(Color.rgb(0, 0, 0));

@@ -6,7 +6,7 @@
     <TextView
         android:background="@android:color/transparent"
         android:padding="10dp"
-        android:text="dddd"
+        android:textSize="20dp"
         android:textColor="#ffffffff"
         android:textStyle="bold"
         android:id="@+id/alam_text"

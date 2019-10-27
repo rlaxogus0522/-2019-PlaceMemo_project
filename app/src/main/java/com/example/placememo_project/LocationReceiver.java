@@ -2,6 +2,7 @@ package com.example.placememo_project;
 
 import android.Manifest;
 import android.app.AlarmManager;
+import android.app.KeyguardManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -27,6 +28,7 @@ import io.realm.RealmResults;
 
 import static android.content.Context.ALARM_SERVICE;
 import static com.example.placememo_project.MainActivity.mainContext;
+import static com.example.placememo_project.MainActivity.sort;
 
 /*---------------------------------------------------------*/
 
@@ -76,6 +78,7 @@ public class LocationReceiver extends BroadcastReceiver {
 
     private void distanceMain(Realm myRealm) {
         double distance;
+        boolean onetime = false;
         int notiNum=1;
         try {
             RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
@@ -87,11 +90,35 @@ public class LocationReceiver extends BroadcastReceiver {
                 }else if(minDistance > getDistance(data_alam.getLatitude(),data_alam.getLongitude(),this.latitude,this.longitude)) {  //-- 최소거리가 0이아니라면 그다음에 가져오는 위치에대한 거리를 저장되어있던 최소거리와 비교후 더 가까운 거리를 저장
                    minDistance = distance;
                }
-                if(distance<0.3){
-                  new Notification(data_alam.getName(),data_alam.getMemo(),rContext,notiNum,data_alam.getisAlamOn());
-                  notiNum++;
-                  RealmResults<Data_alam> data_alams1 = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
-                  if(data_alams1.size()==0) ((MainActivity)mainContext).checkAlam = false;
+                if(distance<0.3) {
+                    if (!(((MainActivity) mainContext).pause)) {
+                        KeyguardManager km = (KeyguardManager) rContext.getSystemService(Context.KEYGUARD_SERVICE);
+                        if (km.inKeyguardRestrictedInputMode()) {
+                            if (!onetime) {
+                                Intent intent = new Intent(rContext, Alam_activity.class);
+                                intent.putExtra("title", data_alams.first().getName());
+                                rContext.startActivity(intent);
+                                ((MainActivity) mainContext).overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+
+
+                                PowerManager pm = (PowerManager) rContext.getSystemService(Context.POWER_SERVICE);
+                                PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, TAG);
+                                wl.acquire(3000);
+                                wl.release();
+
+                                onetime = true;
+                            }
+                        } else if (!km.inKeyguardRestrictedInputMode()) {
+                            new Notification(data_alam.getName(), data_alam.getMemo(), rContext, notiNum, data_alam.getisAlamOn());
+                            notiNum++;
+                            RealmResults<Data_alam> data_alams1 = myRealm.where(Data_alam.class).equalTo("isAlamOn", true).findAll();
+                            if (data_alams1.size() == 0)
+                                ((MainActivity) mainContext).checkAlam = false;
+                            myRealm.beginTransaction();
+                            data_alam.setAlamOn(false);
+                            myRealm.commitTransaction();
+                        }
+                    }
                 }
             }
         } catch (NullPointerException e) {

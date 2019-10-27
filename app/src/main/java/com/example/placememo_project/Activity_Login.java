@@ -33,7 +33,6 @@ public class Activity_Login  extends AppCompatActivity implements View.OnClickLi
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 522;
     public  static final int RC_SIGN_OUT = 526;
-    public  static final int GU_SIGN_IN = 526;
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
@@ -64,6 +63,7 @@ public class Activity_Login  extends AppCompatActivity implements View.OnClickLi
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
+        Log.d("로그인","로그인 함수");
     }
 
     public void signOut() {
@@ -90,6 +90,7 @@ public class Activity_Login  extends AppCompatActivity implements View.OnClickLi
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
+                Log.d("로그인","onActivityResult");
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
@@ -102,6 +103,7 @@ public class Activity_Login  extends AppCompatActivity implements View.OnClickLi
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d("로그인","firebaseAuthWithGoogle");
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         progressDialog.show();
 
@@ -134,31 +136,74 @@ public class Activity_Login  extends AppCompatActivity implements View.OnClickLi
                 });
     }
 
+    private void signInAnonymously() {
+        progressDialog.show();
+        // [START signin_anonymously]
+        mAuth.signInAnonymously()
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            currentUser = mAuth.getCurrentUser();
+                            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                            intent.putExtra("user","guest");
+                            intent.putExtra("name",currentUser.getDisplayName());
+                            intent.putExtra("email",currentUser.getEmail());
+                            startActivityForResult(intent,RC_SIGN_OUT);
+                            overridePendingTransition(R.anim.fadein,R.anim.fadeout);
+                        } else {
+                            Log.d("실패","실패");
+
+                        }
+
+                        // [START_EXCLUDE]
+                        progressDialog.dismiss();
+                        // [END_EXCLUDE]
+                    }
+                });
+        // [END signin_anonymously]
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
         currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-            intent.putExtra("user","google");
-            intent.putExtra("name",currentUser.getDisplayName());
-            intent.putExtra("email",currentUser.getEmail());
-            intent.putExtra("photo",currentUser.getPhotoUrl().toString());
-            startActivityForResult(intent,RC_SIGN_OUT);
-            overridePendingTransition(R.anim.fadein,R.anim.fadeout);
+        if(currentUser != null) {
+            if(currentUser.getEmail()!=null){
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.putExtra("user", "google");
+            intent.putExtra("name", currentUser.getDisplayName());
+            intent.putExtra("email", currentUser.getEmail());
+            intent.putExtra("photo", currentUser.getPhotoUrl().toString());
+            startActivityForResult(intent, RC_SIGN_OUT);
+            overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+        }else{
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("user", "guest");
+                startActivityForResult(intent, RC_SIGN_OUT);
+                overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+            }
         }
     }
+
+
+
 
     @Override
     public void onClick(View view) {
         if(view == loginBinding.GoogleLogin){
+            Log.d("로그인","클릭함");
             signIn();
         }else if(view == loginBinding.GuestLogin){
-            Intent intent = new Intent(this,MainActivity.class);
-            intent.putExtra("user","guest");
-            startActivity(intent);
-            overridePendingTransition(R.anim.fadein,R.anim.fadeout);
-            finish();
+            signInAnonymously();
+//
+//
+//            Intent intent = new Intent(this,MainActivity.class);
+//            intent.putExtra("user","guest");
+//            startActivity(intent);
+//            overridePendingTransition(R.anim.fadein,R.anim.fadeout);
+//            finish();
         }
     }
 

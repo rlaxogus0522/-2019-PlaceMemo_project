@@ -24,17 +24,17 @@ public class Notification {
         this.rContext = rContext;
 
 
-        KeyguardManager km = (KeyguardManager) rContext.getSystemService(Context.KEYGUARD_SERVICE);
-        if(km.inKeyguardRestrictedInputMode()){
-            Intent intent = new Intent(rContext,Alam_activity.class);
-            intent.putExtra("title",title);
-            rContext.startActivity(intent);
-            ((MainActivity)mainContext).overridePendingTransition(R.anim.fadein,R.anim.fadeout);
-
-            if(isAlamOn) {
-                WakeLock();
-            }
-        }else if(!km.inKeyguardRestrictedInputMode()) {
+//        KeyguardManager km = (KeyguardManager) rContext.getSystemService(Context.KEYGUARD_SERVICE);
+//        if(km.inKeyguardRestrictedInputMode()){
+//            Intent intent = new Intent(rContext,Alam_activity.class);
+//            intent.putExtra("title",title);
+//            rContext.startActivity(intent);
+//            ((MainActivity)mainContext).overridePendingTransition(R.anim.fadein,R.anim.fadeout);
+//
+//            if(isAlamOn) {
+//                WakeLock();
+//            }
+//        }else if(!km.inKeyguardRestrictedInputMode()) {
             PendingIntent pendingIntent = PendingIntent.getActivity(rContext, 0, new Intent(rContext, IntroActivity.class), 0);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(rContext, "default")
                     .setSmallIcon(R.drawable.nomemo)
@@ -57,7 +57,7 @@ public class Notification {
                 notificationManager.notify(notiNum, builder.build());
                 WakeLock();
             }
-        }
+//        }
 
 
 
