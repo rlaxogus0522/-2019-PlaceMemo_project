@@ -10,6 +10,7 @@
         tools:context=".MainActivity"
         >
             <LinearLayout
+
                 android:background="@drawable/recycling"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -124,6 +125,7 @@
                         android:layout_height="40dp"
                         android:layout_alignParentRight="true"
                         android:text="카카오전송"/>
+
                 </RelativeLayout>
                 <FrameLayout
                     android:id="@+id/frame"

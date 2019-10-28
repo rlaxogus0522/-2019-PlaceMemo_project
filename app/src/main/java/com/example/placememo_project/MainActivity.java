@@ -13,15 +13,18 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 
+import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 
 import android.os.Bundle;
 
 
+import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
 
+import android.util.LruCache;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -58,6 +61,9 @@ import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.GroupieViewHolder;
 import com.xwray.groupie.Section;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -570,23 +576,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         }else if(view == mainBinding.kakaoButton){
 
-            TextTemplate params = TextTemplate.newBuilder("Text", LinkObject.newBuilder().setWebUrl("https://developers.kakao.com").setMobileWebUrl("https://developers.kakao.com").build()).setButtonTitle("This is button").build();
+            saveImage( getScreenshotFromRecyclerView(recyclerView_nomal),"haha");
 
-            Map<String, String> serverCallbackArgs = new HashMap<String, String>();
-            serverCallbackArgs.put("user_id", "${current_user_id}");
-            serverCallbackArgs.put("product_id", "${shared_product_id}");
 
-            KakaoLinkService.getInstance().sendDefault(this, params, serverCallbackArgs, new ResponseCallback<KakaoLinkResponse>() {
-                @Override
-                public void onFailure(ErrorResult errorResult) {
-                    Logger.e(errorResult.toString());
-                }
-
-                @Override
-                public void onSuccess(KakaoLinkResponse result) {
-                    // 템플릿 밸리데이션과 쿼터 체크가 성공적으로 끝남. 톡에서 정상적으로 보내졌는지 보장은 할 수 없다. 전송 성공 유무는 서버콜백 기능을 이용하여야 한다.
-                }
-            });
+//
+//            TextTemplate params = TextTemplate.newBuilder("Text", LinkObject.newBuilder().setWebUrl("https://developers.kakao.com").setMobileWebUrl("https://developers.kakao.com").build()).setButtonTitle("This is button").build();
+//
+//            Map<String, String> serverCallbackArgs = new HashMap<String, String>();
+//            serverCallbackArgs.put("user_id", "${current_user_id}");
+//            serverCallbackArgs.put("product_id", "${shared_product_id}");
+//
+//            KakaoLinkService.getInstance().sendDefault(this, params, serverCallbackArgs, new ResponseCallback<KakaoLinkResponse>() {
+//                @Override
+//                public void onFailure(ErrorResult errorResult) {
+//                    Logger.e(errorResult.toString());
+//                }
+//
+//                @Override
+//                public void onSuccess(KakaoLinkResponse result) {
+//                    // 템플릿 밸리데이션과 쿼터 체크가 성공적으로 끝남. 톡에서 정상적으로 보내졌는지 보장은 할 수 없다. 전송 성공 유무는 서버콜백 기능을 이용하여야 한다.
+//                }
+//            });
 
         }else if (view == mainBinding.menu.btnBackUp){
 //            if(user.equals("google")){
@@ -753,5 +763,70 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             mainBinding.menu.wigetOff.setTextColor(Color.rgb(70, 160, 220));
         }
     }
+    public Bitmap getScreenshotFromRecyclerView(RecyclerView view) {
+        RecyclerView.Adapter adapter = view.getAdapter();
+        Bitmap bigBitmap = null;
+        if (adapter != null) {
+            int size = adapter.getItemCount();
+            int height = 0;
+            Paint paint = new Paint();
+            int iHeight = 0;
+            final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+
+            // Use 1/8th of the available memory for this memory cache.
+            final int cacheSize = maxMemory / 8;
+            LruCache<String, Bitmap> bitmaCache = new LruCache<>(cacheSize);
+            for (int i = 0; i < size; i++) {
+                RecyclerView.ViewHolder holder = adapter.createViewHolder(view, adapter.getItemViewType(i));
+                adapter.onBindViewHolder(holder, i);
+                holder.itemView.measure(View.MeasureSpec.makeMeasureSpec(view.getWidth(), View.MeasureSpec.EXACTLY),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                holder.itemView.layout(0, 0, holder.itemView.getMeasuredWidth(), holder.itemView.getMeasuredHeight());
+                holder.itemView.setDrawingCacheEnabled(true);
+                holder.itemView.buildDrawingCache();
+                Bitmap drawingCache = holder.itemView.getDrawingCache();
+                if (drawingCache != null) {
+
+                    bitmaCache.put(String.valueOf(i), drawingCache);
+                }
+//                holder.itemView.setDrawingCacheEnabled(false);
+//                holder.itemView.destroyDrawingCache();
+                height += holder.itemView.getMeasuredHeight();
+            }
+
+            bigBitmap = Bitmap.createBitmap(view.getMeasuredWidth(), height, Bitmap.Config.ARGB_8888);
+            Canvas bigCanvas = new Canvas(bigBitmap);
+            bigCanvas.drawColor(Color.WHITE);
+
+            for (int i = 0; i < size; i++) {
+                Bitmap bitmap = bitmaCache.get(String.valueOf(i));
+                bigCanvas.drawBitmap(bitmap, 0f, iHeight, paint);
+                iHeight += bitmap.getHeight();
+                bitmap.recycle();
+            }
+
+        }
+        return bigBitmap;
+    }
+    private void saveImage(Bitmap finalBitmap, String image_name) {
+
+        String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String path = root + "/test";
+        File myDir = new File(path);
+        if(!myDir.exists()) {
+            myDir.mkdirs();
+        }
+        String fname = "Image_" + image_name+ ".jpg";
+        File file = new File(myDir, fname);
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }
