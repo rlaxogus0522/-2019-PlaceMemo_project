@@ -5,6 +5,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -15,6 +18,8 @@ import android.graphics.drawable.shapes.OvalShape;
 
 import android.os.Bundle;
 
+
+import android.util.Base64;
 import android.util.Log;
 
 import android.view.View;
@@ -26,10 +31,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -37,26 +40,27 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.placememo_project.databinding.ActivityMainBinding;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kakao.util.helper.Utility;
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.GroupieViewHolder;
 import com.xwray.groupie.Section;
-
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 import static com.example.placememo_project.Activity_Login.RC_SIGN_OUT;
+
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     ActivityMainBinding mainBinding;
@@ -168,6 +172,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mainBinding.menu.googleLogout.setOnClickListener(this);
         mainBinding.menu.btnBackUp.setOnClickListener(this);
         mainBinding.menu.btnLoad.setOnClickListener(this);
+        mainBinding.kakaoButton.setOnClickListener(this);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
         drawView = (View) findViewById(R.id.drawer);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -226,14 +231,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         dataUpdate();   //-- DB에 정보 가져오기
         checkNoImage();   //-- 처음에 저장된 메모가 있는지 없는지 여부에 따라 메모 없다고 표시
 
-
-
     }
 
-//    void Alam(){
-//        Intent intent = new Intent(this,Alam_activity.class);
-//        startActivity(intent);
-//    }
+
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -535,6 +537,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 finish();
                 overridePendingTransition(R.anim.fadein,R.anim.fadeout);
             }
+        }else if(view == mainBinding.kakaoButton){
+
+//            TextTemplate params = TextTemplate.newBuilder("Text", LinkObject.newBuilder().setWebUrl("https://developers.kakao.com").setMobileWebUrl("https://developers.kakao.com").build()).setButtonTitle("This is button").build();
+//
+//            Map<String, String> serverCallbackArgs = new HashMap<String, String>();
+//            serverCallbackArgs.put("user_id", "${current_user_id}");
+//            serverCallbackArgs.put("product_id", "${shared_product_id}");
+//
+//            KakaoLinkService.getInstance().sendDefault(this, params, serverCallbackArgs, new ResponseCallback<KakaoLinkResponse>() {
+//                @Override
+//                public void onFailure(ErrorResult errorResult) {
+//                    Logger.e(errorResult.toString());
+//                }
+//
+//                @Override
+//                public void onSuccess(KakaoLinkResponse result) {
+//                    // 템플릿 밸리데이션과 쿼터 체크가 성공적으로 끝남. 톡에서 정상적으로 보내졌는지 보장은 할 수 없다. 전송 성공 유무는 서버콜백 기능을 이용하여야 한다.
+//                }
+//            });
+
         }else if (view == mainBinding.menu.btnBackUp){
 //            if(user.equals("google")){
 
