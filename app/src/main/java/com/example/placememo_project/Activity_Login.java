@@ -122,6 +122,7 @@ public class Activity_Login  extends AppCompatActivity implements View.OnClickLi
                             intent.putExtra("name",currentUser.getDisplayName());
                             intent.putExtra("email",currentUser.getEmail());
                             intent.putExtra("photo",currentUser.getPhotoUrl().toString());
+                            intent.putExtra("UID",currentUser.getUid());
                             startActivityForResult(intent,RC_SIGN_OUT);
                             overridePendingTransition(R.anim.fadein,R.anim.fadeout);
 //                            updateUI(user);
@@ -150,6 +151,7 @@ public class Activity_Login  extends AppCompatActivity implements View.OnClickLi
                             intent.putExtra("user","guest");
                             intent.putExtra("name",currentUser.getDisplayName());
                             intent.putExtra("email",currentUser.getEmail());
+                            intent.putExtra("UID",currentUser.getUid());
                             startActivityForResult(intent,RC_SIGN_OUT);
                             overridePendingTransition(R.anim.fadein,R.anim.fadeout);
                         } else {
@@ -170,17 +172,19 @@ public class Activity_Login  extends AppCompatActivity implements View.OnClickLi
         super.onStart();
         currentUser = mAuth.getCurrentUser();
         if(currentUser != null) {
-            if(currentUser.getEmail()!=null){
+            if(currentUser.getPhotoUrl()!=null){
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.putExtra("user", "google");
             intent.putExtra("name", currentUser.getDisplayName());
             intent.putExtra("email", currentUser.getEmail());
             intent.putExtra("photo", currentUser.getPhotoUrl().toString());
+            intent.putExtra("UID",currentUser.getUid());
             startActivityForResult(intent, RC_SIGN_OUT);
             overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         }else{
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("user", "guest");
+                intent.putExtra("UID",currentUser.getUid());
                 startActivityForResult(intent, RC_SIGN_OUT);
                 overridePendingTransition(R.anim.fadein, R.anim.fadeout);
             }

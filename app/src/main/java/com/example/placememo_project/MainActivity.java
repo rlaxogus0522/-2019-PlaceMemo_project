@@ -24,6 +24,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import androidx.databinding.DataBindingUtil;
@@ -37,8 +38,12 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.example.placememo_project.databinding.ActivityMainBinding;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.GroupieViewHolder;
@@ -59,6 +64,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private final static String TAG = "MainActivity======";
     private DrawerLayout drawerLayout;  //-- 옵션창 레이아웃
     private View drawView;
+    private DatabaseReference mDatabase;
     private boolean isdrawer = false;
     static String sort="sort_update";
     static public ArrayList<String> titlename = new ArrayList<>();  //-- 등록된 알람이있는지 체크하기위한 변수( 메뉴용 )
@@ -78,9 +84,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public ItemTouchHelperExtension.Callback mCallback_nomal;
     Animation animOpen, animClose,animation3,animation4,animOpen2, animClose2;
     Bitmap bitmap;
-    String user;
+    private String user,UID;
+
     long backKeyPressedTime;
     boolean pause = false;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +104,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         fragmentManager = getSupportFragmentManager();
+
         locaion = new Location_Memo_Activity();
         fragmentManager.beginTransaction().replace(R.id.frame,locaion).commit();
         mainContext = this;
@@ -108,12 +118,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mainBinding.menu.googleImage.setBackground(new ShapeDrawable(new OvalShape()));
         mainBinding.menu.googleImage.setClipToOutline(true);
         recycleerView.setAdapter(adapter);
+
         Intent intent = getIntent();
         user = intent.getStringExtra("user");
+        UID = intent.getStringExtra("UID");
         if(user.equals("google")) {
             mainBinding.menu.googleId.setText(intent.getStringExtra("name"));
             mainBinding.menu.googleEmail.setText(intent.getStringExtra("email"));
-
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -155,6 +166,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mainBinding.hideMenu.setOnClickListener(this);
         mainBinding.hideMenu2.setOnClickListener(this);
         mainBinding.menu.googleLogout.setOnClickListener(this);
+        mainBinding.menu.btnBackUp.setOnClickListener(this);
+        mainBinding.menu.btnLoad.setOnClickListener(this);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
         drawView = (View) findViewById(R.id.drawer);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -164,7 +177,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         animClose2 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translate2_1);
         animation3 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate);
         animation4 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate2);
-
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mCallback_nomal = new ItemTouchHelperCallback2(this);
         mItemTouchHelper_nomal = new ItemTouchHelperExtension(mCallback_nomal);
@@ -208,7 +221,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mCallback = new ItemTouchHelperCallback();
         mitemTouchHelper = new ItemTouchHelperExtension(mCallback);
         mitemTouchHelper.attachToRecyclerView(recycleerView);
-
 
 
         dataUpdate();   //-- DB에 정보 가져오기
@@ -290,72 +302,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             mainBinding.hideMenu2.setVisibility(View.GONE);
         }
     }
-
-    @Override
-    public void onClick(View view) {
-        if (view == mainBinding.btnSetting) {  //-- 옵션을 클릭한다면
-            mainBinding.drawlayout.openDrawer(mainBinding.menu.drawer);
-            isdrawer = true;  //-- 드로어가 열린것으로 변경
-        } else if (view == mainBinding.hideMenu) {  //-- 메모추가를 누른다면
-            Intent in = new Intent(MainActivity.this, InsertActivity.class);
-            startActivityForResult(in, 0522);  //-- 메모추가 액티비티로 이동
-        } else if (view == mainBinding.menu.btnReset) {
-            alamreset.show();  //-- 모든 알람 초기화를 누른다면 알람리셋 팝업창 보여주기
-        }else if (view == mainBinding.locationTab){
-            mainBinding.locationTab.setAlpha(1.0f);
-            mainBinding.nomalTab.setAlpha(0.6f);
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            Location_Memo_Activity location_memo_activity = new Location_Memo_Activity();
-            transaction.replace(R.id.frame,location_memo_activity);
-            transaction.commit();
-        }else if (view == mainBinding.nomalTab){
-            mainBinding.locationTab.setAlpha(0.6f);
-            mainBinding.nomalTab.setAlpha(1.0f);
-            nomaladapters.clear();
-            RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll().sort("order");
-            for(Data_nomal data_nomals : results) {
-            nomaladapters.addItem(data_nomals.getMemo(),data_nomals.getColor());
-            }
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            Nomal_Memo_Activity nomal_memo_activity = new Nomal_Memo_Activity();
-            transaction.replace(R.id.frame,nomal_memo_activity);
-            transaction.commit();
-            checkNoImage_nomal();
-        }else if( view == mainBinding.hideMenu2){
-            Intent intent = new Intent(this,Activity_NomalMemo_Inset.class);
-            startActivity(intent);
-        }else if (view == mainBinding.expandButton){
-            if(mainBinding.hideMenu.getVisibility() == View.VISIBLE){
-                mainBinding.expandButton.startAnimation(animation4);
-                mainBinding.hideMenu.startAnimation(animClose);
-                mainBinding.hideMenu2.startAnimation(animClose2);
-                mainBinding.hideMenu.setVisibility(View.GONE);
-                mainBinding.hideMenu2.setVisibility(View.GONE);
-            }else{
-                mainBinding.expandButton.startAnimation(animation3);
-                mainBinding.hideMenu.startAnimation(animOpen);
-                mainBinding.hideMenu2.startAnimation(animOpen2);
-                mainBinding.hideMenu.setVisibility(View.VISIBLE);
-                mainBinding.hideMenu2.setVisibility(View.VISIBLE);
-            }
-        }else if (view == mainBinding.menu.googleLogout){
-            if(user.equals("google")) {
-                Intent intent = new Intent();
-                setResult(RC_SIGN_OUT, intent);
-                finish();
-                overridePendingTransition(R.anim.fadein,R.anim.fadeout);
-            }else if(user.equals("guest")){
-                Intent intent = new Intent();
-                setResult(RC_SIGN_OUT, intent);
-                finish();
-                overridePendingTransition(R.anim.fadein,R.anim.fadeout);
-            }
-        }
-
-        settingToggleButton(view);  //-- 옵션창에 버튼설정
-    }
-
-
 
     private void alamReset() {  //-- 알람 리셋을 누른다면
         titlename.clear();
@@ -485,36 +431,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
     public class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback {
         ItemHolder holder,holder1;
-        int position;
-
 
         @Override
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            Object holderItem = viewHolder.itemView.getTag();
-            int dragFlag = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
             int swipeFlag = ItemTouchHelper.LEFT;
-            if(holderItem instanceof TitleHolder) {
                return makeMovementFlags(0,swipeFlag);
-            }
 
-            return makeMovementFlags(dragFlag, swipeFlag);
         }
 
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder viewHolder1) {
-            Object holderItem = viewHolder.itemView.getTag();
-            Object holderItem2 = viewHolder1.itemView.getTag();
-            holder = (ItemHolder) holderItem;
-            holder1 = (ItemHolder) holderItem2;
-            try {
-                adapter.onItemMoved(adapter.getGroup(0),holder.getPosition(),holder1.getPosition());
-                Log.d("holder",holder.getPosition()+"");
-                Log.d("holder1",holder1.getPosition()+"");
-            }catch (Exception e){
-
-            }
-
-            return true;
+            return false;
         }
 
         @Override
@@ -522,16 +449,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
 
         @Override
-        public boolean isLongPressDragEnabled() {
-            return true;
-        }
-
-        @Override
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            if(dX == 0 && dY != 0){
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-            }
-
             Object holderItem = viewHolder.itemView.getTag();
                 try {
                     if (holderItem instanceof ItemHolder) {
@@ -558,6 +476,200 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         /*------------------------------------------------------------------------------------------------------------------------------------------*/
     }
+    @Override
+    public void onClick(View view) {
+        if (view == mainBinding.btnSetting) {  //-- 옵션을 클릭한다면
+            mainBinding.drawlayout.openDrawer(mainBinding.menu.drawer);
+            isdrawer = true;  //-- 드로어가 열린것으로 변경
+        } else if (view == mainBinding.hideMenu) {  //-- 메모추가를 누른다면
+            Intent in = new Intent(MainActivity.this, InsertActivity.class);
+            startActivityForResult(in, 0522);  //-- 메모추가 액티비티로 이동
+        } else if (view == mainBinding.menu.btnReset) {
+            alamreset.show();  //-- 모든 알람 초기화를 누른다면 알람리셋 팝업창 보여주기
+        }else if (view == mainBinding.locationTab){
+            mainBinding.locationTab.setAlpha(1.0f);
+            mainBinding.nomalTab.setAlpha(0.6f);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            Location_Memo_Activity location_memo_activity = new Location_Memo_Activity();
+            transaction.replace(R.id.frame,location_memo_activity);
+            transaction.commit();
+        }else if (view == mainBinding.nomalTab){
+            mainBinding.locationTab.setAlpha(0.6f);
+            mainBinding.nomalTab.setAlpha(1.0f);
+            nomaladapters.clear();
+            RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll().sort("order");
+            for(Data_nomal data_nomals : results) {
+                nomaladapters.addItem(data_nomals.getMemo(),data_nomals.getColor());
+            }
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            Nomal_Memo_Activity nomal_memo_activity = new Nomal_Memo_Activity();
+            transaction.replace(R.id.frame,nomal_memo_activity);
+            transaction.commit();
+            checkNoImage_nomal();
+        }else if( view == mainBinding.hideMenu2){
+            Intent intent = new Intent(this,Activity_NomalMemo_Inset.class);
+            startActivity(intent);
+        }else if (view == mainBinding.expandButton){
+            if(mainBinding.hideMenu.getVisibility() == View.VISIBLE){
+                mainBinding.expandButton.startAnimation(animation4);
+                mainBinding.hideMenu.startAnimation(animClose);
+                mainBinding.hideMenu2.startAnimation(animClose2);
+                mainBinding.hideMenu.setVisibility(View.GONE);
+                mainBinding.hideMenu2.setVisibility(View.GONE);
+            }else{
+                mainBinding.expandButton.startAnimation(animation3);
+                mainBinding.hideMenu.startAnimation(animOpen);
+                mainBinding.hideMenu2.startAnimation(animOpen2);
+                mainBinding.hideMenu.setVisibility(View.VISIBLE);
+                mainBinding.hideMenu2.setVisibility(View.VISIBLE);
+            }
+        }else if (view == mainBinding.menu.googleLogout){
+            if(user.equals("google")) {
+                Intent intent = new Intent();
+                setResult(RC_SIGN_OUT, intent);
+                finish();
+                overridePendingTransition(R.anim.fadein,R.anim.fadeout);
+            }else if(user.equals("guest")){
+                Intent intent = new Intent();
+                setResult(RC_SIGN_OUT, intent);
+                finish();
+                overridePendingTransition(R.anim.fadein,R.anim.fadeout);
+            }
+        }else if (view == mainBinding.menu.btnBackUp){
+//            if(user.equals("google")){
+
+                mDatabase.child(UID).removeValue();
+
+                RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
+                RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).findAll();
+                RealmResults<Data_Icon> data_icons = myRealm.where(Data_Icon.class).findAll();
+                for(Data_alam data_alam : data_alams){
+                    Data_alam_firebase dataAlamFirebase = new Data_alam_firebase();
+                    dataAlamFirebase.setAlamOn(data_alam.getisAlamOn());
+                    dataAlamFirebase.setColor(data_alam.getColor());
+                    dataAlamFirebase.setIcon(data_alam.getIcon());
+                    dataAlamFirebase.setLatitude(data_alam.getLatitude());
+                    dataAlamFirebase.setLongitude(data_alam.getLongitude());
+                    dataAlamFirebase.setMemo(data_alam.getMemo());
+                    dataAlamFirebase.setName(data_alam.getName());
+                    mDatabase.child(UID).child("Location_Memo").child(data_alam.getMemo()).setValue(dataAlamFirebase);
+                }
+                for(Data_nomal data_nomal : data_nomals){
+                    Data_nomal_firebase dataNomalFirebase = new Data_nomal_firebase();
+                    dataNomalFirebase.setColor(data_nomal.getColor());
+                    dataNomalFirebase.setFrag(data_nomal.getFrag());
+                    dataNomalFirebase.setMemo(data_nomal.getMemo());
+                    dataNomalFirebase.setOrder(data_nomal.getOrder());
+                    mDatabase.child(UID).child("Nomal_Memo").child(data_nomal.getMemo()).setValue(dataNomalFirebase);
+                }
+                for(Data_Icon data_icon : data_icons){
+                    Data_Icon_firebase dataIconFirebase = new Data_Icon_firebase();
+                    dataIconFirebase.setButton(data_icon.getButton());
+                    dataIconFirebase.setButtonclick(data_icon.getButtonclick());
+                    dataIconFirebase.setLatitude(data_icon.getLatitude());
+                    dataIconFirebase.setLongitude(data_icon.getLongitude());
+                    dataIconFirebase.setName(data_icon.getName());
+                    mDatabase.child(UID).child("Location_Icon").child(data_icon.getName()).setValue(dataIconFirebase);
+                }
+                Toast.makeText(mainContext, "내보내기를 시도합니다.", Toast.LENGTH_SHORT).show();
+//            }
+////            else if(user.equals("guest")){
+////                Toast.makeText(mainContext, "백업 기능은 로그인 후 이용하실수 있습니다.", Toast.LENGTH_LONG).show();
+////            }
+        }else if (view == mainBinding.menu.btnLoad) {
+                mDatabase.child(UID).child("Location_Icon").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        RealmResults<Data_Icon> data_icons = myRealm.where(Data_Icon.class).findAll();
+                        myRealm.beginTransaction();
+                        data_icons.deleteAllFromRealm();
+                        myRealm.commitTransaction();
+                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                            Data_Icon_firebase dataIconFirebase = postSnapshot.getValue(Data_Icon_firebase.class);
+                            myRealm.beginTransaction();
+                            Data_Icon data_icon = myRealm.createObject(Data_Icon.class);
+                            data_icon.setButton(dataIconFirebase.getButton());
+                            data_icon.setButtonclick(dataIconFirebase.getButtonclick());
+                            data_icon.setLatitude(dataIconFirebase.getLatitude());
+                            data_icon.setLongitude(dataIconFirebase.getLongitude());
+                            data_icon.setName(dataIconFirebase.getName());
+                            myRealm.commitTransaction();
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                mDatabase.child(UID).child("Nomal_Memo").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).findAll();
+                        myRealm.beginTransaction();
+                        data_nomals.deleteAllFromRealm();
+                        myRealm.commitTransaction();
+                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                            Data_nomal_firebase dataNomalFirebase = postSnapshot.getValue(Data_nomal_firebase.class);
+                            myRealm.beginTransaction();
+                            Data_nomal data_nomal = myRealm.createObject(Data_nomal.class);
+                            data_nomal.setOrder(dataNomalFirebase.getOrder());
+                            data_nomal.setColor(dataNomalFirebase.getColor());
+                            data_nomal.setFrag(dataNomalFirebase.getFrag());
+                            data_nomal.setMemo(dataNomalFirebase.getMemo());
+                            myRealm.commitTransaction();
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
+                mDatabase.child(UID).child("Location_Memo").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
+                        myRealm.beginTransaction();
+                        data_alams.deleteAllFromRealm();
+                        myRealm.commitTransaction();
+                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                            Data_alam_firebase dataAlamFirebase = postSnapshot.getValue(Data_alam_firebase.class);
+//                                Log.d("==",dataAlamFirebase.getName());
+                            myRealm.beginTransaction();
+                            Data_alam dataalam = myRealm.createObject(Data_alam.class);
+                            dataalam.setName(dataAlamFirebase.getName());
+                            dataalam.setMemo(dataAlamFirebase.getMemo());
+                            dataalam.setIcon(dataAlamFirebase.getIcon());
+                            dataalam.setLatitude(dataAlamFirebase.getLatitude());
+                            dataalam.setLongitude(dataAlamFirebase.getLongitude());
+                            dataalam.setColor(dataAlamFirebase.getColor());
+                            dataalam.setAlamOn(dataAlamFirebase.getisAlamOn());
+                            myRealm.commitTransaction();
+                            ShowAlamUi(sort);
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                Toast.makeText(mainContext, "가져오기를 시도합니다.", Toast.LENGTH_SHORT).show();
+            }
+
+        settingToggleButton(view);  //-- 옵션창에 버튼설정
+    }
+
+
+
+
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
     /*--------------------------------------------------------------------------------------------------------------*/

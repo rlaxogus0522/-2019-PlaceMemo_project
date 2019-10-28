@@ -71,6 +71,17 @@ public class LocationReceiver extends BroadcastReceiver {
                         }
                     }else break;  //-- 위치 정보를 가져왔다면 탈출
                 }
+                RealmResults<Data_LastLocation_LastTime> data_lastLocation_lastTimes = myRealm.where(Data_LastLocation_LastTime.class).findAll();
+                if(data_lastLocation_lastTimes.size()==0) {
+                    myRealm.beginTransaction();
+                    Data_LastLocation_LastTime data_lastLocation_lastTime = myRealm.createObject(Data_LastLocation_LastTime.class);
+                    data_lastLocation_lastTime.setLatitude(latitude);
+                    data_lastLocation_lastTime.setLongitude(longitude);
+                    data_lastLocation_lastTime.setMinTime(alamCycle);
+                    myRealm.commitTransaction();
+                }else{
+
+                }
                 distanceMain(myRealm);  //-- 거리확인 메소드 실행
             }
         }).start();
@@ -126,24 +137,37 @@ public class LocationReceiver extends BroadcastReceiver {
         }
 
         /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
-                                                             // 테스트 코딩 --  < Example > //
-//         if (minDistance > 1000){
-//            alamCycle = 10000;
-//        }else if( minDistance > 500){
-//            alamCycle = 5000;
-//        }else if ( minDistance >100 ){
-//            alamCycle = 2000;
-//        }else if(minDistance >10){
-//             alamCycle = 500;
-//        }else if(minDistance > 1){
-//             alamCycle = 100;
-//        }else if(minDistance >0.5){
-//             alamCycle = 60;
-//        }else if (minDistance > 0.1){
-//             alamCycle = 15;
-//        }
-                                                            // 테스트 코딩 --  < Example > //
+
+         if (minDistance > 1000){
+            alamCycle = 10000;
+        }else if( minDistance > 500){
+            alamCycle = 5000;
+        }else if ( minDistance >100 ){
+            alamCycle = 2000;
+        }else if(minDistance >10){
+             alamCycle = 500;
+        }else if(minDistance > 1){
+             alamCycle = 100;
+        }else if(minDistance >0.5){
+             alamCycle = 60;
+        }else if (minDistance > 0.2){
+             alamCycle = 15;
+        }
+        Data_LastLocation_LastTime data_lastLocation_lastTimes = myRealm.where(Data_LastLocation_LastTime.class).findFirst();
+         double dis = getDistance(data_lastLocation_lastTimes.getLatitude(),data_lastLocation_lastTimes.getLongitude(),latitude,longitude);
+         int time = (int)(minDistance/(dis/data_lastLocation_lastTimes.getMinTime()));
+        myRealm.beginTransaction();
+        data_lastLocation_lastTimes.setLongitude(longitude);
+        data_lastLocation_lastTimes.setLatitude(latitude);
+        data_lastLocation_lastTimes.setMinTime(time);
+        myRealm.commitTransaction();
+        if(alamCycle>time){
+            alamCycle = time;
+        }
+        Log.d("==alamCycle",alamCycle+"초");
+        Log.d("==time",time+"초");
         /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
+
         startTime = SystemClock.elapsedRealtime() + alamCycle * 1000;  //-- 알람받을 시간 설정
         RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
         locationSerch();  //--  내위치 찾기 알람매니저 재실행 설정
