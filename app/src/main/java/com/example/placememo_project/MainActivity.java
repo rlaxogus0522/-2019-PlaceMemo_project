@@ -46,7 +46,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kakao.kakaolink.v2.KakaoLinkResponse;
+import com.kakao.kakaolink.v2.KakaoLinkService;
+import com.kakao.message.template.LinkObject;
+import com.kakao.message.template.TextTemplate;
+import com.kakao.network.ErrorResult;
+import com.kakao.network.callback.ResponseCallback;
 import com.kakao.util.helper.Utility;
+import com.kakao.util.helper.log.Logger;
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 import com.xwray.groupie.GroupAdapter;
 import com.xwray.groupie.GroupieViewHolder;
@@ -57,6 +64,9 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import static com.example.placememo_project.Activity_Login.RC_SIGN_OUT;
@@ -231,8 +241,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         dataUpdate();   //-- DB에 정보 가져오기
         checkNoImage();   //-- 처음에 저장된 메모가 있는지 없는지 여부에 따라 메모 없다고 표시
 
+//        getHashKey();
     }
 
+    private void getHashKey(){
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (packageInfo == null)
+            Log.e("KeyHash", "KeyHash:null");
+
+        for (Signature signature : packageInfo.signatures) {
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            } catch (NoSuchAlgorithmException e) {
+                Log.e("KeyHash", "Unable to get MessageDigest. signature=" + signature, e);
+            }
+        }
+    }
 
 
 
@@ -539,23 +570,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         }else if(view == mainBinding.kakaoButton){
 
-//            TextTemplate params = TextTemplate.newBuilder("Text", LinkObject.newBuilder().setWebUrl("https://developers.kakao.com").setMobileWebUrl("https://developers.kakao.com").build()).setButtonTitle("This is button").build();
-//
-//            Map<String, String> serverCallbackArgs = new HashMap<String, String>();
-//            serverCallbackArgs.put("user_id", "${current_user_id}");
-//            serverCallbackArgs.put("product_id", "${shared_product_id}");
-//
-//            KakaoLinkService.getInstance().sendDefault(this, params, serverCallbackArgs, new ResponseCallback<KakaoLinkResponse>() {
-//                @Override
-//                public void onFailure(ErrorResult errorResult) {
-//                    Logger.e(errorResult.toString());
-//                }
-//
-//                @Override
-//                public void onSuccess(KakaoLinkResponse result) {
-//                    // 템플릿 밸리데이션과 쿼터 체크가 성공적으로 끝남. 톡에서 정상적으로 보내졌는지 보장은 할 수 없다. 전송 성공 유무는 서버콜백 기능을 이용하여야 한다.
-//                }
-//            });
+            TextTemplate params = TextTemplate.newBuilder("Text", LinkObject.newBuilder().setWebUrl("https://developers.kakao.com").setMobileWebUrl("https://developers.kakao.com").build()).setButtonTitle("This is button").build();
+
+            Map<String, String> serverCallbackArgs = new HashMap<String, String>();
+            serverCallbackArgs.put("user_id", "${current_user_id}");
+            serverCallbackArgs.put("product_id", "${shared_product_id}");
+
+            KakaoLinkService.getInstance().sendDefault(this, params, serverCallbackArgs, new ResponseCallback<KakaoLinkResponse>() {
+                @Override
+                public void onFailure(ErrorResult errorResult) {
+                    Logger.e(errorResult.toString());
+                }
+
+                @Override
+                public void onSuccess(KakaoLinkResponse result) {
+                    // 템플릿 밸리데이션과 쿼터 체크가 성공적으로 끝남. 톡에서 정상적으로 보내졌는지 보장은 할 수 없다. 전송 성공 유무는 서버콜백 기능을 이용하여야 한다.
+                }
+            });
 
         }else if (view == mainBinding.menu.btnBackUp){
 //            if(user.equals("google")){
