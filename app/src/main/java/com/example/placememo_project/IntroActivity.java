@@ -83,7 +83,7 @@ public class IntroActivity extends AppCompatActivity {
                 .setPermissionListener(permissionlistener)
                 .setRationaleMessage("필수권한 허용 거부시 앱사용이 불가능합니다.\n")
                 .setDeniedMessage("")
-                .setPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+                .setPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE})
                 .check();
     }
 

@@ -3,6 +3,7 @@ package com.example.placememo_project;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -63,7 +64,9 @@ import com.xwray.groupie.GroupieViewHolder;
 import com.xwray.groupie.Section;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -86,7 +89,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private View drawView;
     private DatabaseReference mDatabase;
     private boolean isdrawer = false;
-    static String sort="sort_update";
+    static String sort = "sort_update";
     static public ArrayList<String> titlename = new ArrayList<>();  //-- 등록된 알람이있는지 체크하기위한 변수( 메뉴용 )
     GroupAdapter<GroupieViewHolder> adapter = new GroupAdapter<>();
     Realm myRealm;
@@ -94,21 +97,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     ItemTouchHelperExtension mitemTouchHelper;
     ItemTouchHelperExtension.Callback mCallback;
     boolean checkAlam = false;
-    View locationView,nomalView;
-    TextView TextViewNoMemo,TextViewNoMemo_nomal;
-    RecyclerView recycleerView,recyclerView_nomal;
+    View locationView, nomalView;
+    TextView TextViewNoMemo, TextViewNoMemo_nomal;
+    RecyclerView recycleerView, recyclerView_nomal;
     FragmentManager fragmentManager;
     private Fragment locaion;
     RecyclerAdapter nomaladapters;
     public ItemTouchHelperExtension mItemTouchHelper_nomal;
     public ItemTouchHelperExtension.Callback mCallback_nomal;
-    Animation animOpen, animClose,animation3,animation4,animOpen2, animClose2;
+    Animation animOpen, animClose, animation3, animation4, animOpen2, animClose2;
     Bitmap bitmap;
-    private String user,UID;
+    private String user, UID;
 
     long backKeyPressedTime;
     boolean pause = false;
-
 
 
     @Override
@@ -126,10 +128,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         fragmentManager = getSupportFragmentManager();
 
         locaion = new Location_Memo_Activity();
-        fragmentManager.beginTransaction().replace(R.id.frame,locaion).commit();
+        fragmentManager.beginTransaction().replace(R.id.frame, locaion).commit();
         mainContext = this;
-        locationView  = getLayoutInflater().inflate(R.layout.location_framelatout,null,false);
-        nomalView  = getLayoutInflater().inflate(R.layout.nomal_framelayout,null,false);
+        locationView = getLayoutInflater().inflate(R.layout.location_framelatout, null, false);
+        nomalView = getLayoutInflater().inflate(R.layout.nomal_framelayout, null, false);
         recycleerView = locationView.findViewById(R.id.recycleerView);
         recyclerView_nomal = nomalView.findViewById(R.id.nomal_recyclerview);
         TextViewNoMemo = locationView.findViewById(R.id.TextView_no_memo);
@@ -142,7 +144,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Intent intent = getIntent();
         user = intent.getStringExtra("user");
         UID = intent.getStringExtra("UID");
-        if(user.equals("google")) {
+        if (user.equals("google")) {
             mainBinding.menu.googleId.setText(intent.getStringExtra("name"));
             mainBinding.menu.googleEmail.setText(intent.getStringExtra("email"));
             Thread thread = new Thread(new Runnable() {
@@ -167,7 +169,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 mainBinding.menu.googleImage.setImageBitmap(bitmap);
             } catch (Exception e) {
             }
-        }else if(user.equals("guest")){
+        } else if (user.equals("guest")) {
             mainBinding.menu.googleLogout.setText("로그인");
             mainBinding.menu.googleLogout.setBackgroundColor(0xff43BD57);
         }
@@ -192,20 +194,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
         drawView = (View) findViewById(R.id.drawer);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        animOpen = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translate);
-        animClose = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translate2);
-        animOpen2 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translate_1);
-        animClose2 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translate2_1);
-        animation3 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate);
-        animation4 = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.rotate2);
+        animOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.translate);
+        animClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.translate2);
+        animOpen2 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.translate_1);
+        animClose2 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.translate2_1);
+        animation3 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
+        animation4 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate2);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mCallback_nomal = new ItemTouchHelperCallback2(this);
         mItemTouchHelper_nomal = new ItemTouchHelperExtension(mCallback_nomal);
 
 
-
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getApplicationContext(),new LinearLayoutManager(this).getOrientation());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getApplicationContext(), new LinearLayoutManager(this).getOrientation());
         recyclerView_nomal.addItemDecoration(dividerItemDecoration);
         nomaladapters = new RecyclerAdapter(this);
         recyclerView_nomal.setLayoutManager(new LinearLayoutManager(this));
@@ -247,10 +248,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         dataUpdate();   //-- DB에 정보 가져오기
         checkNoImage();   //-- 처음에 저장된 메모가 있는지 없는지 여부에 따라 메모 없다고 표시
 
-//        getHashKey();
+        getHashKey();
     }
 
-    private void getHashKey(){
+    private void getHashKey() {
         PackageInfo packageInfo = null;
         try {
             packageInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
@@ -272,7 +273,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -284,19 +284,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-
     void checkNoImage() {  //-- 등록된 알람이 없는지 체크
         if (titlename.size() == 0) {
             checkAlam = false;
             TextViewNoMemo.setVisibility(View.VISIBLE);
-            if(sender!=null) {
+            if (sender != null) {
                 am.cancel(sender);
                 sender = null;
             }
         } else {
             checkAlam = true;
             TextViewNoMemo.setVisibility(View.GONE);
-            if(sender== null) locationSerch(this);   //-- 내위치 검색 알람매니저 실행
+            if (sender == null) locationSerch(this);   //-- 내위치 검색 알람매니저 실행
         }
     }
 
@@ -309,31 +308,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    void startEdit(String memo,View view){
+    void startEdit(String memo, View view) {
         view.setTranslationX(0f);
-        Intent intent = new Intent(this,EditMemoActivity.class);
-        intent.putExtra("memo",memo);
+        Intent intent = new Intent(this, EditMemoActivity.class);
+        intent.putExtra("memo", memo);
         startActivity(intent);
     }
 
-    void startNomalEdit(String memo,View view,int position){
+    void startNomalEdit(String memo, View view, int position) {
         view.setTranslationX(0f);
-        Intent intent = new Intent(this,EditNomalMemoActivity.class);
-        intent.putExtra("memo",memo);
-        intent.putExtra("position",position);
+        Intent intent = new Intent(this, EditNomalMemoActivity.class);
+        intent.putExtra("memo", memo);
+        intent.putExtra("position", position);
         startActivity(intent);
     }
 
-    void startTitleAddItem(String name){
-        Intent intent = new Intent(this,TitleAddItemActivity.class);
-        intent.putExtra("titlename",name);
+    void startTitleAddItem(String name) {
+        Intent intent = new Intent(this, TitleAddItemActivity.class);
+        intent.putExtra("titlename", name);
         startActivity(intent);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(mainBinding.hideMenu.getVisibility() == View.VISIBLE) {
+        if (mainBinding.hideMenu.getVisibility() == View.VISIBLE) {
             mainBinding.expandButton.startAnimation(animation4);
             mainBinding.hideMenu.startAnimation(animClose);
             mainBinding.hideMenu2.startAnimation(animClose2);
@@ -361,17 +360,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             return;
         } else {
 
-            if(System.currentTimeMillis()>backKeyPressedTime+2000){
+            if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
                 backKeyPressedTime = System.currentTimeMillis();
                 Toast.makeText(this, "두번 눌러 앱 종료", Toast.LENGTH_SHORT).show();
             }
             //2번째 백버튼 클릭 (종료)
-            else{
+            else {
                 finishAffinity();
             }
         }
     }
-
 
 
     @Override
@@ -379,31 +377,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) { //--  사용자가 메모를 추가가 성공적이었다면
             ShowAlamUi(sort);
-            RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
-            if(data_alams.size() == 1) locationSerch(this);
+            RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn", true).findAll();
+            if (data_alams.size() == 1) locationSerch(this);
         }
     }
 
     public void ShowAlamUi(String sort) {
         adapter.clear();
         titlename.clear();
-        if(sort.equals("sort_name")) {
+        if (sort.equals("sort_name")) {
             RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll().sort("name");
             for (Data_alam data_alam : results) {
                 if (!titlename.contains(data_alam.getName())) {
                     titlename.add(data_alam.getName());
                 }
             }
-        }else if(sort.equals("sort_update")){
+        } else if (sort.equals("sort_update")) {
             RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll();
             for (Data_alam data_alam : results) {
                 if (!titlename.contains(data_alam.getName())) {
                     titlename.add(data_alam.getName());
                 }
             }
-        }else if(sort.equals("sort_alams")){
+        } else if (sort.equals("sort_alams")) {
             RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll().sort("name");
-            for(Data_alam data_alam : results){
+            for (Data_alam data_alam : results) {
                 if (!titlename.contains(data_alam.getName())) {
                     titlename.add(data_alam.getName());
                 }
@@ -411,12 +409,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             ArrayList<String> arrayList = new ArrayList<>();
             arrayList.addAll(titlename);
             titlename.clear();
-            for (int j = 0; j < arrayList.size() ; j++) {
+            for (int j = 0; j < arrayList.size(); j++) {
                 int check = 0;
                 for (int i = 0; i < arrayList.size(); i++) {
                     RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", arrayList.get(i)).findAll();
                     if (check < results2.size()) {
-                        if(!titlename.contains(results2.first().getName())) {
+                        if (!titlename.contains(results2.first().getName())) {
                             titlename.add(j, results2.first().getName());
                             check = results2.size();
                         }
@@ -424,15 +422,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
             }
         }
-        if(titlename.size()!=0) {
+        if (titlename.size() != 0) {
             for (int i = 0; i < titlename.size(); i++) {
                 RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
-                Log.d("color",results2.first().getColor()+"");
+                Log.d("color", results2.first().getColor() + "");
                 Data_alam data_alam_first = results2.first();
                 Section section = new Section();
                 PinHolder pinHolder = new PinHolder(data_alam_first);
                 section.add(pinHolder);
-                TitleHolder titleHolder = new TitleHolder(data_alam_first, i , this);
+                TitleHolder titleHolder = new TitleHolder(data_alam_first, i, this);
                 section.add(titleHolder);
                 for (Data_alam data_alam : results2) {
                     ItemHolder itemHolder = new ItemHolder(data_alam, this);
@@ -446,17 +444,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         checkNoImage();
     }
 
-    public void remove(){
-            for (int i = 0; i < titlename.size(); i++) {
-                RealmResults<Data_alam> results = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
+    public void remove() {
+        for (int i = 0; i < titlename.size(); i++) {
+            RealmResults<Data_alam> results = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
 
-                if (results.size() == 0) {
-                    titlename.remove(i);
-                    myRealm.beginTransaction();
-                    results.deleteAllFromRealm();
-                    myRealm.commitTransaction();
-                }
+            if (results.size() == 0) {
+                titlename.remove(i);
+                myRealm.beginTransaction();
+                results.deleteAllFromRealm();
+                myRealm.commitTransaction();
             }
+        }
 
     }
 
@@ -464,17 +462,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /*--------------------------------------------------------------------------------------------------------------*/
 
 
-
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
     public class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback {
-        ItemHolder holder,holder1;
+        ItemHolder holder, holder1;
 
         @Override
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
             int swipeFlag = ItemTouchHelper.LEFT;
-               return makeMovementFlags(0,swipeFlag);
+            return makeMovementFlags(0, swipeFlag);
 
         }
 
@@ -490,31 +487,32 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         @Override
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
             Object holderItem = viewHolder.itemView.getTag();
-                try {
-                    if (holderItem instanceof ItemHolder) {
-                        holder = (ItemHolder) holderItem;
-                        ItemHolder holder = (ItemHolder) holderItem;
-                        if (dX < -holder.mActionContainer2.getWidth()) {
-                            dX = -holder.mActionContainer2.getWidth();
-                        }
-                        holder.mViewContent2.setTranslationX(dX);
-
-                    } else if (holderItem instanceof TitleHolder) {
-                        TitleHolder holder = (TitleHolder) holderItem;
-                        if (dX < -holder.mActionContainer1.getWidth()) {
-                            dX = -holder.mActionContainer1.getWidth();
-                        }
-                        holder.mViewContent1.setTranslationX(dX);
+            try {
+                if (holderItem instanceof ItemHolder) {
+                    holder = (ItemHolder) holderItem;
+                    ItemHolder holder = (ItemHolder) holderItem;
+                    if (dX < -holder.mActionContainer2.getWidth()) {
+                        dX = -holder.mActionContainer2.getWidth();
                     }
-                } catch (NullPointerException e) {
+                    holder.mViewContent2.setTranslationX(dX);
 
+                } else if (holderItem instanceof TitleHolder) {
+                    TitleHolder holder = (TitleHolder) holderItem;
+                    if (dX < -holder.mActionContainer1.getWidth()) {
+                        dX = -holder.mActionContainer1.getWidth();
+                    }
+                    holder.mViewContent1.setTranslationX(dX);
                 }
+            } catch (NullPointerException e) {
+
+            }
 //
 
         }
 
         /*------------------------------------------------------------------------------------------------------------------------------------------*/
     }
+
     @Override
     public void onClick(View view) {
         if (view == mainBinding.btnSetting) {  //-- 옵션을 클릭한다면
@@ -525,61 +523,60 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             startActivityForResult(in, 0522);  //-- 메모추가 액티비티로 이동
         } else if (view == mainBinding.menu.btnReset) {
             alamreset.show();  //-- 모든 알람 초기화를 누른다면 알람리셋 팝업창 보여주기
-        }else if (view == mainBinding.locationTab){
+        } else if (view == mainBinding.locationTab) {
             mainBinding.locationTab.setAlpha(1.0f);
             mainBinding.nomalTab.setAlpha(0.6f);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             Location_Memo_Activity location_memo_activity = new Location_Memo_Activity();
-            transaction.replace(R.id.frame,location_memo_activity);
+            transaction.replace(R.id.frame, location_memo_activity);
             transaction.commit();
-        }else if (view == mainBinding.nomalTab){
+        } else if (view == mainBinding.nomalTab) {
             mainBinding.locationTab.setAlpha(0.6f);
             mainBinding.nomalTab.setAlpha(1.0f);
             nomaladapters.clear();
             RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll().sort("order");
-            for(Data_nomal data_nomals : results) {
-                nomaladapters.addItem(data_nomals.getMemo(),data_nomals.getColor());
+            for (Data_nomal data_nomals : results) {
+                nomaladapters.addItem(data_nomals.getMemo(), data_nomals.getColor());
             }
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             Nomal_Memo_Activity nomal_memo_activity = new Nomal_Memo_Activity();
-            transaction.replace(R.id.frame,nomal_memo_activity);
+            transaction.replace(R.id.frame, nomal_memo_activity);
             transaction.commit();
             checkNoImage_nomal();
-        }else if( view == mainBinding.hideMenu2){
-            Intent intent = new Intent(this,Activity_NomalMemo_Inset.class);
+        } else if (view == mainBinding.hideMenu2) {
+            Intent intent = new Intent(this, Activity_NomalMemo_Inset.class);
             startActivity(intent);
-        }else if (view == mainBinding.expandButton){
-            if(mainBinding.hideMenu.getVisibility() == View.VISIBLE){
+        } else if (view == mainBinding.expandButton) {
+            if (mainBinding.hideMenu.getVisibility() == View.VISIBLE) {
                 mainBinding.expandButton.startAnimation(animation4);
                 mainBinding.hideMenu.startAnimation(animClose);
                 mainBinding.hideMenu2.startAnimation(animClose2);
                 mainBinding.hideMenu.setVisibility(View.GONE);
                 mainBinding.hideMenu2.setVisibility(View.GONE);
-            }else{
+            } else {
                 mainBinding.expandButton.startAnimation(animation3);
                 mainBinding.hideMenu.startAnimation(animOpen);
                 mainBinding.hideMenu2.startAnimation(animOpen2);
                 mainBinding.hideMenu.setVisibility(View.VISIBLE);
                 mainBinding.hideMenu2.setVisibility(View.VISIBLE);
             }
-        }else if (view == mainBinding.menu.googleLogout){
-            if(user.equals("google")) {
+        } else if (view == mainBinding.menu.googleLogout) {
+            if (user.equals("google")) {
                 Intent intent = new Intent();
                 setResult(RC_SIGN_OUT, intent);
                 finish();
-                overridePendingTransition(R.anim.fadein,R.anim.fadeout);
-            }else if(user.equals("guest")){
+                overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+            } else if (user.equals("guest")) {
                 Intent intent = new Intent();
                 setResult(RC_SIGN_OUT, intent);
                 finish();
-                overridePendingTransition(R.anim.fadein,R.anim.fadeout);
+                overridePendingTransition(R.anim.fadein, R.anim.fadeout);
             }
-        }else if(view == mainBinding.kakaoButton){
+        } else if (view == mainBinding.kakaoButton) {
 
-            saveImage( getScreenshotFromRecyclerView(recyclerView_nomal),"haha");
+            saveToInternalStorage(getScreenshotFromRecyclerView(recyclerView_nomal));
 
 
-//
 //            TextTemplate params = TextTemplate.newBuilder("Text", LinkObject.newBuilder().setWebUrl("https://developers.kakao.com").setMobileWebUrl("https://developers.kakao.com").build()).setButtonTitle("This is button").build();
 //
 //            Map<String, String> serverCallbackArgs = new HashMap<String, String>();
@@ -598,139 +595,137 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //                }
 //            });
 
-        }else if (view == mainBinding.menu.btnBackUp){
+        } else if (view == mainBinding.menu.btnBackUp) {
 //            if(user.equals("google")){
 
-                mDatabase.child(UID).removeValue();
+            mDatabase.child(UID).removeValue();
 
-                RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
-                RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).findAll();
-                RealmResults<Data_Icon> data_icons = myRealm.where(Data_Icon.class).findAll();
-                for(Data_alam data_alam : data_alams){
-                    Data_alam_firebase dataAlamFirebase = new Data_alam_firebase();
-                    dataAlamFirebase.setAlamOn(data_alam.getisAlamOn());
-                    dataAlamFirebase.setColor(data_alam.getColor());
-                    dataAlamFirebase.setIcon(data_alam.getIcon());
-                    dataAlamFirebase.setLatitude(data_alam.getLatitude());
-                    dataAlamFirebase.setLongitude(data_alam.getLongitude());
-                    dataAlamFirebase.setMemo(data_alam.getMemo());
-                    dataAlamFirebase.setName(data_alam.getName());
-                    mDatabase.child(UID).child("Location_Memo").child(data_alam.getMemo()).setValue(dataAlamFirebase);
-                }
-                for(Data_nomal data_nomal : data_nomals){
-                    Data_nomal_firebase dataNomalFirebase = new Data_nomal_firebase();
-                    dataNomalFirebase.setColor(data_nomal.getColor());
-                    dataNomalFirebase.setFrag(data_nomal.getFrag());
-                    dataNomalFirebase.setMemo(data_nomal.getMemo());
-                    dataNomalFirebase.setOrder(data_nomal.getOrder());
-                    mDatabase.child(UID).child("Nomal_Memo").child(data_nomal.getMemo()).setValue(dataNomalFirebase);
-                }
-                for(Data_Icon data_icon : data_icons){
-                    Data_Icon_firebase dataIconFirebase = new Data_Icon_firebase();
-                    dataIconFirebase.setButton(data_icon.getButton());
-                    dataIconFirebase.setButtonclick(data_icon.getButtonclick());
-                    dataIconFirebase.setLatitude(data_icon.getLatitude());
-                    dataIconFirebase.setLongitude(data_icon.getLongitude());
-                    dataIconFirebase.setName(data_icon.getName());
-                    mDatabase.child(UID).child("Location_Icon").child(data_icon.getName()).setValue(dataIconFirebase);
-                }
-                Toast.makeText(mainContext, "내보내기를 시도합니다.", Toast.LENGTH_SHORT).show();
+            RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
+            RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).findAll();
+            RealmResults<Data_Icon> data_icons = myRealm.where(Data_Icon.class).findAll();
+            for (Data_alam data_alam : data_alams) {
+                Data_alam_firebase dataAlamFirebase = new Data_alam_firebase();
+                dataAlamFirebase.setAlamOn(data_alam.getisAlamOn());
+                dataAlamFirebase.setColor(data_alam.getColor());
+                dataAlamFirebase.setIcon(data_alam.getIcon());
+                dataAlamFirebase.setLatitude(data_alam.getLatitude());
+                dataAlamFirebase.setLongitude(data_alam.getLongitude());
+                dataAlamFirebase.setMemo(data_alam.getMemo());
+                dataAlamFirebase.setName(data_alam.getName());
+                mDatabase.child(UID).child("Location_Memo").child(data_alam.getMemo()).setValue(dataAlamFirebase);
+            }
+            for (Data_nomal data_nomal : data_nomals) {
+                Data_nomal_firebase dataNomalFirebase = new Data_nomal_firebase();
+                dataNomalFirebase.setColor(data_nomal.getColor());
+                dataNomalFirebase.setFrag(data_nomal.getFrag());
+                dataNomalFirebase.setMemo(data_nomal.getMemo());
+                dataNomalFirebase.setOrder(data_nomal.getOrder());
+                mDatabase.child(UID).child("Nomal_Memo").child(data_nomal.getMemo()).setValue(dataNomalFirebase);
+            }
+            for (Data_Icon data_icon : data_icons) {
+                Data_Icon_firebase dataIconFirebase = new Data_Icon_firebase();
+                dataIconFirebase.setButton(data_icon.getButton());
+                dataIconFirebase.setButtonclick(data_icon.getButtonclick());
+                dataIconFirebase.setLatitude(data_icon.getLatitude());
+                dataIconFirebase.setLongitude(data_icon.getLongitude());
+                dataIconFirebase.setName(data_icon.getName());
+                mDatabase.child(UID).child("Location_Icon").child(data_icon.getName()).setValue(dataIconFirebase);
+            }
+            Toast.makeText(mainContext, "내보내기를 시도합니다.", Toast.LENGTH_SHORT).show();
 //            }
 ////            else if(user.equals("guest")){
 ////                Toast.makeText(mainContext, "백업 기능은 로그인 후 이용하실수 있습니다.", Toast.LENGTH_LONG).show();
 ////            }
-        }else if (view == mainBinding.menu.btnLoad) {
-                mDatabase.child(UID).child("Location_Icon").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        RealmResults<Data_Icon> data_icons = myRealm.where(Data_Icon.class).findAll();
+        } else if (view == mainBinding.menu.btnLoad) {
+            mDatabase.child(UID).child("Location_Icon").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    RealmResults<Data_Icon> data_icons = myRealm.where(Data_Icon.class).findAll();
+                    myRealm.beginTransaction();
+                    data_icons.deleteAllFromRealm();
+                    myRealm.commitTransaction();
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        Data_Icon_firebase dataIconFirebase = postSnapshot.getValue(Data_Icon_firebase.class);
                         myRealm.beginTransaction();
-                        data_icons.deleteAllFromRealm();
+                        Data_Icon data_icon = myRealm.createObject(Data_Icon.class);
+                        data_icon.setButton(dataIconFirebase.getButton());
+                        data_icon.setButtonclick(dataIconFirebase.getButtonclick());
+                        data_icon.setLatitude(dataIconFirebase.getLatitude());
+                        data_icon.setLongitude(dataIconFirebase.getLongitude());
+                        data_icon.setName(dataIconFirebase.getName());
                         myRealm.commitTransaction();
-                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                            Data_Icon_firebase dataIconFirebase = postSnapshot.getValue(Data_Icon_firebase.class);
-                            myRealm.beginTransaction();
-                            Data_Icon data_icon = myRealm.createObject(Data_Icon.class);
-                            data_icon.setButton(dataIconFirebase.getButton());
-                            data_icon.setButtonclick(dataIconFirebase.getButtonclick());
-                            data_icon.setLatitude(dataIconFirebase.getLatitude());
-                            data_icon.setLongitude(dataIconFirebase.getLongitude());
-                            data_icon.setName(dataIconFirebase.getName());
-                            myRealm.commitTransaction();
-
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
-                });
-                mDatabase.child(UID).child("Nomal_Memo").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).findAll();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            mDatabase.child(UID).child("Nomal_Memo").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).findAll();
+                    myRealm.beginTransaction();
+                    data_nomals.deleteAllFromRealm();
+                    myRealm.commitTransaction();
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        Data_nomal_firebase dataNomalFirebase = postSnapshot.getValue(Data_nomal_firebase.class);
                         myRealm.beginTransaction();
-                        data_nomals.deleteAllFromRealm();
+                        Data_nomal data_nomal = myRealm.createObject(Data_nomal.class);
+                        data_nomal.setOrder(dataNomalFirebase.getOrder());
+                        data_nomal.setColor(dataNomalFirebase.getColor());
+                        data_nomal.setFrag(dataNomalFirebase.getFrag());
+                        data_nomal.setMemo(dataNomalFirebase.getMemo());
                         myRealm.commitTransaction();
-                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                            Data_nomal_firebase dataNomalFirebase = postSnapshot.getValue(Data_nomal_firebase.class);
-                            myRealm.beginTransaction();
-                            Data_nomal data_nomal = myRealm.createObject(Data_nomal.class);
-                            data_nomal.setOrder(dataNomalFirebase.getOrder());
-                            data_nomal.setColor(dataNomalFirebase.getColor());
-                            data_nomal.setFrag(dataNomalFirebase.getFrag());
-                            data_nomal.setMemo(dataNomalFirebase.getMemo());
-                            myRealm.commitTransaction();
-
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     }
-                });
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
 
 
-                mDatabase.child(UID).child("Location_Memo").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
-                        myRealm.beginTransaction();
-                        data_alams.deleteAllFromRealm();
-                        myRealm.commitTransaction();
-                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                            Data_alam_firebase dataAlamFirebase = postSnapshot.getValue(Data_alam_firebase.class);
+            mDatabase.child(UID).child("Location_Memo").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
+                    myRealm.beginTransaction();
+                    data_alams.deleteAllFromRealm();
+                    myRealm.commitTransaction();
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        Data_alam_firebase dataAlamFirebase = postSnapshot.getValue(Data_alam_firebase.class);
 //                                Log.d("==",dataAlamFirebase.getName());
-                            myRealm.beginTransaction();
-                            Data_alam dataalam = myRealm.createObject(Data_alam.class);
-                            dataalam.setName(dataAlamFirebase.getName());
-                            dataalam.setMemo(dataAlamFirebase.getMemo());
-                            dataalam.setIcon(dataAlamFirebase.getIcon());
-                            dataalam.setLatitude(dataAlamFirebase.getLatitude());
-                            dataalam.setLongitude(dataAlamFirebase.getLongitude());
-                            dataalam.setColor(dataAlamFirebase.getColor());
-                            dataalam.setAlamOn(dataAlamFirebase.getisAlamOn());
-                            myRealm.commitTransaction();
-                            ShowAlamUi(sort);
-
-                        }
+                        myRealm.beginTransaction();
+                        Data_alam dataalam = myRealm.createObject(Data_alam.class);
+                        dataalam.setName(dataAlamFirebase.getName());
+                        dataalam.setMemo(dataAlamFirebase.getMemo());
+                        dataalam.setIcon(dataAlamFirebase.getIcon());
+                        dataalam.setLatitude(dataAlamFirebase.getLatitude());
+                        dataalam.setLongitude(dataAlamFirebase.getLongitude());
+                        dataalam.setColor(dataAlamFirebase.getColor());
+                        dataalam.setAlamOn(dataAlamFirebase.getisAlamOn());
+                        myRealm.commitTransaction();
+                        ShowAlamUi(sort);
 
                     }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
 
-                    }
-                });
-                Toast.makeText(mainContext, "가져오기를 시도합니다.", Toast.LENGTH_SHORT).show();
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            Toast.makeText(mainContext, "가져오기를 시도합니다.", Toast.LENGTH_SHORT).show();
+        }
 
         settingToggleButton(view);  //-- 옵션창에 버튼설정
     }
-
-
 
 
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -763,6 +758,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             mainBinding.menu.wigetOff.setTextColor(Color.rgb(70, 160, 220));
         }
     }
+
     public Bitmap getScreenshotFromRecyclerView(RecyclerView view) {
         RecyclerView.Adapter adapter = view.getAdapter();
         Bitmap bigBitmap = null;
@@ -808,15 +804,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
         return bigBitmap;
     }
+
     private void saveImage(Bitmap finalBitmap, String image_name) {
 
         String root = Environment.getExternalStorageDirectory().getAbsolutePath();
         String path = root + "/test";
         File myDir = new File(path);
-        if(!myDir.exists()) {
+        if (!myDir.exists()) {
             myDir.mkdirs();
         }
-        String fname = "Image_" + image_name+ ".jpg";
+        String fname = "Image_" + image_name + ".jpg";
         File file = new File(myDir, fname);
         try {
             FileOutputStream out = new FileOutputStream(file);
@@ -828,5 +825,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    private void saveToInternalStorage(Bitmap bitmapImage) {
+        String ex_storage =Environment.getExternalStorageDirectory().getAbsolutePath();
+        String foler_name = "/"+"immmmmage"+"/";
+        String file_name = "haha"+".jpg";
+        String string_path = ex_storage+foler_name;
 
-}
+        File file_path;
+        try {
+            file_path = new File(string_path);
+            if(!file_path.isDirectory()){
+                file_path.mkdirs();
+            }
+            FileOutputStream out = new FileOutputStream(string_path+file_name);
+            bitmapImage.compress(Bitmap.CompressFormat.JPEG,100,out);
+            out.close();
+            Toast.makeText(mainContext, "저장완료", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(mainContext, "에러 잼"+e, Toast.LENGTH_SHORT).show();
+        }
+        }
+    }
