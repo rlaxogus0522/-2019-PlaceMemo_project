@@ -41,13 +41,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @NonNull
     @Override
     public int getItemViewType(int position) {
-            return 0;
+        return 0;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_nomal_item_main, viewGroup, false);
-            return new ItemSwipeWithActionWidthViewHolder1(v);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_nomal_item_main, viewGroup, false);
+        return new ItemSwipeWithActionWidthViewHolder1(v);
 
     }
 

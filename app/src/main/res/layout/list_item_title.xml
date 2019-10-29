@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><layout>
+<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -33,6 +33,5 @@
             android:text="삭제"
             android:textColor="@android:color/white"/>
 
-    </LinearLayout><include layout="@layout/view_list_main_title_content"
-    android:id="@+id/title"/>
-</FrameLayout></layout>
+    </LinearLayout><include layout="@layout/view_list_main_title_content"/>
+</FrameLayout>

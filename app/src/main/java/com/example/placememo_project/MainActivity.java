@@ -74,7 +74,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -91,7 +93,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private boolean isdrawer = false;
     static String sort = "sort_update";
     static public ArrayList<String> titlename = new ArrayList<>();  //-- 등록된 알람이있는지 체크하기위한 변수( 메뉴용 )
-    GroupAdapter<GroupieViewHolder> adapter = new GroupAdapter<>();
+
     Realm myRealm;
     AlertDialog alamreset;  //-- 설정창에서 모든 알람 초기화시 경고 메시지 용
     ItemTouchHelperExtension mitemTouchHelper;
@@ -102,6 +104,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     RecyclerView recycleerView, recyclerView_nomal;
     FragmentManager fragmentManager;
     private Fragment locaion;
+    LocationAdapter locationadapter;
     RecyclerAdapter nomaladapters;
     public ItemTouchHelperExtension mItemTouchHelper_nomal;
     public ItemTouchHelperExtension.Callback mCallback_nomal;
@@ -139,7 +142,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mainBinding.menu.googleImage.setBackground(new ShapeDrawable(new OvalShape()));
         mainBinding.menu.googleImage.setClipToOutline(true);
-        recycleerView.setAdapter(adapter);
 
         Intent intent = getIntent();
         user = intent.getStringExtra("user");
@@ -206,12 +208,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mItemTouchHelper_nomal = new ItemTouchHelperExtension(mCallback_nomal);
 
 
+        mCallback = new ItemTouchHelperCallback(this);
+        mitemTouchHelper = new ItemTouchHelperExtension(mCallback);
+
+
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getApplicationContext(), new LinearLayoutManager(this).getOrientation());
         recyclerView_nomal.addItemDecoration(dividerItemDecoration);
         nomaladapters = new RecyclerAdapter(this);
         recyclerView_nomal.setLayoutManager(new LinearLayoutManager(this));
         recyclerView_nomal.setAdapter(nomaladapters);
         mItemTouchHelper_nomal.attachToRecyclerView(recyclerView_nomal);
+
+        locationadapter = new LocationAdapter(this);
+        recycleerView.setLayoutManager(new LinearLayoutManager(this));
+        recycleerView.setAdapter(locationadapter);
+        mitemTouchHelper.attachToRecyclerView(recycleerView);
 
         // 제목셋팅
         alertDialogBuilder.setTitle("모든 알람 초기화");
@@ -239,10 +250,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         });
         alamreset = alertDialogBuilder.create();
 
-        recycleerView.setLayoutManager(new LinearLayoutManager(this));
-        mCallback = new ItemTouchHelperCallback();
-        mitemTouchHelper = new ItemTouchHelperExtension(mCallback);
-        mitemTouchHelper.attachToRecyclerView(recycleerView);
 
 
         dataUpdate();   //-- DB에 정보 가져오기
@@ -347,7 +354,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         myRealm.beginTransaction();
         data_alams.deleteAllFromRealm();
         myRealm.commitTransaction();
-        adapter.clear();
+        locationadapter.clear();
         checkNoImage();  //-- 저장된 알람 없다는것을 체크하여 No Memo 이미지를 띄우고
     }
 
@@ -383,7 +390,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     public void ShowAlamUi(String sort) {
-        adapter.clear();
+        locationadapter.clear();
         titlename.clear();
         if (sort.equals("sort_name")) {
             RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll().sort("name");
@@ -425,20 +432,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (titlename.size() != 0) {
             for (int i = 0; i < titlename.size(); i++) {
                 RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
-                Log.d("color", results2.first().getColor() + "");
-                Data_alam data_alam_first = results2.first();
-                Section section = new Section();
-                PinHolder pinHolder = new PinHolder(data_alam_first);
-                section.add(pinHolder);
-                TitleHolder titleHolder = new TitleHolder(data_alam_first, i, this);
-                section.add(titleHolder);
-                for (Data_alam data_alam : results2) {
-                    ItemHolder itemHolder = new ItemHolder(data_alam, this);
-                    section.add(itemHolder);
+                locationadapter.addItem(new LocationMemo_item(results2.first().getColor(),"Pin"));
+                locationadapter.addItem(new LocationMemo_item(results2.first().getIcon(),results2.first().getColor(),results2.first().getName(),"Title"));
+                for(Data_alam data_alam : results2){
+                    locationadapter.addItem(new LocationMemo_item(data_alam.getName(),data_alam.getMemo(),"Memo"));
                 }
-                BetweenHolder betweenHolder = new BetweenHolder();
-                section.add(betweenHolder);
-                adapter.add(section);
+//                locationadapter.addItem(new LocationMemo_item("bin"));
+//
+//                Section section = new Section();
+//                PinHolder pinHolder = new PinHolder(data_alam_first);
+//                section.add(pinHolder);
+//                TitleHolder titleHolder = new TitleHolder(data_alam_first, i, this);
+//                section.add(titleHolder);
+//                for (Data_alam data_alam : results2) {
+//                    ItemHolder itemHolder = new ItemHolder(data_alam, this);
+//                    section.add(itemHolder);
+//                }
+//                BetweenHolder betweenHolder = new BetweenHolder();
+//                section.add(betweenHolder);
+//                locationadapter.add(section);
             }
         }
         checkNoImage();
@@ -465,53 +477,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
-    public class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback {
-        ItemHolder holder, holder1;
 
-        @Override
-        public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            int swipeFlag = ItemTouchHelper.LEFT;
-            return makeMovementFlags(0, swipeFlag);
-
-        }
-
-        @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder viewHolder1) {
-            return false;
-        }
-
-        @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder, int i) {
-        }
-
-        @Override
-        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            Object holderItem = viewHolder.itemView.getTag();
-            try {
-                if (holderItem instanceof ItemHolder) {
-                    holder = (ItemHolder) holderItem;
-                    ItemHolder holder = (ItemHolder) holderItem;
-                    if (dX < -holder.mActionContainer2.getWidth()) {
-                        dX = -holder.mActionContainer2.getWidth();
-                    }
-                    holder.mViewContent2.setTranslationX(dX);
-
-                } else if (holderItem instanceof TitleHolder) {
-                    TitleHolder holder = (TitleHolder) holderItem;
-                    if (dX < -holder.mActionContainer1.getWidth()) {
-                        dX = -holder.mActionContainer1.getWidth();
-                    }
-                    holder.mViewContent1.setTranslationX(dX);
-                }
-            } catch (NullPointerException e) {
-
-            }
-//
-
-        }
-
-        /*------------------------------------------------------------------------------------------------------------------------------------------*/
-    }
 
     @Override
     public void onClick(View view) {
@@ -524,6 +490,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else if (view == mainBinding.menu.btnReset) {
             alamreset.show();  //-- 모든 알람 초기화를 누른다면 알람리셋 팝업창 보여주기
         } else if (view == mainBinding.locationTab) {
+            mainBinding.kakaoButton.setText("   위치메모\n    공유하기 ");
             mainBinding.locationTab.setAlpha(1.0f);
             mainBinding.nomalTab.setAlpha(0.6f);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -531,6 +498,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             transaction.replace(R.id.frame, location_memo_activity);
             transaction.commit();
         } else if (view == mainBinding.nomalTab) {
+            mainBinding.kakaoButton.setText("   일반메모\n    공유하기 ");
             mainBinding.locationTab.setAlpha(0.6f);
             mainBinding.nomalTab.setAlpha(1.0f);
             nomaladapters.clear();
@@ -573,8 +541,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 overridePendingTransition(R.anim.fadein, R.anim.fadeout);
             }
         } else if (view == mainBinding.kakaoButton) {
-
-            saveToInternalStorage(getScreenshotFromRecyclerView(recyclerView_nomal));
+            if( mainBinding.locationTab.getAlpha() == 1.0f) {
+                saveToInternalStorage(getScreenshotFromRecyclerView(recycleerView));
+            }else{
+                saveToInternalStorage(getScreenshotFromRecyclerView(recyclerView_nomal));
+            }
 
 
 //            TextTemplate params = TextTemplate.newBuilder("Text", LinkObject.newBuilder().setWebUrl("https://developers.kakao.com").setMobileWebUrl("https://developers.kakao.com").build()).setButtonTitle("This is button").build();
@@ -784,9 +755,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 if (drawingCache != null) {
 
                     bitmaCache.put(String.valueOf(i), drawingCache);
+                    Log.d("==Count :","1111 "+ i);
                 }
-//                holder.itemView.setDrawingCacheEnabled(false);
-//                holder.itemView.destroyDrawingCache();
+                Log.d("==Count :","1112 "+ i);
                 height += holder.itemView.getMeasuredHeight();
             }
 
@@ -795,40 +766,45 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             bigCanvas.drawColor(Color.WHITE);
 
             for (int i = 0; i < size; i++) {
+                Log.d("==Count :","222");
                 Bitmap bitmap = bitmaCache.get(String.valueOf(i));
                 bigCanvas.drawBitmap(bitmap, 0f, iHeight, paint);
                 iHeight += bitmap.getHeight();
-                bitmap.recycle();
+                //bitmap.recycle();
             }
+
+            Set<Map.Entry<String, Bitmap>> iSet = bitmaCache.snapshot().entrySet();
+            Iterator<Map.Entry<String, Bitmap>> it = iSet.iterator();
+
+            for(;it.hasNext();)
+            {
+                it.next().getValue().recycle();
+            }
+
+//            for (int i = 0; i < bitmaCache.size(); i++) {
+//                Bitmap bitmap = bitmaCache.get()
+//                bitmap.recycle();
+//            }
 
         }
         return bigBitmap;
     }
 
-    private void saveImage(Bitmap finalBitmap, String image_name) {
+//    public Bitmap recyclerCapture(RecyclerView recyclerView){
+//        recyclerView.measure(
+//                View.MeasureSpec.makeMeasureSpec(recyclerView.getWidth(), View.MeasureSpec.EXACTLY),
+//                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+//
+//        Bitmap bm = Bitmap.createBitmap(recyclerView.getWidth(), recyclerView.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+//        recyclerView.draw(new Canvas(bm));
+//        return bm;
+//    }
 
-        String root = Environment.getExternalStorageDirectory().getAbsolutePath();
-        String path = root + "/test";
-        File myDir = new File(path);
-        if (!myDir.exists()) {
-            myDir.mkdirs();
-        }
-        String fname = "Image_" + image_name + ".jpg";
-        File file = new File(myDir, fname);
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     private void saveToInternalStorage(Bitmap bitmapImage) {
         String ex_storage =Environment.getExternalStorageDirectory().getAbsolutePath();
         String foler_name = "/"+"immmmmage"+"/";
-        String file_name = "haha"+".jpg";
+        String file_name = "KaKao_Image"+".jpg";
         String string_path = ex_storage+foler_name;
 
         File file_path;

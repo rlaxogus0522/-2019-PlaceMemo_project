@@ -3,32 +3,27 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/location_frame">
-    <ScrollView
-        android:layout_gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
+
+        <RelativeLayout
             android:orientation="vertical"
             android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            android:layout_height="match_parent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycleerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="20dp"
                 android:background="@android:color/transparent" />
 
             <TextView
                 android:id="@+id/TextView_no_memo"
+                android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="150dp"
-                android:layout_marginEnd="8dp"
+               android:layout_centerInParent="true"
                 android:text="No Memo"
                 android:textSize="40dp"
-                android:textStyle="italic|bold" /></LinearLayout></ScrollView>
+                android:textStyle="italic|bold" /></RelativeLayout>
 </FrameLayout></layout>

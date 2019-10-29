@@ -37,17 +37,10 @@ public  class ItemTouchHelperCallback2 extends ItemTouchHelperExtension.Callback
         fromPosition = viewHolder.getAdapterPosition();
         toPostition = viewHolder1.getAdapterPosition();
         RealmResults<Data_nomal> from1 = myRealm.where(Data_nomal.class).findAll().sort("order");
-        for (Data_nomal data_nomal : from1) {
-            Log.d("==전 :",data_nomal.getMemo()+"");
-            Log.d("==전 :","   "+data_nomal.getOrder());
-        }
-        Log.d("==fromPosition",fromPosition+"");
-        Log.d("==toPostition",toPostition+"");
+
 
         Data_nomal from = myRealm.where(Data_nomal.class).equalTo("order",fromPosition).findFirst();
         Data_nomal to = myRealm.where(Data_nomal.class).equalTo("order",toPostition).findFirst();
-        Log.d("==중간 :",from.getMemo()+"");
-        Log.d("==중간 :",to.getMemo()+"");
 
 
         myRealm.beginTransaction();
@@ -56,11 +49,8 @@ public  class ItemTouchHelperCallback2 extends ItemTouchHelperExtension.Callback
         myRealm.commitTransaction();
 
 
-
         RealmResults<Data_nomal> from2 = myRealm.where(Data_nomal.class).findAll().sort("order");
         for (Data_nomal data_nomal : from2) {
-            Log.d("==후 :",data_nomal.getMemo()+"");
-            Log.d("==후 :","   "+data_nomal.getOrder()+"");
         }
 
 
