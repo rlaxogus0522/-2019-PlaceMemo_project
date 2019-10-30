@@ -62,6 +62,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import com.kakao.kakaolink.v2.KakaoLinkResponse;
+import com.kakao.kakaolink.v2.KakaoLinkService;
+import com.kakao.message.template.ButtonObject;
+import com.kakao.message.template.ContentObject;
+import com.kakao.message.template.FeedTemplate;
+import com.kakao.message.template.LinkObject;
+import com.kakao.message.template.SocialObject;
+import com.kakao.network.ErrorResult;
+import com.kakao.network.callback.ResponseCallback;
+import com.kakao.network.storage.ImageUploadResponse;
+import com.kakao.util.helper.log.Logger;
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 
 import java.io.File;
@@ -74,6 +85,8 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 import io.realm.Realm;
@@ -587,7 +600,35 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }else{
                 saveToInternalStorage(getScreenshotFromRecyclerView(recyclerView_nomal));
             }
-
+//            FeedTemplate params = FeedTemplate
+//                    .newBuilder(ContentObject.newBuilder("나의 계획표",getScreenshotFromRecyclerView(recycleerView)
+//                            ,
+//                            LinkObject.newBuilder().setWebUrl("https://developers.kakao.com")
+//                                    .setMobileWebUrl("https://developers.kakao.com").build())
+//                            .build())
+//                    .addButton(new ButtonObject("나의 계획표 작성하러 가기", LinkObject.newBuilder()
+//                            .setWebUrl("'https://developers.kakao.com")
+//                            .setMobileWebUrl("'https://developers.kakao.com")
+//                            .setAndroidExecutionParams("key1=value1")
+//                            .setIosExecutionParams("key1=value1")
+//                            .build()))
+//                    .build();
+//
+//            Map<String, String> serverCallbackArgs = new HashMap<String, String>();
+//            serverCallbackArgs.put("user_id", "${current_user_id}");
+//            serverCallbackArgs.put("product_id", "${shared_product_id}");
+//
+//            KakaoLinkService.getInstance().sendDefault(this, params, serverCallbackArgs, new ResponseCallback<KakaoLinkResponse>() {
+//                @Override
+//                public void onFailure(ErrorResult errorResult) {
+//                    Logger.e(errorResult.toString());
+//                }
+//
+//                @Override
+//                public void onSuccess(KakaoLinkResponse result) {
+//                    // 템플릿 밸리데이션과 쿼터 체크가 성공적으로 끝남. 톡에서 정상적으로 보내졌는지 보장은 할 수 없다. 전송 성공 유무는 서버콜백 기능을 이용하여야 한다.
+//                }
+//            });
 
 
 
@@ -800,15 +841,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         return bigBitmap;
     }
 
-//    public Bitmap recyclerCapture(RecyclerView recyclerView){
-//        recyclerView.measure(
-//                View.MeasureSpec.makeMeasureSpec(recyclerView.getWidth(), View.MeasureSpec.EXACTLY),
-//                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-//
-//        Bitmap bm = Bitmap.createBitmap(recyclerView.getWidth(), recyclerView.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
-//        recyclerView.draw(new Canvas(bm));
-//        return bm;
-//    }
+
+    public void retrunImage(){
+        File imageFile = new File("path/of/image/file");
+
+        KakaoLinkService.getInstance().uploadImage(this, false, imageFile, new ResponseCallback<ImageUploadResponse>() {
+            @Override
+            public void onFailure(ErrorResult errorResult) {
+                Logger.e(errorResult.toString());
+            }
+
+            @Override
+            public void onSuccess(ImageUploadResponse result) {
+                result.getOriginal().getUrl();
+//                Logger.d(result.getImageUrl());
+            }
+        });
+    }
 
 
     private void saveToInternalStorage(Bitmap bitmapImage) {
