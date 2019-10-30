@@ -3,7 +3,7 @@ package com.example.placememo_project;
 public class LocationMemo_item {
     String type,title,memo;    //-- 메뉴인지,메모인지,여백인지 구분하는 type 변수 ,  위치에 이름 , 메모
     int icon;  //-- 위치에 대한 Icon
-    int color;  //-- 메뉴판에 색깔
+    int color = 0;  //-- 메뉴판에 색깔
 
     public LocationMemo_item(int icon,int color, String title, String type) {
         this.icon = icon;
@@ -16,7 +16,8 @@ public class LocationMemo_item {
         this.memo = memo;
         this.type = type;
     }
-    public LocationMemo_item(int color, String type) {
+    public LocationMemo_item(String title,int color, String type) {
+        this.title = title;
         this.color = color;
         this.type = type;
     }

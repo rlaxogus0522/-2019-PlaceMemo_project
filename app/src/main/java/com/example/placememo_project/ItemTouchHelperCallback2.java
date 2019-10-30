@@ -36,23 +36,14 @@ public  class ItemTouchHelperCallback2 extends ItemTouchHelperExtension.Callback
         int fromPosition, toPostition;
         fromPosition = viewHolder.getAdapterPosition();
         toPostition = viewHolder1.getAdapterPosition();
-        RealmResults<Data_nomal> from1 = myRealm.where(Data_nomal.class).findAll().sort("order");
-
 
         Data_nomal from = myRealm.where(Data_nomal.class).equalTo("order",fromPosition).findFirst();
         Data_nomal to = myRealm.where(Data_nomal.class).equalTo("order",toPostition).findFirst();
-
 
         myRealm.beginTransaction();
         from.setOrder(toPostition);
         to.setOrder(fromPosition);
         myRealm.commitTransaction();
-
-
-        RealmResults<Data_nomal> from2 = myRealm.where(Data_nomal.class).findAll().sort("order");
-        for (Data_nomal data_nomal : from2) {
-        }
-
 
         ((MainActivity)mainContext).nomaladapters.notifyItemMoved(viewHolder.getPosition(),viewHolder1.getPosition());
         return true;
@@ -76,8 +67,6 @@ public  class ItemTouchHelperCallback2 extends ItemTouchHelperExtension.Callback
             RecyclerAdapter.ViewHolder1 holder1 = (RecyclerAdapter.ViewHolder1) viewHolder;
             if (viewHolder instanceof RecyclerAdapter.ItemSwipeWithActionWidthViewHolder1) {
                 holder1.mViewContent1.setTranslationX(dX);
-                Log.d("mViewContent1",holder1.mViewContent1.getTranslationX()+"");
-                Log.d("mActionContainer1",holder1.mActionContainer1.getWidth()+"");
                 return;
             }
 

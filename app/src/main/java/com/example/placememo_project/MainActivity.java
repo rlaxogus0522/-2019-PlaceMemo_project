@@ -390,15 +390,35 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     public void ShowAlamUi(String sort) {
+        int count = 0;
+        boolean isSmame = true;
         locationadapter.clear();
         titlename.clear();
         if (sort.equals("sort_name")) {
             RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll().sort("name");
+//            RealmResults<Data_alam> data_alam2 = results;
+
             for (Data_alam data_alam : results) {
                 if (!titlename.contains(data_alam.getName())) {
                     titlename.add(data_alam.getName());
                 }
             }
+//
+//            myRealm.beginTransaction();
+//            results.deleteAllFromRealm();
+//            for(Data_alam data_alam1 : data_alam2) {
+//                Data_alam dataalam = myRealm.createObject(Data_alam.class);
+//                dataalam.setName(data_alam1.getName());
+//                dataalam.setMemo(data_alam1.getMemo());
+//                dataalam.setIcon(data_alam1.getIcon());
+//                dataalam.setLatitude(data_alam1.getLatitude());
+//                dataalam.setLongitude(data_alam1.getLongitude());
+//                dataalam.setColor(data_alam1.getColor());
+//                dataalam.setAlamOn(data_alam1.getisAlamOn());
+//            }
+//            myRealm.commitTransaction();
+
+
         } else if (sort.equals("sort_update")) {
             RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll();
             for (Data_alam data_alam : results) {
@@ -408,11 +428,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         } else if (sort.equals("sort_alams")) {
             RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll().sort("name");
+//            RealmResults<Data_alam> data_alam2 = results;
             for (Data_alam data_alam : results) {
                 if (!titlename.contains(data_alam.getName())) {
                     titlename.add(data_alam.getName());
                 }
             }
+            for (int i = 0; i < titlename.size(); i++) {
+                if (i == 0) {
+                    RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
+                    count = data_alams.size();
+                } else {
+                    RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
+                    if (count != data_alams.size()) isSmame = false;
+                }
+            }
+            if(!isSmame){
             ArrayList<String> arrayList = new ArrayList<>();
             arrayList.addAll(titlename);
             titlename.clear();
@@ -429,28 +460,36 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
             }
         }
+//
+//            myRealm.beginTransaction();
+//            results.deleteAllFromRealm();
+//            for (int i = 0; i < titlename.size() ; i++) {
+//                RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
+//            }
+//
+//            for(Data_alam data_alam1 : data_alam2) {
+//                Data_alam dataalam = myRealm.createObject(Data_alam.class);
+//                dataalam.setName(data_alam1.getName());
+//                dataalam.setMemo(data_alam1.getMemo());
+//                dataalam.setIcon(data_alam1.getIcon());
+//                dataalam.setLatitude(data_alam1.getLatitude());
+//                dataalam.setLongitude(data_alam1.getLongitude());
+//                dataalam.setColor(data_alam1.getColor());
+//                dataalam.setAlamOn(data_alam1.getisAlamOn());
+//            }
+//            myRealm.commitTransaction();
+//
+
+        }
         if (titlename.size() != 0) {
             for (int i = 0; i < titlename.size(); i++) {
                 RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
-                locationadapter.addItem(new LocationMemo_item(results2.first().getColor(),"Pin"));
+                locationadapter.addItem(new LocationMemo_item(results2.first().getName(),results2.first().getColor(),"Pin"));
                 locationadapter.addItem(new LocationMemo_item(results2.first().getIcon(),results2.first().getColor(),results2.first().getName(),"Title"));
                 for(Data_alam data_alam : results2){
                     locationadapter.addItem(new LocationMemo_item(data_alam.getName(),data_alam.getMemo(),"Memo"));
                 }
-//                locationadapter.addItem(new LocationMemo_item("bin"));
-//
-//                Section section = new Section();
-//                PinHolder pinHolder = new PinHolder(data_alam_first);
-//                section.add(pinHolder);
-//                TitleHolder titleHolder = new TitleHolder(data_alam_first, i, this);
-//                section.add(titleHolder);
-//                for (Data_alam data_alam : results2) {
-//                    ItemHolder itemHolder = new ItemHolder(data_alam, this);
-//                    section.add(itemHolder);
-//                }
-//                BetweenHolder betweenHolder = new BetweenHolder();
-//                section.add(betweenHolder);
-//                locationadapter.add(section);
+
             }
         }
         checkNoImage();
@@ -755,36 +794,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 if (drawingCache != null) {
 
                     bitmaCache.put(String.valueOf(i), drawingCache);
-                    Log.d("==Count :","1111 "+ i);
                 }
-                Log.d("==Count :","1112 "+ i);
                 height += holder.itemView.getMeasuredHeight();
             }
 
             bigBitmap = Bitmap.createBitmap(view.getMeasuredWidth(), height, Bitmap.Config.ARGB_8888);
             Canvas bigCanvas = new Canvas(bigBitmap);
-            bigCanvas.drawColor(Color.WHITE);
+            bigCanvas.drawColor(0xFF626064);
 
             for (int i = 0; i < size; i++) {
-                Log.d("==Count :","222");
                 Bitmap bitmap = bitmaCache.get(String.valueOf(i));
                 bigCanvas.drawBitmap(bitmap, 0f, iHeight, paint);
                 iHeight += bitmap.getHeight();
-                //bitmap.recycle();
+                bitmap.recycle();
             }
 
-            Set<Map.Entry<String, Bitmap>> iSet = bitmaCache.snapshot().entrySet();
-            Iterator<Map.Entry<String, Bitmap>> it = iSet.iterator();
-
-            for(;it.hasNext();)
-            {
-                it.next().getValue().recycle();
-            }
-
-//            for (int i = 0; i < bitmaCache.size(); i++) {
-//                Bitmap bitmap = bitmaCache.get()
-//                bitmap.recycle();
-//            }
 
         }
         return bigBitmap;

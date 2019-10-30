@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +32,6 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int VIEW_TYPE_A = 0;   // -- view 타입을 2개로 구분 (  메뉴 /  메모 )
     private static final int VIEW_TYPE_B = 1;
     private static final int VIEW_TYPE_C = 2;
-    int color;
     Context mcontext;
 
 
@@ -44,16 +44,12 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemViewType(int position) {
         if(items.get(position).getType().equals("Pin")){
-            color = items.get(position).getColor();
             return VIEW_TYPE_D;
         } else if (items.get(position).getType().equals("Title")) {  // -- 전달받은 값에서 Type을 구분
-            color = items.get(position).getColor();
             return VIEW_TYPE_A;
         } else if(items.get(position).getType().equals("Memo")){
-            color = items.get(position).getColor();
             return VIEW_TYPE_B;
         }else{
-            color = items.get(position).getColor();
             return VIEW_TYPE_C;
         }
     }
@@ -61,11 +57,14 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
        if(viewType == VIEW_TYPE_D){
+           Log.d("==onCreateViewHolder",items.size()+"");
            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.pin, viewGroup, false);
            return  new PinHolder(v);
        }
         else if(viewType == VIEW_TYPE_A) {
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_title, viewGroup, false);
+
+
             return new ItemSwipeWithActionWidthViewHolder1(v);
         }else if(viewType == VIEW_TYPE_B){
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_main, viewGroup, false);
@@ -78,8 +77,13 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, final int position) {
+        Data_alam data_alams = myRealm.where(Data_alam.class).equalTo("name",items.get(position).getTitle()).findFirst();
         if (viewHolder instanceof LocationAdapter.ItemSwipeWithActionWidthViewHolder1) {
+            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).background.setBackgroundColor(data_alams.getColor());
+            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.setBackgroundColor(data_alams.getColor());
+            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionContainer1.setBackgroundColor(data_alams.getColor());
             ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewDelete1.setEnabled(false);
+            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewEdit1.setEnabled(false);
             ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewDelete1.setOnClickListener(new View.OnClickListener() {  //-- 메뉴에 삭제버튼을 클릭한다면
                 @Override
                 public void onClick(View view) {
@@ -118,8 +122,11 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             });
             ((ItemSwipeWithActionWidthViewHolder2) viewHolder).textView2.setText(items.get(position).getMemo());
-        }else{
-
+        }else if( viewHolder instanceof LocationAdapter.PinHolder){
+            GradientDrawable gradientDrawable = new GradientDrawable();
+            gradientDrawable.setCornerRadii(new float[ ]{ 200, 200, 200, 200, 0, 0, 0, 0 });
+            gradientDrawable.setColor(data_alams.getColor());
+            ((PinHolder) viewHolder).view.setBackgroundDrawable(gradientDrawable);
         }
     }
 
@@ -131,7 +138,7 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void addItem(LocationMemo_item item) {
-        color = item.getColor();
+
         items.add(item);
         notifyDataSetChanged();  // -- 업데이트
         ((MainActivity)mainContext).checkNoImage_nomal();
@@ -170,7 +177,7 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         View mViewContent1;
         View mActionContainer1;
         View background;
-
+        int color;
 
         public ViewHolder1(View itemView) {
             super(itemView);
@@ -179,9 +186,10 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             mViewContent1 = itemView.findViewById(R.id.view_list_title_content);
             mActionContainer1 = itemView.findViewById(R.id.view_list_title_action_container);
             background = itemView.findViewById(R.id.title_background);
-            background.setBackgroundColor(color);
-            mViewContent1.setBackgroundColor(color);
-            mActionContainer1.setBackgroundColor(color);
+
+//            background.setBackgroundColor(color);
+//            mViewContent1.setBackgroundColor(color);
+//            mActionContainer1.setBackgroundColor(color);
 
         }
     }
@@ -246,15 +254,16 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     class PinHolder extends RecyclerView.ViewHolder {
         View view;
+        View padding;
 
         public PinHolder(View itemView) {
             super(itemView);
-            GradientDrawable gradientDrawable = new GradientDrawable();
-            gradientDrawable.setCornerRadii(new float[ ]{ 200, 200, 200, 200, 0, 0, 0, 0 });
-            gradientDrawable.setColor(color);
             view = itemView.findViewById(R.id.pin_layout);
+            padding = itemView.findViewById(R.id.padding_layout);
+            padding.setPadding(0,50,0,0);
 
-            view.setBackgroundDrawable(gradientDrawable);
+
+
         }
 
     }
