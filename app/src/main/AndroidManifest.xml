@@ -12,9 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".EditNomalMemoActivity"
+        <activity android:name=".activity.EditNomalMemoActivity"
             android:theme="@style/Theme.MyDialog"  />
-        <activity android:name=".IntroActivity">
+        <activity android:name=".activity.IntroActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -29,29 +29,29 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Alam_activity"
+        <activity android:name=".activity.AlamActivity"
             android:showOnLockScreen="true" />
-        <activity android:name=".TitleAddItemActivity"
+        <activity android:name=".activity.TitleAddItemActivity"
             android:theme="@style/Theme.MyDialog"/>
-        <activity android:name=".Activity_NomalMemo_Inset"
+        <activity android:name=".activity.NomalMemoInsetActivity"
             android:theme="@style/Theme.MyDialog"/>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".activity.MainActivity" />
         <activity
-            android:name=".EditMemoActivity"
+            android:name=".activity.EditMemoActivity"
             android:theme="@style/Theme.MyDialog" />
         <activity
-            android:name=".InsertActivity"
+            android:name=".activity.InsertActivity"
             android:theme="@style/Theme.MyDialog" />
-        <activity android:name=".LocationActivity" />
+        <activity android:name=".activity.LocationActivity" />
         <activity
-            android:name=".IconActivity"
+            android:name=".activity.IconActivity"
             android:theme="@style/Theme.MyDialog" />
-        <activity android:name=".Activity_Login"/>
+        <activity android:name=".activity.LoginActivity"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAeyokLLIn5BwKqqVRm0weMIU9GOBmfJUc" />
         <receiver
-            android:name=".LocationReceiver"
+            android:name=".receiverNoti.LocationReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

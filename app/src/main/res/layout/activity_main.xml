@@ -7,10 +7,9 @@
         android:id="@+id/drawlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity"
+        tools:context=".activity.MainActivity"
         >
             <LinearLayout
-
                 android:background="@drawable/recycling"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -121,6 +120,7 @@
                     <Button
                         android:id="@+id/kakao_button"
                         android:padding="5dp"
+                        android:layout_marginBottom="5dp"
                         android:background="@drawable/kakao_button"
                         android:drawableLeft="@drawable/kakao_button_custom"
                         android:layout_width="wrap_content"

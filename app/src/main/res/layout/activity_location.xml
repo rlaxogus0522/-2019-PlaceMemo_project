@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/map"
-            tools:context=".LocationActivity"
+            tools:context=".activity.LocationActivity"
             android:name="com.google.android.gms.maps.SupportMapFragment"/>
         <ImageView
             android:src="@drawable/marker"

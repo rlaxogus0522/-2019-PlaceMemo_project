@@ -8,7 +8,7 @@
         android:gravity="bottom"
         android:background="@drawable/login_main"
         android:orientation="vertical"
-        tools:context=".IntroActivity">
+        tools:context=".activity.IntroActivity">
 
 <Button
     android:padding="10dp"
