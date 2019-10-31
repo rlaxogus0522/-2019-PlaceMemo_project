@@ -64,7 +64,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import com.kakao.kakaolink.v2.KakaoLinkResponse;
 import com.kakao.kakaolink.v2.KakaoLinkService;
+import com.kakao.message.template.ButtonObject;
+import com.kakao.message.template.ContentObject;
+import com.kakao.message.template.FeedTemplate;
+import com.kakao.message.template.LinkObject;
+import com.kakao.message.template.TextTemplate;
 import com.kakao.network.ErrorResult;
 import com.kakao.network.callback.ResponseCallback;
 import com.kakao.network.storage.ImageUploadResponse;
@@ -81,6 +87,8 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 import io.realm.Realm;
@@ -198,6 +206,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mainBinding.menu.btnBackUp.setOnClickListener(this);
         mainBinding.menu.btnLoad.setOnClickListener(this);
         mainBinding.kakaoButton.setOnClickListener(this);
+        mainBinding.menu.btnShare.setOnClickListener(this);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
         drawView = (View) findViewById(R.id.drawer);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -589,47 +598,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 finish();
                 overridePendingTransition(R.anim.fadein, R.anim.fadeout);
             }
-        } else if (view == mainBinding.kakaoButton) {
-            if( mainBinding.locationTab.getAlpha() == 1.0f) {
-                saveToInternalStorage(getScreenshotFromRecyclerView(recycleerView));
-            }else{
-                saveToInternalStorage(getScreenshotFromRecyclerView(recyclerView_nomal));
-            }
+        } else if(view == mainBinding.menu.btnShare){
 
 
 
-
-
-            File imageFile = new File(goalPath);
-            Uri uri = FileProvider.getUriForFile(this,getPackageName(),imageFile);
-            Uri uri1 = Uri.parse("http://www.google.com");
-            ArrayList<Uri> uris = new ArrayList<>();
-            uris.add(uri);
-            uris.add(uri1);
-            Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-            intent.setType("image/*");
-            intent.putExtra(Intent.EXTRA_STREAM,uris);
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT,"https://play.google.com/store/apps/details?id=net.daum.android.daum");
             intent.setPackage("com.kakao.talk");
             startActivity(intent);
 
-
-
-
-
-//
-//            FeedTemplate params = FeedTemplate
-//                    .newBuilder(ContentObject.newBuilder("나의 계획표" ,returnImage(goalPath)
-//                            ,
-//                            LinkObject.newBuilder().setWebUrl("'https://developers.kakao.com")
-//                                    .setMobileWebUrl("'https://developers.kakao.com").build())
-//                            .build())
-//                    .addButton(new ButtonObject("나의 계획표 작성하러 가기", LinkObject.newBuilder()
-//                            .setWebUrl("'https://develㅇopers.kakao.com")
-//                            .setMobileWebUrl("'https://developers.kakao.com")
-//                            .setAndroidExecutionParams("key1=value1")
-//                            .setIosExecutionParams("key1=value1")
-//                            .build()))
-//                    .build();
+//            TextTemplate params = TextTemplate.newBuilder("다다다", LinkObject.newBuilder().setWebUrl("https://developers.kakao.com").setMobileWebUrl("https://developers.kakao.com").build()).build();
 //
 //            Map<String, String> serverCallbackArgs = new HashMap<String, String>();
 //            serverCallbackArgs.put("user_id", "${current_user_id}");
@@ -638,15 +617,30 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //            KakaoLinkService.getInstance().sendDefault(this, params, serverCallbackArgs, new ResponseCallback<KakaoLinkResponse>() {
 //                @Override
 //                public void onFailure(ErrorResult errorResult) {
-//                    Toast.makeText(getApplicationContext(),"실패",Toast.LENGTH_LONG).show();
+//                    Logger.e(errorResult.toString());
 //                }
 //
 //                @Override
 //                public void onSuccess(KakaoLinkResponse result) {
-//                    Toast.makeText(getApplicationContext(),"성공",Toast.LENGTH_LONG).show();
 //                    // 템플릿 밸리데이션과 쿼터 체크가 성공적으로 끝남. 톡에서 정상적으로 보내졌는지 보장은 할 수 없다. 전송 성공 유무는 서버콜백 기능을 이용하여야 한다.
 //                }
 //            });
+
+        }else if (view == mainBinding.kakaoButton) {
+            if( mainBinding.locationTab.getAlpha() == 1.0f) {
+                saveToInternalStorage(getScreenshotFromRecyclerView(recycleerView));
+            }else{
+                saveToInternalStorage(getScreenshotFromRecyclerView(recyclerView_nomal));
+            }
+
+            File imageFile = new File(goalPath);
+            Uri uri = FileProvider.getUriForFile(this,getPackageName(),imageFile);
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_STREAM,uri);
+            intent.setPackage("com.kakao.talk");
+            startActivity(intent);
+
 //
 
 

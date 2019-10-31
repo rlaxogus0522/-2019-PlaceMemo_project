@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.placememo_project.adapter.AlamAdapter;
+import com.example.placememo_project.databinding.ActivityAlamBinding;
 import com.example.placememo_project.dbData.Data_alam;
 import com.example.placememo_project.R;
-import com.example.placememo_project.databinding.AlamBinding;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -24,7 +24,7 @@ import io.realm.RealmResults;
 import static com.example.placememo_project.activity.MainActivity.mainContext;
 
 public class AlamActivity extends AppCompatActivity {
-    AlamBinding alamBinding;
+    ActivityAlamBinding alamBinding;
     RecyclerView.LayoutManager layoutManager;
     AlamAdapter alamAdapter;
     Realm myrealm;
@@ -37,7 +37,7 @@ public class AlamActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN|WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD|WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON|
                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED|
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-        alamBinding = DataBindingUtil.setContentView(this, R.layout.alam);
+        alamBinding = DataBindingUtil.setContentView(this, R.layout.activity_alam);
         allanim = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.all_anim);
         fadein =  AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein2);
         alamBinding.set.startAnimation(fadein);

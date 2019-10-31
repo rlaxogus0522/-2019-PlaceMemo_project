@@ -141,7 +141,7 @@
             </LinearLayout>
         <include
             android:id="@+id/menu"
-            layout="@layout/draw_seting"
+            layout="@layout/activity_seting"
             />
 
     </androidx.drawerlayout.widget.DrawerLayout></layout>
