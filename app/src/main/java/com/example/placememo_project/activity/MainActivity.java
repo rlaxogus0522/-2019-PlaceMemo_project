@@ -64,13 +64,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import com.kakao.kakaolink.v2.KakaoLinkResponse;
 import com.kakao.kakaolink.v2.KakaoLinkService;
-import com.kakao.message.template.ButtonObject;
-import com.kakao.message.template.ContentObject;
-import com.kakao.message.template.FeedTemplate;
-import com.kakao.message.template.LinkObject;
-import com.kakao.message.template.TextTemplate;
 import com.kakao.network.ErrorResult;
 import com.kakao.network.callback.ResponseCallback;
 import com.kakao.network.storage.ImageUploadResponse;
@@ -87,8 +81,6 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 
 import io.realm.Realm;
@@ -108,7 +100,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     static public ArrayList<String> titlename = new ArrayList<>();  //-- 등록된 알람이있는지 체크하기위한 변수( 메뉴용 )
 
     public Realm myRealm;
-    public AlertDialog alamreset;  //-- 설정창에서 모든 알람 초기화시 경고 메시지 용
+    public AlertDialog alamreset,alamreset2;  //-- 설정창에서 모든 알람 초기화시 경고 메시지 용
     public ItemTouchHelperExtension mitemTouchHelper;
     public ItemTouchHelperExtension.Callback mCallback;
     public boolean checkAlam = false;
@@ -210,6 +202,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
         drawView = (View) findViewById(R.id.drawer);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        AlertDialog.Builder alertDialogBuilder2 = new AlertDialog.Builder(this);
         animOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.translate);
         animClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.translate2);
         animOpen2 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.translate_1);
@@ -238,18 +231,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mitemTouchHelper.attachToRecyclerView(recycleerView);
 
         // 제목셋팅
-        alertDialogBuilder.setTitle("모든 알람 초기화");
+        alertDialogBuilder.setTitle("위치 메모 초기화");
+        alertDialogBuilder2.setTitle("일반 메모 초기화");
 
         // AlertDialog 셋팅
         alertDialogBuilder
-                .setMessage("모든 알람을초기화 하시겠습니까? \n (단, 등록된 알람위치는 지워지지 않습니다.)")
+                .setMessage("위치 메모를 초기화 하시겠습니까? \n (단, 등록된 알람위치는 지워지지 않습니다.)")
                 .setCancelable(false)
                 .setPositiveButton("초기화",
                         new DialogInterface.OnClickListener() {
                             public void onClick(
                                     DialogInterface dialog, int id) {
                                 // 초기화
-                                alamReset();
+                                locationAlamReset();
+
+                            }
+                        })
+                .setNegativeButton("취소",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(
+                                    DialogInterface dialog, int id) {
+                                // 다이얼로그를 취소한다
+                                dialog.cancel();
+                            }
+                        });
+
+        alertDialogBuilder2
+                .setMessage("일반 메모를 초기화 하시겠습니까?")
+                .setCancelable(false)
+                .setPositiveButton("초기화",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(
+                                    DialogInterface dialog, int id) {
+                                // 초기화
+                                nomalMemoReset();
 
                             }
                         })
@@ -262,6 +277,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             }
                         });
         alamreset = alertDialogBuilder.create();
+        alamreset2 = alertDialogBuilder2.create();
 
 
 
@@ -367,7 +383,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    private void alamReset() {  //-- 알람 리셋을 누른다면
+    private void locationAlamReset() {  //-- 알람 리셋을 누른다면
         titlename.clear();
         RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
         myRealm.beginTransaction();
@@ -375,6 +391,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         myRealm.commitTransaction();
         locationadapter.clear();
         checkNoImage();  //-- 저장된 알람 없다는것을 체크하여 No Memo 이미지를 띄우고
+    }
+
+    private void nomalMemoReset() {  //-- 알람 리셋을 누른다면
+        nomaladapters.clear();
+        RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll();
+        myRealm.beginTransaction();
+        results.deleteAllFromRealm();
+        myRealm.commitTransaction();
+        checkNoImage_nomal();
     }
 
 
@@ -415,27 +440,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         titlename.clear();
         if (sort.equals("sort_name")) {
             RealmResults<Data_alam> results = myRealm.where(Data_alam.class).findAll().sort("name");
-//            RealmResults<Data_alam> data_alam2 = results;
-
             for (Data_alam data_alam : results) {
                 if (!titlename.contains(data_alam.getName())) {
                     titlename.add(data_alam.getName());
                 }
             }
-//
-//            myRealm.beginTransaction();
-//            results.deleteAllFromRealm();
-//            for(Data_alam data_alam1 : data_alam2) {
-//                Data_alam dataalam = myRealm.createObject(Data_alam.class);
-//                dataalam.setName(data_alam1.getName());
-//                dataalam.setMemo(data_alam1.getMemo());
-//                dataalam.setIcon(data_alam1.getIcon());
-//                dataalam.setLatitude(data_alam1.getLatitude());
-//                dataalam.setLongitude(data_alam1.getLongitude());
-//                dataalam.setColor(data_alam1.getColor());
-//                dataalam.setAlamOn(data_alam1.getisAlamOn());
-//            }
-//            myRealm.commitTransaction();
 
 
         } else if (sort.equals("sort_update")) {
@@ -479,25 +488,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
             }
         }
-//
-//            myRealm.beginTransaction();
-//            results.deleteAllFromRealm();
-//            for (int i = 0; i < titlename.size() ; i++) {
-//                RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
-//            }
-//
-//            for(Data_alam data_alam1 : data_alam2) {
-//                Data_alam dataalam = myRealm.createObject(Data_alam.class);
-//                dataalam.setName(data_alam1.getName());
-//                dataalam.setMemo(data_alam1.getMemo());
-//                dataalam.setIcon(data_alam1.getIcon());
-//                dataalam.setLatitude(data_alam1.getLatitude());
-//                dataalam.setLongitude(data_alam1.getLongitude());
-//                dataalam.setColor(data_alam1.getColor());
-//                dataalam.setAlamOn(data_alam1.getisAlamOn());
-//            }
-//            myRealm.commitTransaction();
-//
 
         }
         if (titlename.size() != 0) {
@@ -514,23 +504,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         checkNoImage();
     }
 
-    public void remove() {
-        for (int i = 0; i < titlename.size(); i++) {
-            RealmResults<Data_alam> results = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
-
-            if (results.size() == 0) {
-                titlename.remove(i);
-                myRealm.beginTransaction();
-                results.deleteAllFromRealm();
-                myRealm.commitTransaction();
-            }
-        }
-
-    }
-
-
-    /*--------------------------------------------------------------------------------------------------------------*/
-
 
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -546,7 +519,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             Intent in = new Intent(MainActivity.this, InsertActivity.class);
             startActivityForResult(in, 0522);  //-- 메모추가 액티비티로 이동
         } else if (view == mainBinding.menu.btnReset) {
-            alamreset.show();  //-- 모든 알람 초기화를 누른다면 알람리셋 팝업창 보여주기
+            if( mainBinding.locationTab.getAlpha() == 1.0f) {
+                alamreset.show();  //-- 모든 알람 초기화를 누른다면 알람리셋 팝업창 보여주기
+            }else{
+                alamreset2.show();
+            }
         } else if (view == mainBinding.locationTab) {
             mainBinding.kakaoButton.setText("   위치메모\n    공유하기 ");
             mainBinding.locationTab.setAlpha(1.0f);
@@ -555,6 +532,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             LocationMemoActivity location_memo_activity = new LocationMemoActivity();
             transaction.replace(R.id.frame, location_memo_activity);
             transaction.commit();
+            ShowAlamUi(sort);
         } else if (view == mainBinding.nomalTab) {
             mainBinding.kakaoButton.setText("   일반메모\n    공유하기 ");
             mainBinding.locationTab.setAlpha(0.6f);
@@ -647,8 +625,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
         } else if (view == mainBinding.menu.btnBackUp) {
-//            if(user.equals("google")){
-
+            if(user.equals("google")){
             mDatabase.child(UID).removeValue();
 
             RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
@@ -683,10 +660,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 mDatabase.child(UID).child("Location_Icon").child(data_icon.getName()).setValue(dataIconFirebase);
             }
             Toast.makeText(mainContext, "내보내기를 시도합니다.", Toast.LENGTH_SHORT).show();
-//            }
-////            else if(user.equals("guest")){
-////                Toast.makeText(mainContext, "백업 기능은 로그인 후 이용하실수 있습니다.", Toast.LENGTH_LONG).show();
-////            }
+            }
+            else if(user.equals("guest")){
+                Toast.makeText(mainContext, "백업 기능은 로그인 후 이용하실수 있습니다.", Toast.LENGTH_LONG).show();
+            }
         } else if (view == mainBinding.menu.btnLoad) {
             mDatabase.child(UID).child("Location_Icon").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -731,6 +708,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         data_nomal.setMemo(dataNomalFirebase.getMemo());
                         myRealm.commitTransaction();
 
+                    }
+                    nomaladapters.clear();
+                    RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll().sort("order");
+                    for (Data_nomal data_nomal : results) {
+                        nomaladapters.addItem(data_nomal.getMemo(), data_nomal.getColor());
                     }
                 }
 
@@ -841,7 +823,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             bigBitmap = Bitmap.createBitmap(view.getMeasuredWidth(), height, Bitmap.Config.ARGB_8888);
             Canvas bigCanvas = new Canvas(bigBitmap);
-            bigCanvas.drawColor(0xFF626064);
+            bigCanvas.drawColor(0xFF9E9B9B);
 
             for (int i = 0; i < size; i++) {
                 Bitmap bitmap = bitmaCache.get(String.valueOf(i));

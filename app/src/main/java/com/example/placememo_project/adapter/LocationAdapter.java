@@ -109,8 +109,7 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 @Override
                 public void onClick(View view) {
                     if (((LocationAdapter.ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.getTranslationX() <= -((((LocationAdapter.ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionContainer1.getWidth()) / 2f)) {
-                        Toast.makeText(mcontext, "편집 버튼 클릭", Toast.LENGTH_LONG).show();
-                        ((MainActivity) mainContext).startEdit(items.get(position).getTitle(), ((LocationAdapter.ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1,"title");
+                        ((MainActivity) mainContext).startEdit(items.get(position).getTitle(), ((LocationAdapter.ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1, "title");
                     }
                 }
             });
@@ -119,6 +118,12 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
         } else if (viewHolder instanceof LocationAdapter.ItemSwipeWithActionWidthViewHolder2) {
+            Data_alam data_alam = myRealm.where(Data_alam.class).equalTo("memo", items.get(position).getMemo()).findFirst();
+            if (data_alam.getisAlamOn()) {
+                ((ItemSwipeWithActionWidthViewHolder2) viewHolder).imageButton.setImageResource(R.drawable.baseline_notifications_active_white_48dp);
+            } else {
+                ((ItemSwipeWithActionWidthViewHolder2) viewHolder).imageButton.setImageResource(R.drawable.baseline_notifications_off_white_48dp);
+            }
             ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mActionViewDelete2.setEnabled(false);
             ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mActionViewDelete2.setOnClickListener(new View.OnClickListener() {  //-- 메모에 삭제버튼을 클릭한다면
                 @Override
@@ -133,7 +138,7 @@ public class LocationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 @Override
                 public void onClick(View view) {
                     if (((LocationAdapter.ItemSwipeWithActionWidthViewHolder2) viewHolder).mViewContent2.getTranslationX() <= -((((LocationAdapter.ItemSwipeWithActionWidthViewHolder2) viewHolder).mActionContainer2.getWidth()) / 2f)) {
-                        ((MainActivity) mainContext).startEdit(items.get(position).getMemo(), ((LocationAdapter.ItemSwipeWithActionWidthViewHolder2) viewHolder).mViewContent2,"memo");
+                        ((MainActivity) mainContext).startEdit(items.get(position).getMemo(), ((LocationAdapter.ItemSwipeWithActionWidthViewHolder2) viewHolder).mViewContent2, "memo");
                     }
                 }
             });

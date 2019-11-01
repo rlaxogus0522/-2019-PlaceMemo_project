@@ -22,6 +22,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 import static com.example.placememo_project.activity.MainActivity.mainContext;
+import static com.example.placememo_project.activity.MainActivity.sort;
 
 public class AlamActivity extends AppCompatActivity {
     ActivityAlamBinding alamBinding;
@@ -64,13 +65,13 @@ public class AlamActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                if((seekBar.getProgress() > 25  && seekBar.getProgress() < 50 )|| (seekBar.getProgress() < 75 && seekBar.getProgress() > 50)){
-                    seekBar.setProgress(50);
+                if((seekBar.getProgress() > 250  && seekBar.getProgress() < 500 )|| (seekBar.getProgress() < 750 && seekBar.getProgress() > 500)){
+                    seekBar.setProgress(500);
                     seekBar.setAlpha(1f);
                     alamBinding.set.setAlpha(1f);
                     alamBinding.set.startAnimation(fadein);
                     alamBinding.set.startAnimation(allanim);
-                }else if(seekBar.getProgress() < 25){
+                }else if(seekBar.getProgress() < 250){
                     seekBar.setProgress(0);
                     seekBar.setAlpha(0f);
                     myrealm.beginTransaction();
@@ -78,8 +79,9 @@ public class AlamActivity extends AppCompatActivity {
                     myrealm.commitTransaction();
                     ((MainActivity)mainContext).pause = false;
                     finishAffinity();
-                }else if(seekBar.getProgress() >75){
-                    seekBar.setProgress(100);
+                    ((MainActivity)mainContext).ShowAlamUi(sort);
+                }else if(seekBar.getProgress() >750){
+                    seekBar.setProgress(1000);
                     seekBar.setAlpha(0f);
                     myrealm.beginTransaction();
                     for(Data_alam data_alam : data_alams){
@@ -88,6 +90,7 @@ public class AlamActivity extends AppCompatActivity {
                     myrealm.commitTransaction();
                     ((MainActivity)mainContext).pause = false;
                     finishAffinity();
+                    ((MainActivity)mainContext).ShowAlamUi(sort);
                 }
 
             }

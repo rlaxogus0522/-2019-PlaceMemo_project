@@ -13,6 +13,10 @@ import androidx.core.app.NotificationCompat;
 
 import com.example.placememo_project.R;
 import com.example.placememo_project.activity.IntroActivity;
+import com.example.placememo_project.activity.MainActivity;
+
+import static com.example.placememo_project.activity.MainActivity.mainContext;
+import static com.example.placememo_project.activity.MainActivity.sort;
 
 public class Notification {
     Context rContext;
@@ -53,7 +57,6 @@ public class Notification {
             }
             if(isAlamOn) {
                 notificationManager.notify(notiNum, builder.build());
-                WakeLock();
             }
 //        }
 
@@ -61,11 +64,5 @@ public class Notification {
 
     }
 
-    void WakeLock(){
-        PowerManager pm = (PowerManager) rContext.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP,TAG);
-        wl.acquire(3000);
-        wl.release();
-    }
 
 }

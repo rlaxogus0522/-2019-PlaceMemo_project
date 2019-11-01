@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 <LinearLayout
     android:id="@+id/drawer"
-    android:background="@drawable/papertexture"
+    android:background="@mipmap/paper"
     android:layout_width="260dp"
     android:layout_height="match_parent"
     android:layout_gravity="end"
@@ -11,7 +11,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:background="@drawable/google_background"
+        android:background="@mipmap/background"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"

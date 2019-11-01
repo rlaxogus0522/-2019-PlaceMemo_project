@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:padding="5dp"
-        android:background="@drawable/papertexture"
+        android:background="@mipmap/paper"
         android:layout_height="0dp">
         <ImageButton
             android:layout_weight="1"
@@ -62,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.2"
-        android:background="@drawable/papertexture"
+        android:background="@mipmap/paper"
         android:padding="5dp">
 
         <EditText
