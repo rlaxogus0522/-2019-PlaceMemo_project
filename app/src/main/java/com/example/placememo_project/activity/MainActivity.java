@@ -1,6 +1,7 @@
 package com.example.placememo_project.activity;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -58,6 +59,8 @@ import com.example.placememo_project.adapter.item.LocationMemo_item;
 import com.example.placememo_project.R;
 import com.example.placememo_project.adapter.RecyclerAdapter;
 import com.example.placememo_project.databinding.ActivityMainBinding;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -98,7 +101,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private boolean isdrawer = false;
     static public String sort = "sort_update";
     static public ArrayList<String> titlename = new ArrayList<>();  //-- 등록된 알람이있는지 체크하기위한 변수( 메뉴용 )
-
+    boolean isSuccess = true;
     public Realm myRealm;
     public AlertDialog alamreset,alamreset2;  //-- 설정창에서 모든 알람 초기화시 경고 메시지 용
     public ItemTouchHelperExtension mitemTouchHelper;
@@ -119,7 +122,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public String url,url2,goalPath;
     long backKeyPressedTime;
     public boolean pause = false;
-
+    ProgressDialog progressDialog;
 
 
     @Override
@@ -210,6 +213,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         animation3 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate);
         animation4 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate2);
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("잠시 기다려주세요...");
+        progressDialog.setCancelable(true);
+        progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
+
+
+
+
 
         mCallback_nomal = new ItemTouchHelperCallback2(this);
         mItemTouchHelper_nomal = new ItemTouchHelperExtension(mCallback_nomal);
@@ -626,12 +638,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         } else if (view == mainBinding.menu.btnBackUp) {
             if(user.equals("google")){
+
+                progressDialog.show();
             mDatabase.child(UID).removeValue();
 
             RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
             RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).findAll();
             RealmResults<Data_Icon> data_icons = myRealm.where(Data_Icon.class).findAll();
-            for (Data_alam data_alam : data_alams) {
+
+            for (Data_alam data_alam : data_alams) {            // 위치 알람 메모
                 Data_alam_firebase dataAlamFirebase = new Data_alam_firebase();
                 dataAlamFirebase.setAlamOn(data_alam.getisAlamOn());
                 dataAlamFirebase.setColor(data_alam.getColor());
@@ -640,31 +655,72 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 dataAlamFirebase.setLongitude(data_alam.getLongitude());
                 dataAlamFirebase.setMemo(data_alam.getMemo());
                 dataAlamFirebase.setName(data_alam.getName());
-                mDatabase.child(UID).child("Location_Memo").child(data_alam.getMemo()).setValue(dataAlamFirebase);
+                mDatabase.child(UID).child("Location_Memo").child(EncodeString(data_alam.getMemo())).setValue(dataAlamFirebase).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Data_alam","백업 성공");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        isSuccess = false;
+                        Log.d("Data_alam","백업 실패");
+                    }
+                });
             }
-            for (Data_nomal data_nomal : data_nomals) {
+            for (Data_nomal data_nomal : data_nomals) {            // 일반 메모
                 Data_nomal_firebase dataNomalFirebase = new Data_nomal_firebase();
                 dataNomalFirebase.setColor(data_nomal.getColor());
                 dataNomalFirebase.setFrag(data_nomal.getFrag());
-                dataNomalFirebase.setMemo(data_nomal.getMemo());
+                dataNomalFirebase.setMemo(EncodeString(data_nomal.getMemo()));
                 dataNomalFirebase.setOrder(data_nomal.getOrder());
-                mDatabase.child(UID).child("Nomal_Memo").child(data_nomal.getMemo()).setValue(dataNomalFirebase);
+                mDatabase.child(UID).child("Nomal_Memo").child(data_nomal.getMemo()).setValue(dataNomalFirebase).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Data_nomal","백업 성공");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        isSuccess = false;
+                        Log.d("Data_nomal","백업 실패");
+                    }
+                });
             }
-            for (Data_Icon data_icon : data_icons) {
+            for (Data_Icon data_icon : data_icons) {            // 위치 아이콘
                 Data_Icon_firebase dataIconFirebase = new Data_Icon_firebase();
                 dataIconFirebase.setButton(data_icon.getButton());
                 dataIconFirebase.setButtonclick(data_icon.getButtonclick());
                 dataIconFirebase.setLatitude(data_icon.getLatitude());
                 dataIconFirebase.setLongitude(data_icon.getLongitude());
                 dataIconFirebase.setName(data_icon.getName());
-                mDatabase.child(UID).child("Location_Icon").child(data_icon.getName()).setValue(dataIconFirebase);
+                mDatabase.child(UID).child("Location_Icon").child(EncodeString(data_icon.getName())).setValue(dataIconFirebase).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Data_Icon","백업 성공");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        isSuccess = false;
+                        Log.d("Data_Icon","백업 실패");
+                    }
+                });
             }
-            Toast.makeText(mainContext, "내보내기를 시도합니다.", Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
+            if(isSuccess) {
+                Toast.makeText(mainContext, "백업 완료.", Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(mainContext, "백업 실패.", Toast.LENGTH_LONG).show();
+                isSuccess = true;
+                }
             }
             else if(user.equals("guest")){
                 Toast.makeText(mainContext, "백업 기능은 로그인 후 이용하실수 있습니다.", Toast.LENGTH_LONG).show();
             }
         } else if (view == mainBinding.menu.btnLoad) {
+            if(user.equals("google")){
+            progressDialog.show();
             mDatabase.child(UID).child("Location_Icon").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -688,7 +744,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    isSuccess = false;
                 }
             });
             mDatabase.child(UID).child("Nomal_Memo").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -718,6 +774,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
+                    isSuccess = false;
 
                 }
             });
@@ -751,10 +808,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    isSuccess = false;
                 }
             });
-            Toast.makeText(mainContext, "가져오기를 시도합니다.", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            if (isSuccess) {
+                Toast.makeText(mainContext, "복원 완료.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(mainContext, "복원 실패.", Toast.LENGTH_SHORT).show();
+            }
+        }else if(user.equals("guest")){
+                Toast.makeText(mainContext, "백업 기능은 로그인 후 이용하실수 있습니다.", Toast.LENGTH_LONG).show();
+            }
         }
 
         settingToggleButton(view);  //-- 옵션창에 버튼설정
@@ -896,4 +961,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             Toast.makeText(mainContext, "에러 잼"+e, Toast.LENGTH_SHORT).show();
         }
         }
+
+
+
+    private String EncodeString(String string) {
+        String encodingString =  string.replace(".", "-");
+        String encodingString2 = encodingString.replace("#", "-");
+        String encodingString3 = encodingString2.replace("$", "-");
+        String encodingString4 = encodingString3.replace("[", "-");
+        String encodingString5 = encodingString4.replace("]", "-");
+        return encodingString5;
+    }
+
+
+
     }
