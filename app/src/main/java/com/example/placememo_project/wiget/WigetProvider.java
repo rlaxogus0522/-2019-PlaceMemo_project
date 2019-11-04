@@ -14,6 +14,7 @@ import com.example.placememo_project.R;
 import com.example.placememo_project.activity.LoginActivity;
 import com.example.placememo_project.activity.MainActivity;
 import com.example.placememo_project.activity.WidgetInsertActivity;
+import com.example.placememo_project.activity.WidgetNomalMemoInsetActivity;
 
 
 public class WigetProvider extends AppWidgetProvider {
@@ -85,24 +86,23 @@ public class WigetProvider extends AppWidgetProvider {
         RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.widget);
 
 
-
-
         Intent intent = new Intent(context.getApplicationContext(), WidgetInsertActivity.class);
-        intent.putExtra("conected",1);
         PendingIntent pendingIntent  = PendingIntent.getActivity(context,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent1 = new Intent(context.getApplicationContext(), WidgetNomalMemoInsetActivity.class);
+        PendingIntent pendingIntent1  = PendingIntent.getActivity(context,0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
         updateViews.setOnClickPendingIntent(R.id.widget_location,pendingIntent);
-//        updateViews.setOnClickPendingIntent(R.id.location_1,getPendingSelfIntent(context, MyOnClick));
+        updateViews.setOnClickPendingIntent(R.id.widget_nomal,pendingIntent1);
 
 
         appWidgetManager.updateAppWidget(appWidgetId,updateViews);
 
     }
 
-    public PendingIntent getPendingSelfIntent(Context context, String action) {
-        Intent intent = new Intent(context, getClass());
-        intent.setAction(action);
-        return PendingIntent.getBroadcast(context, 0, intent, 0);
-    }
+//    public PendingIntent getPendingSelfIntent(Context context, String action) {
+//        Intent intent = new Intent(context, getClass());
+//        intent.setAction(action);
+//        return PendingIntent.getBroadcast(context, 0, intent, 0);
+//    }
 
 
 }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.example.placememo_project.R;
@@ -27,7 +28,7 @@ import io.realm.RealmResults;
 import static com.example.placememo_project.activity.MainActivity.mainContext;
 
 
-public class WidgetInsertActivity extends Activity implements View.OnClickListener {   //-- 메모를 추가하는 액티비티
+public class WidgetInsertActivity extends AppCompatActivity implements View.OnClickListener {   //-- 메모를 추가하는 액티비티
     private final static String TAG = "InsertActivity-------";
     private ArrayList<Integer> locationButton = new ArrayList<>(); // -- 클릭 되기 전 버튼 이미지
     private ArrayList<Integer> locationButtonClick = new ArrayList<>(); // -- 클릭 된 이후 버튼 이미지
@@ -49,6 +50,8 @@ public class WidgetInsertActivity extends Activity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         imbinding = DataBindingUtil.setContentView(this, R.layout.activity_widget_insertmemo);
+        imbinding.exit.setOnClickListener(this);
+        imbinding.exit2.setOnClickListener(this);
         Realm.init(this);
         imbinding.EditMemo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -204,7 +207,11 @@ public class WidgetInsertActivity extends Activity implements View.OnClickListen
                 finish();
             } else if (view == imbinding.btnLocation1 || view == imbinding.btnLocation2 || view == imbinding.btnLocation3 || view == imbinding.btnLocation4 || view == imbinding.btnLocation5 ) {   //-- 위치 버튼을 클릭했다면 클릭한 위치 버튼 클릭이미지로 변경
                 imageChange(view);   //-- 이미지 변경 메소드
-            }
+            } else if(view == imbinding.exit){
+               finish();
+           } else if(view == imbinding.exit2){
+               finish();
+           }
 
     }
 

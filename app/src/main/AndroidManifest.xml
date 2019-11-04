@@ -40,6 +40,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.WidgetInsertActivity" android:theme="@style/Theme.Transparent" />
+        <activity android:name=".activity.WidgetNomalMemoInsetActivity" android:theme="@style/Theme.Transparent" />
         <activity android:name=".activity.BaseActivity"/>
         <activity android:name=".activity.AlamActivity"
             android:showOnLockScreen="true" />

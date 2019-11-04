@@ -352,8 +352,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     public void startLocationSerch(){
-        RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
-        if (data_alams.size()==1) locationSerch(this);   //-- 내위치 검색 알람매니저 실행
+//        RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
+        am.cancel(sender);
+        sender = null;
+        locationSerch(this);   //-- 내위치 검색 알람매니저 실행
     }
 
     public void checkNoImage_nomal() {
