@@ -39,6 +39,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.WidgetInsertActivity" android:theme="@style/Theme.Transparent" />
+        <activity android:name=".activity.BaseActivity"/>
         <activity android:name=".activity.AlamActivity"
             android:showOnLockScreen="true" />
         <activity android:name=".activity.TitleAddItemActivity"
@@ -67,6 +69,17 @@
             <intent-filter>
                 <action android:name="AlarmService"/>
             </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.example.placememo_project.wiget.WigetProvider"
+            android:label="위젯 테스트 (일반)" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_provider" />
         </receiver>
         <meta-data
             android:name="com.kakao.sdk.AppKey"

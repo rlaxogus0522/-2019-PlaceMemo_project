@@ -61,8 +61,14 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-//        handler.removeCallbacks(newRunnable);
+        handler.removeCallbacks(newRunnable);
     }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        animationView.loop(false);
+//    }
 
     PermissionListener permissionlistener = new PermissionListener() {
         @Override

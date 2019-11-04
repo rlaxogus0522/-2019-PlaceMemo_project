@@ -154,35 +154,39 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Intent intent = getIntent();
         user = intent.getStringExtra("user");
         UID = intent.getStringExtra("UID");
-        if (user.equals("google")) {
-            mainBinding.menu.googleId.setText(intent.getStringExtra("name"));
-            mainBinding.menu.googleEmail.setText(intent.getStringExtra("email"));
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Intent intent1 = getIntent();
-                        URL url = new URL(intent1.getStringExtra("photo"));
-                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                        conn.setDoInput(true);
-                        conn.connect();
-                        InputStream is = conn.getInputStream();
-                        bitmap = BitmapFactory.decodeStream(is);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            if (user.equals("google")) {
+                mainBinding.menu.googleId.setText(intent.getStringExtra("name"));
+                mainBinding.menu.googleEmail.setText(intent.getStringExtra("email"));
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Intent intent1 = getIntent();
+                            URL url = new URL(intent1.getStringExtra("photo"));
+                            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                            conn.setDoInput(true);
+                            conn.connect();
+                            InputStream is = conn.getInputStream();
+                            bitmap = BitmapFactory.decodeStream(is);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
+                });
+                thread.start();
+                try {
+                    thread.join();
+                    mainBinding.menu.googleImage.setImageBitmap(bitmap);
+                } catch (Exception e) {
                 }
-            });
-            thread.start();
-            try {
-                thread.join();
-                mainBinding.menu.googleImage.setImageBitmap(bitmap);
-            } catch (Exception e) {
+
+
+            } else if (user.equals("guest")) {
+                mainBinding.menu.googleLogout.setText("로그인");
+                mainBinding.menu.googleLogout.setBackgroundColor(0xff43BD57);
             }
-        } else if (user.equals("guest")) {
-            mainBinding.menu.googleLogout.setText("로그인");
-            mainBinding.menu.googleLogout.setBackgroundColor(0xff43BD57);
-        }
+
+
 
         /*------------------------------------------------------------*/
         mainBinding.btnSetting.setOnClickListener(this);
@@ -296,7 +300,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         dataUpdate();   //-- DB에 정보 가져오기
         checkNoImage();   //-- 처음에 저장된 메모가 있는지 없는지 여부에 따라 메모 없다고 표시
 
-        getHashKey();
+//        getHashKey();
     }
 
     private void getHashKey() {
@@ -345,6 +349,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             TextViewNoMemo.setVisibility(View.GONE);
             if (sender == null) locationSerch(this);   //-- 내위치 검색 알람매니저 실행
         }
+    }
+
+    public void startLocationSerch(){
+        RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
+        if (data_alams.size()==1) locationSerch(this);   //-- 내위치 검색 알람매니저 실행
     }
 
     public void checkNoImage_nomal() {

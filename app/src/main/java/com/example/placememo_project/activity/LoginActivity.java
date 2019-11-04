@@ -38,9 +38,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FirebaseUser currentUser;
     ProgressDialog progressDialog;
     long backKeyPressedTime;
+    int conected;
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -58,6 +58,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         progressDialog.setMessage("로그인중 입니다...");
         progressDialog.setCancelable(true);
         progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
+
+        Intent intent = getIntent();
+        conected = intent.getIntExtra("conected",-1);
+
     }
 
     private void signIn() {
@@ -122,6 +126,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             intent.putExtra("email",currentUser.getEmail());
                             intent.putExtra("photo",currentUser.getPhotoUrl().toString());
                             intent.putExtra("UID",currentUser.getUid());
+                            intent.putExtra("conected",conected);
                             startActivityForResult(intent,RC_SIGN_OUT);
                             overridePendingTransition(R.anim.fadein,R.anim.fadeout);
 //                            updateUI(user);
@@ -178,6 +183,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             intent.putExtra("email", currentUser.getEmail());
             intent.putExtra("photo", currentUser.getPhotoUrl().toString());
             intent.putExtra("UID",currentUser.getUid());
+            intent.putExtra("conected",conected);
             startActivityForResult(intent, RC_SIGN_OUT);
             overridePendingTransition(R.anim.fadein, R.anim.fadeout);
         }else{
