@@ -1,11 +1,15 @@
 package com.example.placememo_project.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,6 +25,8 @@ import com.example.placememo_project.dbData.Data_Icon;
 import com.example.placememo_project.dbData.Data_alam;
 import com.example.placememo_project.R;
 import com.example.placememo_project.databinding.ActivityInsertmemoBinding;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 
 import java.util.ArrayList;
 
@@ -45,17 +51,19 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
     private String nName;   //--  현재 선택된 위치의 이름 저장용
     private double nlat, nlong;   //--  현재 선택된 위치의 위 경도 저장용
     ActivityInsertmemoBinding imbinding;
+    LocationManager locationManager;
     private boolean isLocationCheck = false;   //-- 메모 추가시 알림 받을 위치를 선택했는지 체크용
     int colors[] = new int[]{0xFFE8EE9C, 0xFFE4B786, 0xFF97E486, 0xFF86E4D1, 0xFFE48694};  //-- 저장된 메모 메뉴에 표시할 색깔 등록해두기
     int setColor;
     int clickNum;
     Realm myRealm;
-    AlertDialog alamreset;
+    AlertDialog alamreset,location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         imbinding = DataBindingUtil.setContentView(this, R.layout.activity_insertmemo);
+        locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
         Realm.init(this);
 
         imbinding.EditMemo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -101,6 +109,33 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                             }
                         });
         alamreset = alertDialogBuilder.create();
+
+        AlertDialog.Builder alertDialogBuilder2 = new AlertDialog.Builder(this);
+
+        // 제목셋팅
+        alertDialogBuilder2.setTitle("위치 기능 활성화 설정");
+
+        // AlertDialog 셋팅
+        alertDialogBuilder2
+                .setMessage("위치기능이 꺼져있습니다. \n비활성화시 이용이 제한됩니다. \n\n 설정창으로 이동하시겠습니까?")
+                .setCancelable(false)
+                .setPositiveButton("이동",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(
+                                    DialogInterface dialog, int id) {
+                                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                                startActivity(intent);
+                            }
+                        })
+                .setNegativeButton("취소",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(
+                                    DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        location = alertDialogBuilder2.create();
 
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         imbinding.btnSave.setOnClickListener(this);
@@ -222,9 +257,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
         if (!isEditMode) {   //-- 만약 에디트모드가 아니라면
             if (view == imbinding.btnAddlocation) { // 위치 추가 버튼이 클릭되었다면
                 if (locationButton.size() < 5) {   //-- 위치 버튼이 5개 이하라면
-                    Intent in = new Intent(InsertActivity.this, LocationActivity.class);
-                    startActivityForResult(in, 0522);   //-- 위치 설정 액티비티 실행
-                    overridePendingTransition(R.anim.fadein,R.anim.fadeout);
+                    checkPermissions();
                 } else {
                     Toast.makeText(this, "위치는 최대 5개까지 등록 가능합니다.", Toast.LENGTH_LONG).show();   //-- 5개가 이미 등록되어있다면 불가능하다는 메시지
                 }
@@ -277,8 +310,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                     btnlocation[i].setAlpha((float) 1.0);
                 }
                 if (locationButton.size() < 5) {   //--  5개 이하라면 위치추가 진행
-                    Intent in = new Intent(InsertActivity.this, LocationActivity.class);
-                    startActivityForResult(in, 0522);
+                    checkPermissions();
                 } else {   //-- 5개를 넘었다면 불가능 메시지 출력
                     Toast.makeText(this, "위치는 최대 5개까지 등록 가능합니다.", Toast.LENGTH_LONG).show();
                 }
@@ -329,6 +361,12 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
                 }
             }
         }
+    }
+
+    private void AddLocation() {
+        Intent in = new Intent(InsertActivity.this, LocationActivity.class);
+        startActivityForResult(in, 0522);
+        overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
 
     private void deletLocation(int i) {
@@ -408,4 +446,42 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
 
         }
     }
+
+    PermissionListener permissionListener = new PermissionListener() {
+        @Override
+        public void onPermissionGranted() {
+            mOnGPSClick();
+        }
+
+        @Override
+        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+            Toast.makeText(InsertActivity.this, "권한 거부시 서비스이용이 제한됩니다.", Toast.LENGTH_SHORT).show();
+        }
+    };
+    public void checkPermissions() {
+        if (Build.VERSION.SDK_INT >= 23){ // 마시멜로(안드로이드 6.0) 이상 권한 체크
+            TedPermission.with(this)
+                    .setPermissionListener(permissionListener)
+                    .setRationaleMessage("위치 추가를 위해서는 접근 권한이 필요합니다")
+                    .setDeniedMessage("앱에서 요구하는 권한설정이 필요합니다...\n [설정] > [권한] 에서 사용으로 활성화해주세요.")
+                    .setPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+                    .check();
+
+        } else {
+            mOnGPSClick();
+        }
+    }
+
+    public void mOnGPSClick(){
+        //GPS가 켜져있는지 체크
+        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            //GPS 설정화면으로 이동
+            location.show();
+
+        }else{
+            AddLocation();
+        }
+    }
+
+
 }

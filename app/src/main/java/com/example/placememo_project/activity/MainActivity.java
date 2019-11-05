@@ -1,6 +1,7 @@
 package com.example.placememo_project.activity;
 
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,6 +19,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 
@@ -67,6 +69,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.kakao.kakaolink.v2.KakaoLinkService;
 import com.kakao.network.ErrorResult;
 import com.kakao.network.callback.ResponseCallback;
@@ -596,8 +600,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         } else if(view == mainBinding.menu.btnShare){
 
-
-
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_TEXT,"https://play.google.com/store/apps/details?id=net.daum.android.daum");
@@ -623,24 +625,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //            });
 
         }else if (view == mainBinding.kakaoButton) {
-            if( mainBinding.locationTab.getAlpha() == 1.0f) {
-                saveToInternalStorage(getScreenshotFromRecyclerView(recycleerView));
-            }else{
-                saveToInternalStorage(getScreenshotFromRecyclerView(recyclerView_nomal));
-            }
 
-            File imageFile = new File(goalPath);
-            Uri uri = FileProvider.getUriForFile(this,getPackageName(),imageFile);
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("image/*");
-            intent.putExtra(Intent.EXTRA_STREAM,uri);
-            intent.setPackage("com.kakao.talk");
-            startActivity(intent);
-
-//
-
-
-
+            checkPermissions();
 
         } else if (view == mainBinding.menu.btnBackUp) {
             if(user.equals("google")){
@@ -744,7 +730,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         data_icon.setLongitude(dataIconFirebase.getLongitude());
                         data_icon.setName(DecodeString(dataIconFirebase.getName()));
                         myRealm.commitTransaction();
-
                     }
                 }
 
@@ -831,6 +816,32 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         settingToggleButton(view);  //-- 옵션창에 버튼설정
     }
 
+    private void Kakao() {
+        if( mainBinding.locationTab.getAlpha() == 1.0f) {
+            if(getScreenshotFromRecyclerView(recycleerView)!=null) {
+                saveToInternalStorage(getScreenshotFromRecyclerView(recycleerView));
+                File imageFile = new File(goalPath);
+                Uri uri = FileProvider.getUriForFile(this,getPackageName(),imageFile);
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_STREAM,uri);
+                intent.setPackage("com.kakao.talk");
+                startActivity(intent);
+            }else Toast.makeText(getApplicationContext(), "전송할 메모가 없습니다.", Toast.LENGTH_SHORT).show();
+        }else{
+            if(getScreenshotFromRecyclerView(recyclerView_nomal)!=null) {
+                saveToInternalStorage(getScreenshotFromRecyclerView(recyclerView_nomal));
+                File imageFile = new File(goalPath);
+                Uri uri = FileProvider.getUriForFile(this,getPackageName(),imageFile);
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_STREAM,uri);
+                intent.setPackage("com.kakao.talk");
+                startActivity(intent);
+            } else Toast.makeText(getApplicationContext(), "전송할 메모가 없습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -866,7 +877,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public Bitmap getScreenshotFromRecyclerView(RecyclerView view) {
         RecyclerView.Adapter adapter = view.getAdapter();
         Bitmap bigBitmap = null;
-        if (adapter != null) {
+        if (adapter != null && adapter.getItemCount()!=0) {
             int size = adapter.getItemCount();
             int height = 0;
             Paint paint = new Paint();
@@ -909,40 +920,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-    public String returnImage(String path){
-        File imageFile = new File(path);
-
-        KakaoLinkService.getInstance().uploadImage(this, false, imageFile, new ResponseCallback<ImageUploadResponse>() {
-            @Override
-            public void onFailure(ErrorResult errorResult) {
-                Logger.e(errorResult.toString());
-            }
-
-            @Override
-            public void onSuccess(ImageUploadResponse result) {
-               url = result.getOriginal().getUrl();
-
-            }
-        });
-        return url;
-    }
-
-
-    public String returnImage2(String path){
-        KakaoLinkService.getInstance().scrapImage(this, false, path, new ResponseCallback<ImageUploadResponse>() {
-            @Override
-            public void onFailure(ErrorResult errorResult) {
-                Logger.e(errorResult.toString());
-            }
-
-            @Override
-            public void onSuccess(ImageUploadResponse result) {
-                Logger.d(result.getOriginal().getUrl());
-                url2 = result.getOriginal().getUrl();
-            }
-        });
-        return url2;
-    }
+//    public String returnImage(String path){
+//        File imageFile = new File(path);
+//
+//        KakaoLinkService.getInstance().uploadImage(this, false, imageFile, new ResponseCallback<ImageUploadResponse>() {
+//            @Override
+//            public void onFailure(ErrorResult errorResult) {
+//                Logger.e(errorResult.toString());
+//            }
+//
+//            @Override
+//            public void onSuccess(ImageUploadResponse result) {
+//               url = result.getOriginal().getUrl();
+//
+//            }
+//        });
+//        return url;
+//    }
+//
+//
+//    public String returnImage2(String path){
+//        KakaoLinkService.getInstance().scrapImage(this, false, path, new ResponseCallback<ImageUploadResponse>() {
+//            @Override
+//            public void onFailure(ErrorResult errorResult) {
+//                Logger.e(errorResult.toString());
+//            }
+//
+//            @Override
+//            public void onSuccess(ImageUploadResponse result) {
+//                Logger.d(result.getOriginal().getUrl());
+//                url2 = result.getOriginal().getUrl();
+//            }
+//        });
+//        return url2;
+//    }
 
 
     private void saveToInternalStorage(Bitmap bitmapImage) {
@@ -978,7 +989,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         String encodingString5 = encodingString4.replace("]", "-005");
         return encodingString5;
     }
-
     private String DecodeString(String string) {
         String encodingString =  string.replace("-001", ".");
         String encodingString2 = encodingString.replace("-002", "#");
@@ -987,7 +997,30 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         String encodingString5 = encodingString4.replace("-005", "]");
         return encodingString5;
     }
+    PermissionListener permissionListener = new PermissionListener() {
+        @Override
+        public void onPermissionGranted() {
+            Kakao();
+        }
 
+        @Override
+        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+            Toast.makeText(getApplicationContext(), "권한 거부시 서비스이용이 제한됩니다.", Toast.LENGTH_SHORT).show();
+        }
+    };
+    public void checkPermissions() {
+        if (Build.VERSION.SDK_INT >= 23){ // 마시멜로(안드로이드 6.0) 이상 권한 체크
+            TedPermission.with(this)
+                    .setPermissionListener(permissionListener)
+                    .setRationaleMessage("카카오톡 메모사진 공유를 위해서는 권한이 필요합니다")
+                    .setDeniedMessage("앱에서 요구하는 권한설정이 필요합니다...\n [설정] > [권한] 에서 사용으로 활성화해주세요.")
+                    .setPermissions(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+                    .check();
+
+        } else {
+            Kakao();
+        }
+    }
 
 
     }

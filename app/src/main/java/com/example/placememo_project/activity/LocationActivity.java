@@ -38,7 +38,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.example.placememo_project.activity.InsertActivity.locationName;
-import static com.example.placememo_project.activity.IntroActivity.permission;
+
 
 public class LocationActivity extends AppCompatActivity implements View.OnClickListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     private final static String TAG = "LocationActivity : ";
@@ -79,13 +79,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
         });
-        if (permission) {  // --  위치기능을 켯다면 위치정보를 받아오는 메소드 실행
             startLastLocation();
-        } else {  // --  키지않았다면 기본 지도 표시
-            Toast.makeText(this, "위치 기능 사용 불가", Toast.LENGTH_SHORT).show();
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-            mapFragment.getMapAsync(this);
-        }
     }
 
     @Override
