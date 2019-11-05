@@ -21,27 +21,28 @@
                 android:id="@+id/insert_layout"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_margin="15dp"
+                android:layout_margin="40dp"
                 android:background="@mipmap/paper"
                 android:orientation="vertical"
-                android:padding="5dp">
+                android:padding="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <LinearLayout
+                        android:paddingLeft="8dp"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center|left">
-
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:alpha="0.5"
                             android:background="@drawable/simpebox"
                             android:padding="10dp"
-                            android:text="메모 추가"
+                            android:text="위치 메모"
                             android:textColor="#ffffff"
                             android:textSize="15dp"
                             android:textStyle="bold" />
@@ -55,12 +56,16 @@
                         android:layout_weight="1"
                         android:gravity="right">
 
-
-                        <ImageButton
-                            android:id="@+id/btn_back"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
-                            android:background="@drawable/close" />
+                        <Button
+                            android:id="@+id/btn_save"
+                            android:layout_width="60dp"
+                            android:layout_height="40dp"
+                            android:layout_margin="5dp"
+                            android:background="#9468C4"
+                            android:text="메모 저장"
+                            android:textColor="#ffffff"
+                            android:textSize="10dp"
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -82,26 +87,15 @@
                             android:id="@+id/Edit_memo"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
                             android:background="@drawable/insertmemo_text"
                             android:padding="10dp"
+                            android:textSize="12dp"
                             android:text="메모 해주세요!" />
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.3">
 
-                        <Button
-                            android:id="@+id/btn_save"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:background="#9468C4"
-                            android:text="메모 저장"
-                            android:textColor="#ffffff"
-                            android:textStyle="bold" />
-                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -109,15 +103,14 @@
                     android:layout_height="0dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:layout_weight="0.8"
+                    android:layout_weight="0.7"
                     android:gravity="center|left"
                     android:weightSum="10">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="8"
-                        android:gravity="center|left">
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
 
                         <ImageButton
                             android:id="@+id/btn_location_1"
@@ -140,7 +133,7 @@
 
                         <ImageButton
                             android:id="@+id/btn_location_3"
-                            android:layout_width="34dp"
+                            android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:layout_margin="3dp"
                             android:layout_toRightOf="@id/btn_location_2"

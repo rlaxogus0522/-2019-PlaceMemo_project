@@ -121,7 +121,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private String user, UID;
     public String url,url2,goalPath;
     long backKeyPressedTime;
-    public boolean pause = false;
+
     ProgressDialog progressDialog;
 
 
@@ -351,12 +351,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    public void startLocationSerch(){
-//        RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
-        am.cancel(sender);
-        sender = null;
-        locationSerch(this);   //-- 내위치 검색 알람매니저 실행
-    }
+
 
     public void checkNoImage_nomal() {
         RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll();
@@ -685,7 +680,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 dataNomalFirebase.setFrag(data_nomal.getFrag());
                 dataNomalFirebase.setMemo(EncodeString(data_nomal.getMemo()));
                 dataNomalFirebase.setOrder(data_nomal.getOrder());
-                mDatabase.child(UID).child("Nomal_Memo").child(data_nomal.getMemo()).setValue(dataNomalFirebase).addOnSuccessListener(new OnSuccessListener<Void>() {
+                mDatabase.child(UID).child("Nomal_Memo").child(EncodeString(data_nomal.getMemo())).setValue(dataNomalFirebase).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d("Data_nomal","백업 성공");
@@ -747,7 +742,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         data_icon.setButtonclick(dataIconFirebase.getButtonclick());
                         data_icon.setLatitude(dataIconFirebase.getLatitude());
                         data_icon.setLongitude(dataIconFirebase.getLongitude());
-                        data_icon.setName(dataIconFirebase.getName());
+                        data_icon.setName(DecodeString(dataIconFirebase.getName()));
                         myRealm.commitTransaction();
 
                     }
@@ -772,7 +767,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         data_nomal.setOrder(dataNomalFirebase.getOrder());
                         data_nomal.setColor(dataNomalFirebase.getColor());
                         data_nomal.setFrag(dataNomalFirebase.getFrag());
-                        data_nomal.setMemo(dataNomalFirebase.getMemo());
+                        data_nomal.setMemo(DecodeString(dataNomalFirebase.getMemo()));
                         myRealm.commitTransaction();
 
                     }
@@ -804,7 +799,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         myRealm.beginTransaction();
                         Data_alam dataalam = myRealm.createObject(Data_alam.class);
                         dataalam.setName(dataAlamFirebase.getName());
-                        dataalam.setMemo(dataAlamFirebase.getMemo());
+                        dataalam.setMemo(DecodeString(dataAlamFirebase.getMemo()));
                         dataalam.setIcon(dataAlamFirebase.getIcon());
                         dataalam.setLatitude(dataAlamFirebase.getLatitude());
                         dataalam.setLongitude(dataAlamFirebase.getLongitude());
@@ -976,11 +971,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
     private String EncodeString(String string) {
-        String encodingString =  string.replace(".", "-");
-        String encodingString2 = encodingString.replace("#", "-");
-        String encodingString3 = encodingString2.replace("$", "-");
-        String encodingString4 = encodingString3.replace("[", "-");
-        String encodingString5 = encodingString4.replace("]", "-");
+        String encodingString =  string.replace(".", "-001");
+        String encodingString2 = encodingString.replace("#", "-002");
+        String encodingString3 = encodingString2.replace("$", "-003");
+        String encodingString4 = encodingString3.replace("[", "-004");
+        String encodingString5 = encodingString4.replace("]", "-005");
+        return encodingString5;
+    }
+
+    private String DecodeString(String string) {
+        String encodingString =  string.replace("-001", ".");
+        String encodingString2 = encodingString.replace("-002", "#");
+        String encodingString3 = encodingString2.replace("-003", "$");
+        String encodingString4 = encodingString3.replace("-004", "[");
+        String encodingString5 = encodingString4.replace("-005", "]");
         return encodingString5;
     }
 

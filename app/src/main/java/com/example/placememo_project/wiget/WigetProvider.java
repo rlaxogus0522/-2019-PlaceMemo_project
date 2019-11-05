@@ -11,8 +11,6 @@ import android.widget.RemoteViews;
 
 import com.example.placememo_project.R;
 
-import com.example.placememo_project.activity.LoginActivity;
-import com.example.placememo_project.activity.MainActivity;
 import com.example.placememo_project.activity.WidgetInsertActivity;
 import com.example.placememo_project.activity.WidgetNomalMemoInsetActivity;
 
@@ -25,13 +23,6 @@ public class WigetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-
-
-//        if(MyOnClick.equals(intent.getAction())){
-//            Data_Icon data_icons = myRealm.where(Data_Icon.class).findFirst();
-//            RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.widget);
-//            updateViews.setInt(R.id.location_1,"setBackgroundResource",data_icons.getButtonclick());
-//        }
     }
 
     /**
@@ -87,6 +78,7 @@ public class WigetProvider extends AppWidgetProvider {
 
 
         Intent intent = new Intent(context.getApplicationContext(), WidgetInsertActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
         PendingIntent pendingIntent  = PendingIntent.getActivity(context,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Intent intent1 = new Intent(context.getApplicationContext(), WidgetNomalMemoInsetActivity.class);
         PendingIntent pendingIntent1  = PendingIntent.getActivity(context,0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -97,12 +89,5 @@ public class WigetProvider extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(appWidgetId,updateViews);
 
     }
-
-//    public PendingIntent getPendingSelfIntent(Context context, String action) {
-//        Intent intent = new Intent(context, getClass());
-//        intent.setAction(action);
-//        return PendingIntent.getBroadcast(context, 0, intent, 0);
-//    }
-
 
 }

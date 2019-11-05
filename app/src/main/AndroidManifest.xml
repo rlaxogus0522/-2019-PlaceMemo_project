@@ -12,26 +12,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider" />
-        </provider>
+        <activity
+            android:name=".activity.EditNomalMemoActivity"
+            android:theme="@style/Theme.MyDialog" />
 
-        <activity android:name=".activity.EditNomalMemoActivity"
-            android:theme="@style/Theme.MyDialog"  />
         <activity android:name=".activity.IntroActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="@string/kakao_scheme"
-                    android:host="@string/kakaolink_host" />
+                <data
+                    android:host="@string/kakaolink_host"
+                    android:scheme="@string/kakao_scheme" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,15 +33,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.WidgetInsertActivity" android:theme="@style/Theme.Transparent" />
-        <activity android:name=".activity.WidgetNomalMemoInsetActivity" android:theme="@style/Theme.Transparent" />
-        <activity android:name=".activity.BaseActivity"/>
-        <activity android:name=".activity.AlamActivity"
+        <activity
+            android:name=".activity.WidgetInsertActivity"
+            android:excludeFromRecents="true"
+            android:taskAffinity="com.example.placememo_project.A"
+            android:theme="@style/Theme.Transparent" />
+        <activity
+            android:name=".activity.WidgetNomalMemoInsetActivity"
+            android:excludeFromRecents="true"
+            android:taskAffinity="com.example.placememo_project.B"
+            android:theme="@style/Theme.Transparent" />
+        <activity android:name=".activity.BaseActivity" />
+        <activity
+            android:name=".activity.AlamActivity"
+            android:excludeFromRecents="true"
             android:showOnLockScreen="true" />
-        <activity android:name=".activity.TitleAddItemActivity"
-            android:theme="@style/Theme.MyDialog"/>
-        <activity android:name=".activity.NomalMemoInsetActivity"
-            android:theme="@style/Theme.MyDialog"/>
+        <activity
+            android:name=".activity.TitleAddItemActivity"
+            android:theme="@style/Theme.MyDialog" />
+        <activity
+            android:name=".activity.NomalMemoInsetActivity"
+            android:theme="@style/Theme.MyDialog" />
         <activity android:name=".activity.MainActivity" />
         <activity
             android:name=".activity.EditMemoActivity"
@@ -59,21 +65,36 @@
         <activity
             android:name=".activity.IconActivity"
             android:theme="@style/Theme.MyDialog" />
-        <activity android:name=".activity.LoginActivity"/>
+        <activity android:name=".activity.LoginActivity" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAeyokLLIn5BwKqqVRm0weMIU9GOBmfJUc" />
+
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="@string/kakao_app_key" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider" />
+        </provider>
         <receiver
             android:name=".receiverNoti.LocationReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="AlarmService"/>
+                <action android:name="AlarmService" />
             </intent-filter>
         </receiver>
+
         <receiver
             android:name="com.example.placememo_project.wiget.WigetProvider"
-            android:label="위젯 테스트 (일반)" >
+            android:label="위젯 테스트 (일반)">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -82,10 +103,8 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_provider" />
         </receiver>
-        <meta-data
-            android:name="com.kakao.sdk.AppKey"
-            android:value="@string/kakao_app_key" />
     </application>
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />

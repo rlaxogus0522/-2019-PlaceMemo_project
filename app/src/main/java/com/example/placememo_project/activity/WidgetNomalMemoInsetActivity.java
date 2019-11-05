@@ -34,7 +34,6 @@ public class WidgetNomalMemoInsetActivity extends AppCompatActivity implements V
         nBinding.exit3.setOnClickListener(this);
         nBinding.exit4.setOnClickListener(this);
         nBinding.btnSave.setOnClickListener(this);
-        nBinding.btnBack.setOnClickListener(this);
         nBinding.color1.setOnClickListener(this);
         nBinding.color2.setOnClickListener(this);
         nBinding.color3.setOnClickListener(this);
@@ -68,15 +67,16 @@ public class WidgetNomalMemoInsetActivity extends AppCompatActivity implements V
             data_nomal.setColor(selectColor);
             data_nomal.setOrder(results.size() - 1);
             myRealm.commitTransaction();
-            ((MainActivity) mainContext).nomaladapters.clear();
-            for (Data_nomal data_nomals : results) {
-                ((MainActivity) mainContext).nomaladapters.addItem(data_nomals.getMemo(), data_nomals.getColor());
-            }
-            ((MainActivity) mainContext).checkNoImage_nomal();
+            try {
+                ((MainActivity) mainContext).nomaladapters.clear();
+                for (Data_nomal data_nomals : results) {
+                    ((MainActivity) mainContext).nomaladapters.addItem(data_nomals.getMemo(), data_nomals.getColor());
+                }
+                ((MainActivity) mainContext).checkNoImage_nomal();
+            }catch (Exception e){ }
             finish();
+                Toast.makeText(this, "저장 완료^-^", Toast.LENGTH_SHORT).show();
         }
-        }else if(view == nBinding.btnBack){
-            finish();
         }else if(view == nBinding.color1){
             selectColor = color[0];
             for (int i = 0; i < colorButton.length ; i++) {

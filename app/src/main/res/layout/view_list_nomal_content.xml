@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/view_list_nomal_content"
     android:layout_width="match_parent"
-    android:layout_height="44dp"
+    android:layout_height="match_parent"
     android:background="#ffffff"
     tools:showIn="@layout/list_nomal_item_main"
     android:layout_margin="3dp"

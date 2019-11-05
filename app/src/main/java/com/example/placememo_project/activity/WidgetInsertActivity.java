@@ -28,7 +28,7 @@ import io.realm.RealmResults;
 import static com.example.placememo_project.activity.MainActivity.mainContext;
 
 
-public class WidgetInsertActivity extends AppCompatActivity implements View.OnClickListener {   //-- 메모를 추가하는 액티비티
+public class WidgetInsertActivity extends BaseActivity implements View.OnClickListener {   //-- 메모를 추가하는 액티비티
     private final static String TAG = "InsertActivity-------";
     private ArrayList<Integer> locationButton = new ArrayList<>(); // -- 클릭 되기 전 버튼 이미지
     private ArrayList<Integer> locationButtonClick = new ArrayList<>(); // -- 클릭 된 이후 버튼 이미지
@@ -43,12 +43,12 @@ public class WidgetInsertActivity extends AppCompatActivity implements View.OnCl
     private boolean isLocationCheck = false;   //-- 메모 추가시 알림 받을 위치를 선택했는지 체크용
     int colors[] = new int[]{0xFFE8EE9C, 0xFFE4B786, 0xFF97E486, 0xFF86E4D1, 0xFFE48694};  //-- 저장된 메모 메뉴에 표시할 색깔 등록해두기
     int setColor;
-    int clickNum;
     Realm myRealm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         imbinding = DataBindingUtil.setContentView(this, R.layout.activity_widget_insertmemo);
         imbinding.exit.setOnClickListener(this);
         imbinding.exit2.setOnClickListener(this);
@@ -72,7 +72,6 @@ public class WidgetInsertActivity extends AppCompatActivity implements View.OnCl
 
 
         imbinding.btnSave.setOnClickListener(this);
-        imbinding.btnBack.setOnClickListener(this);
         imbinding.insertLayout.setOnClickListener(this);
 
         btnlocation[0] = imbinding.btnLocation1;   //-- 위치 버튼
@@ -191,9 +190,11 @@ public class WidgetInsertActivity extends AppCompatActivity implements View.OnCl
                         Intent intent = new Intent();   //-- 메인액티비티에 Result 값으로 위치 아이콘과 위치명, 메모내용을 전송
                         setResult(RESULT_OK, intent);
                         finish();
-                        ((MainActivity)mainContext).startLocationSerch();
+                        Toast.makeText(this, "저장 완료^-^", Toast.LENGTH_SHORT).show();
+                        startLocationSerch();
                     } catch (NullPointerException e) {
                         Log.d(TAG, "NullPointerException");
+                        Toast.makeText(this, "저장 실패ㅠ_ㅠ", Toast.LENGTH_SHORT).show();
                     }
                 } else {   //- -알림받을위치를 설정지않았거나  메모내용이 비어있다면
                     if (!isLocationCheck)   //-- 위치가 설정되어있지않을때,
@@ -203,8 +204,6 @@ public class WidgetInsertActivity extends AppCompatActivity implements View.OnCl
                     if (CheckDBinMemo(nName))  //--  메모내용이 이미 있을때
                         Toast.makeText(this, "메모가 이미 존재합니다.", Toast.LENGTH_LONG).show();
                 }
-            } else if (view == imbinding.btnBack) {   //-- 백버튼 액티비티 종료
-                finish();
             } else if (view == imbinding.btnLocation1 || view == imbinding.btnLocation2 || view == imbinding.btnLocation3 || view == imbinding.btnLocation4 || view == imbinding.btnLocation5 ) {   //-- 위치 버튼을 클릭했다면 클릭한 위치 버튼 클릭이미지로 변경
                 imageChange(view);   //-- 이미지 변경 메소드
             } else if(view == imbinding.exit){
@@ -215,7 +214,16 @@ public class WidgetInsertActivity extends AppCompatActivity implements View.OnCl
 
     }
 
-
+    public void startLocationSerch(){
+        Log.d("==","실행됨");
+//        RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
+        if(sender!=null) {
+            Log.d("==","sender null 아님");
+            am.cancel(sender);
+            sender = null;
+        }
+        locationSerch(this);   //-- 내위치 검색 알람매니저 실행
+    }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {   //-- 위치 추가를 누른후 Location 액티비티에서의 반환값을 반영
         super.onActivityResult(requestCode, resultCode, data);

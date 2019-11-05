@@ -29,6 +29,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 import static android.content.Context.ALARM_SERVICE;
+import static com.example.placememo_project.activity.BaseActivity.pause;
 import static com.example.placememo_project.activity.MainActivity.mainContext;
 
 /*---------------------------------------------------------*/
@@ -103,14 +104,14 @@ public class LocationReceiver extends BroadcastReceiver {
                    minDistance = distance;
                }
                 if(distance<0.3) {
-                    if (!(((MainActivity) mainContext).pause)) {
+                    if (!pause) {
                         KeyguardManager km = (KeyguardManager) rContext.getSystemService(Context.KEYGUARD_SERVICE);
                         if (km.inKeyguardRestrictedInputMode()) {
                             if (!onetime) {
                                 Intent intent = new Intent(rContext, AlamActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
                                 intent.putExtra("title", data_alams.first().getName());
                                 rContext.startActivity(intent);
-                                ((MainActivity) mainContext).overridePendingTransition(R.anim.fadein, R.anim.fadeout);
 
 
                                 PowerManager pm = (PowerManager) rContext.getSystemService(Context.POWER_SERVICE);
@@ -134,7 +135,7 @@ public class LocationReceiver extends BroadcastReceiver {
                 }
             }
         } catch (NullPointerException e) {
-            Log.d(TAG,"NullPointerException");
+            Log.d("꺄아아아악",e+"");
         }
 
         /*-----------------------------------------------------------------------------------------------------------------------------------------------*/

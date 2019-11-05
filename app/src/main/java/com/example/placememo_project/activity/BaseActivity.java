@@ -7,13 +7,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.SystemClock;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class BaseActivity extends AppCompatActivity {
+    public static boolean pause = false;
     AlarmManager am;
     PendingIntent sender = null ;
     public void locationSerch(Context context) {
+        Log.d("==","locationSerch 실행됨");
         Intent intent = new Intent("AlarmService");
         sender = PendingIntent.getBroadcast(context, 0, intent, 0);
         long firstTime = SystemClock.elapsedRealtime();

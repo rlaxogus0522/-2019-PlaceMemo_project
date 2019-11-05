@@ -1,7 +1,9 @@
 package com.example.placememo_project.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -24,7 +26,7 @@ import io.realm.RealmResults;
 import static com.example.placememo_project.activity.MainActivity.mainContext;
 import static com.example.placememo_project.activity.MainActivity.sort;
 
-public class AlamActivity extends AppCompatActivity {
+public class AlamActivity extends BaseActivity {
     ActivityAlamBinding alamBinding;
     RecyclerView.LayoutManager layoutManager;
     AlamAdapter alamAdapter;
@@ -32,6 +34,7 @@ public class AlamActivity extends AppCompatActivity {
     String title;
     Animation allanim,fadein;
     RealmResults<Data_alam> data_alams;
+    Vibrator vibrator;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,9 +46,11 @@ public class AlamActivity extends AppCompatActivity {
         fadein =  AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein2);
         alamBinding.set.startAnimation(fadein);
         alamBinding.set.startAnimation(allanim);
-
+        vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         Realm.init(this);
         myrealm = Realm.getDefaultInstance();
+        long[] pattern = {800,300,800,300};
+        vibrator.vibrate(pattern,0);
         Intent intent = getIntent();
         title = intent.getStringExtra("title");
         data_alams = myrealm.where(Data_alam.class).equalTo("isAlamOn",true).equalTo("name",intent.getStringExtra("title")).findAll();
@@ -77,9 +82,13 @@ public class AlamActivity extends AppCompatActivity {
                     myrealm.beginTransaction();
                     data_alams.deleteAllFromRealm();
                     myrealm.commitTransaction();
-                    ((MainActivity)mainContext).pause = false;
-                    finishAffinity();
-                    ((MainActivity)mainContext).ShowAlamUi(sort);
+                    pause = false;
+                    finish();
+                    vibrator.cancel();
+                    try {
+                        ((MainActivity)mainContext).ShowAlamUi(sort);
+                    }catch (Exception e){}
+
                 }else if(seekBar.getProgress() >750){
                     seekBar.setProgress(1000);
                     seekBar.setAlpha(0f);
@@ -88,9 +97,12 @@ public class AlamActivity extends AppCompatActivity {
                         data_alam.setAlamOn(false);
                     }
                     myrealm.commitTransaction();
-                    ((MainActivity)mainContext).pause = false;
-                    finishAffinity();
-                    ((MainActivity)mainContext).ShowAlamUi(sort);
+                    pause = false;
+                    finish();
+                    vibrator.cancel();
+                    try {
+                        ((MainActivity)mainContext).ShowAlamUi(sort);
+                    }catch (Exception e){}
                 }
 
             }
