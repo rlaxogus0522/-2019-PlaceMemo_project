@@ -71,11 +71,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
-import com.kakao.kakaolink.v2.KakaoLinkService;
-import com.kakao.network.ErrorResult;
-import com.kakao.network.callback.ResponseCallback;
-import com.kakao.network.storage.ImageUploadResponse;
-import com.kakao.util.helper.log.Logger;
+
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 
 import java.io.File;
@@ -152,6 +148,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         TextViewNoMemo = locationView.findViewById(R.id.TextView_no_memo);
         TextViewNoMemo_nomal = nomalView.findViewById(R.id.TextView_no_memo);
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
         mainBinding.menu.googleImage.setBackground(new ShapeDrawable(new OvalShape()));
         mainBinding.menu.googleImage.setClipToOutline(true);
 
@@ -197,8 +194,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mainBinding.menu.sortName.setOnClickListener(this);
         mainBinding.menu.sortUpdate.setOnClickListener(this);
         mainBinding.menu.sortAlams.setOnClickListener(this);
-        mainBinding.menu.wigetOn.setOnClickListener(this);
-        mainBinding.menu.wigetOff.setOnClickListener(this);
         mainBinding.menu.btnReset.setOnClickListener(this);
         mainBinding.locationTab.setOnClickListener(this);
         mainBinding.nomalTab.setOnClickListener(this);
@@ -865,12 +860,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             mainBinding.menu.sortUpdate.setTextColor(Color.rgb(70, 160, 220));
             mainBinding.menu.sortName.setTextColor(Color.rgb(0, 0, 0));
             ShowAlamUi(sort);
-        } else if (view.getId() == R.id.wiget_on) {
-            mainBinding.menu.wigetOn.setTextColor(Color.rgb(70, 160, 220));
-            mainBinding.menu.wigetOff.setTextColor(Color.rgb(0, 0, 0));
-        } else if (view.getId() == R.id.wiget_off) {
-            mainBinding.menu.wigetOn.setTextColor(Color.rgb(0, 0, 0));
-            mainBinding.menu.wigetOff.setTextColor(Color.rgb(70, 160, 220));
         }
     }
 

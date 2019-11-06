@@ -10,6 +10,7 @@
         android:layout_height="match_parent">
         <androidx.recyclerview.widget.RecyclerView
             android:padding="40dp"
+            android:overScrollMode="never"
             android:id="@+id/nomal_recyclerview"
             android:background="@mipmap/nomal_memo_re"
             android:layout_width="match_parent"
