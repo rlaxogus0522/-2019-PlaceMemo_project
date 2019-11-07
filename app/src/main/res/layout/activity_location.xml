@@ -49,9 +49,24 @@
             android:id="@+id/map"
             tools:context=".activity.LocationActivity"
             android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
         <ImageView
             android:src="@drawable/marker"
             android:layout_centerInParent="true"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
+        <View
+            android:id="@+id/loadings"
+            android:alpha="0.5"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#000000"/>
+        <ImageView
+            android:id="@+id/loading"
+            android:src="@drawable/loading_serch"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
             android:layout_width="50dp"
             android:layout_height="50dp"/>
 

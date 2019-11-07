@@ -13,8 +13,11 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +51,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
     LocationManager manager;
     double longitude;
     double latitude;
+    Animation animation;
     private boolean isIconcheck = false;  //-- 사용자가 아이콘을 선택했는지 구분
     CircleOptions circle; //원점
     Geocoder geocoder;   //-- 지역검색을 위한 메소드
@@ -57,6 +61,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         lBinding = DataBindingUtil.setContentView(this, R.layout.activity_location);
        circle = new CircleOptions();
+        animation = AnimationUtils.loadAnimation(this,R.anim.loading);
         geocoder= new Geocoder(this);
         lBinding.btnAddIcon.setOnClickListener(this);
         lBinding.btnAddlocation.setOnClickListener(this);
@@ -79,7 +84,9 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
         });
+
             startLastLocation();
+
     }
 
     @Override
@@ -114,6 +121,9 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
         }else if(location1 != null){
             setMyLocation(location1);
         }else{
+            lBinding.loading.setVisibility(View.VISIBLE);
+            lBinding.loadings.setVisibility(View.VISIBLE);
+            lBinding.loading.startAnimation(animation);
             startLocation();
         }
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -143,7 +153,9 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
                 mapFragment.getMapAsync(LocationActivity.this);
                 stopLocation();  //-- 위치를 가져온 후 위치 검색 종료
-
+                lBinding.loading.setVisibility(View.GONE);
+                lBinding.loadings.setVisibility(View.GONE);
+                lBinding.loading.clearAnimation();
             }catch (Exception e){}
 
         }
@@ -163,6 +175,11 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
 
         }
     };
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return super.dispatchTouchEvent(ev);
+    }
 
     @Override
     public void onMapReady(final GoogleMap googleMap) {
@@ -192,8 +209,6 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
         LatLng selectLocation = new LatLng(latitude, longitude);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectLocation, 15));   //-- 현재 내 위치로 마커 이동
-
-
     }
 
 
@@ -202,8 +217,14 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         if (v == lBinding.btnSerch) {
+            lBinding.loading.setVisibility(View.VISIBLE);
+            lBinding.loadings.setVisibility(View.VISIBLE);
+            lBinding.loading.startAnimation(animation);
             locationSerch();
         } else if (v == lBinding.btnMylocation) {  //-- 현재 내위치를 가져오는 메소드
+            lBinding.loading.setVisibility(View.VISIBLE);
+            lBinding.loadings.setVisibility(View.VISIBLE);
+            lBinding.loading.startAnimation(animation);
             startLocation();
             Toast.makeText(this, "위치 정보 받아오는중..", Toast.LENGTH_SHORT).show();
         } else if (v == lBinding.btnAddIcon) {
@@ -254,6 +275,9 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(selectLocation, 15));
             }
         }
+        lBinding.loading.setVisibility(View.GONE);
+        lBinding.loadings.setVisibility(View.GONE);
+        lBinding.loading.clearAnimation();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {  //-- 사용자가 선택한 아이콘 정보를 가져와서 보여줌

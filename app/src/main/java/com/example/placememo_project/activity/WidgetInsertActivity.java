@@ -46,7 +46,7 @@ public class WidgetInsertActivity extends BaseActivity implements View.OnClickLi
     Realm myRealm;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         imbinding = DataBindingUtil.setContentView(this, R.layout.activity_widget_insertmemo);
@@ -225,7 +225,7 @@ public class WidgetInsertActivity extends BaseActivity implements View.OnClickLi
         locationSerch(this);   //-- 내위치 검색 알람매니저 실행
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {   //-- 위치 추가를 누른후 Location 액티비티에서의 반환값을 반영
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {   //-- 위치 추가를 누른후 Location 액티비티에서의 반환값을 반영
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             locationButton.add(data.getIntExtra("icon", -1));

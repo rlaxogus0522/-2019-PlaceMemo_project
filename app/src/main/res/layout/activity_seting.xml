@@ -160,7 +160,7 @@
                 android:gravity="left|center"
                 android:padding="10dp"
                 android:drawableLeft="@drawable/garbage_custom"
-                android:text="   모든 알람 초기화"
+                android:text="   위치 메모 초기화"
                 android:textColor="#7B7575"
                 android:textSize="13dp"
                 android:textStyle="bold" />

@@ -111,25 +111,6 @@
             android:padding="10dp">
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="bottom|left"
-                android:orientation="vertical">
-
-                <ImageButton
-                    android:id="@+id/btn_addicon"
-                    android:layout_width="45dp"
-                    android:layout_height="45dp"
-                    android:background="@drawable/add_icon" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="편집/추가" />
-
-            </LinearLayout>
-            <LinearLayout
                 android:gravity="bottom|right"
                 android:layout_weight="1"
                 android:layout_width="0dp"

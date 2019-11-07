@@ -15,6 +15,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 
 import android.graphics.Paint;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 
@@ -148,9 +149,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         TextViewNoMemo = locationView.findViewById(R.id.TextView_no_memo);
         TextViewNoMemo_nomal = nomalView.findViewById(R.id.TextView_no_memo);
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-
         mainBinding.menu.googleImage.setBackground(new ShapeDrawable(new OvalShape()));
         mainBinding.menu.googleImage.setClipToOutline(true);
+
+
 
         Intent intent = getIntent();
         user = intent.getStringExtra("user");
@@ -543,6 +545,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         } else if (view == mainBinding.locationTab) {
             mainBinding.kakaoButton.setText("   위치메모\n    공유하기 ");
+            mainBinding.menu.btnReset.setText("   위치 메모 초기화");
             mainBinding.locationTab.setAlpha(1.0f);
             mainBinding.nomalTab.setAlpha(0.6f);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -552,6 +555,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             ShowAlamUi(sort);
         } else if (view == mainBinding.nomalTab) {
             mainBinding.kakaoButton.setText("   일반메모\n    공유하기 ");
+            mainBinding.menu.btnReset.setText("   일반 메모 초기화");
             mainBinding.locationTab.setAlpha(0.6f);
             mainBinding.nomalTab.setAlpha(1.0f);
             nomaladapters.clear();
