@@ -69,27 +69,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
-
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
-
 import java.io.File;
-
 import java.io.FileOutputStream;
-
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-
-
 import io.realm.Realm;
 import io.realm.RealmResults;
 import static com.example.placememo_project.activity.LoginActivity.RC_SIGN_OUT;
+
 
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -104,7 +98,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     static public ArrayList<String> titlename = new ArrayList<>();  //-- 등록된 알람이있는지 체크하기위한 변수( 메뉴용 )
     boolean isSuccess = true;
     public Realm myRealm;
-    public AlertDialog alamreset,alamreset2;  //-- 설정창에서 모든 알람 초기화시 경고 메시지 용
+    public AlertDialog alamreset, alamreset2;  //-- 설정창에서 모든 알람 초기화시 경고 메시지 용
     public ItemTouchHelperExtension mitemTouchHelper;
     public ItemTouchHelperExtension.Callback mCallback;
     public boolean checkAlam = false;
@@ -114,15 +108,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public FragmentManager fragmentManager;
     private Fragment locaion;
     public LocationAdapter locationadapter;
-    public  RecyclerAdapter nomaladapters;
+    public RecyclerAdapter nomaladapters;
     public ItemTouchHelperExtension mItemTouchHelper_nomal;
     public ItemTouchHelperExtension.Callback mCallback_nomal;
-    public  Animation animOpen, animClose, animation3, animation4, animOpen2, animClose2;
+    public Animation animOpen, animClose, animation3, animation4, animOpen2, animClose2;
     public Bitmap bitmap;
     private String user, UID;
-    public String url,url2,goalPath;
+    public String url, url2, goalPath;
     long backKeyPressedTime;
-
     ProgressDialog progressDialog;
 
 
@@ -151,43 +144,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         mainBinding.menu.googleImage.setBackground(new ShapeDrawable(new OvalShape()));
         mainBinding.menu.googleImage.setClipToOutline(true);
-
-
-
         Intent intent = getIntent();
         user = intent.getStringExtra("user");
         UID = intent.getStringExtra("UID");
-            if (user.equals("google")) {
-                mainBinding.menu.googleId.setText(intent.getStringExtra("name"));
-                mainBinding.menu.googleEmail.setText(intent.getStringExtra("email"));
-                Thread thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Intent intent1 = getIntent();
-                            URL url = new URL(intent1.getStringExtra("photo"));
-                            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                            conn.setDoInput(true);
-                            conn.connect();
-                            InputStream is = conn.getInputStream();
-                            bitmap = BitmapFactory.decodeStream(is);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+        if (user.equals("google")) {
+            mainBinding.menu.googleId.setText(intent.getStringExtra("name"));
+            mainBinding.menu.googleEmail.setText(intent.getStringExtra("email"));
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Intent intent1 = getIntent();
+                        URL url = new URL(intent1.getStringExtra("photo"));
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setDoInput(true);
+                        conn.connect();
+                        InputStream is = conn.getInputStream();
+                        bitmap = BitmapFactory.decodeStream(is);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                });
-                thread.start();
-                try {
-                    thread.join();
-                    mainBinding.menu.googleImage.setImageBitmap(bitmap);
-                } catch (Exception e) {
                 }
-
-
-            } else if (user.equals("guest")) {
-                mainBinding.menu.googleLogout.setText("로그인");
-                mainBinding.menu.googleLogout.setBackgroundColor(0xff43BD57);
+            });
+            thread.start();
+            try {
+                thread.join();
+                mainBinding.menu.googleImage.setImageBitmap(bitmap);
+            } catch (Exception e) {
             }
+
+
+        } else if (user.equals("guest")) {
+            mainBinding.menu.googleLogout.setText("로그인");
+            mainBinding.menu.googleLogout.setBackgroundColor(0xff43BD57);
+        }
 
 
 
@@ -223,9 +213,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         progressDialog.setMessage("잠시 기다려주세요...");
         progressDialog.setCancelable(true);
         progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
-
-
-
 
 
         mCallback_nomal = new ItemTouchHelperCallback2(this);
@@ -297,7 +284,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         alamreset2 = alertDialogBuilder2.create();
 
 
-
         dataUpdate();   //-- DB에 정보 가져오기
         checkNoImage();   //-- 처음에 저장된 메모가 있는지 없는지 여부에 따라 메모 없다고 표시
 
@@ -353,7 +339,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-
     public void checkNoImage_nomal() {
         RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll();
         if (results.size() == 0) {
@@ -366,12 +351,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void startEdit(String memo, View view, String type) {
         view.setTranslationX(0f);
         Intent intent = new Intent(this, EditMemoActivity.class);
-        if(type.equals("memo")) {
+        if (type.equals("memo")) {
             intent.putExtra("memo", memo);
-            intent.putExtra("type","memo");
-        }else if(type.equals("title")){
-            intent.putExtra("memo",memo);
-            intent.putExtra("type","title");
+            intent.putExtra("type", "memo");
+        } else if (type.equals("title")) {
+            intent.putExtra("memo", memo);
+            intent.putExtra("type", "title");
         }
         startActivity(intent);
     }
@@ -490,32 +475,32 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     if (count != data_alams.size()) isSmame = false;
                 }
             }
-            if(!isSmame){
-            ArrayList<String> arrayList = new ArrayList<>();
-            arrayList.addAll(titlename);
-            titlename.clear();
-            for (int j = 0; j < arrayList.size(); j++) {
-                int check = 0;
-                for (int i = 0; i < arrayList.size(); i++) {
-                    RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", arrayList.get(i)).findAll();
-                    if (check < results2.size()) {
-                        if (!titlename.contains(results2.first().getName())) {
-                            titlename.add(j, results2.first().getName());
-                            check = results2.size();
+            if (!isSmame) {
+                ArrayList<String> arrayList = new ArrayList<>();
+                arrayList.addAll(titlename);
+                titlename.clear();
+                for (int j = 0; j < arrayList.size(); j++) {
+                    int check = 0;
+                    for (int i = 0; i < arrayList.size(); i++) {
+                        RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", arrayList.get(i)).findAll();
+                        if (check < results2.size()) {
+                            if (!titlename.contains(results2.first().getName())) {
+                                titlename.add(j, results2.first().getName());
+                                check = results2.size();
+                            }
                         }
                     }
                 }
             }
-        }
 
         }
         if (titlename.size() != 0) {
             for (int i = 0; i < titlename.size(); i++) {
                 RealmResults<Data_alam> results2 = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
-                locationadapter.addItem(new LocationMemo_item(results2.first().getName(),results2.first().getColor(),"Pin"));
-                locationadapter.addItem(new LocationMemo_item(results2.first().getIcon(),results2.first().getColor(),results2.first().getName(),"Title"));
-                for(Data_alam data_alam : results2){
-                    locationadapter.addItem(new LocationMemo_item(data_alam.getName(),data_alam.getMemo(),"Memo"));
+                locationadapter.addItem(new LocationMemo_item(results2.first().getName(), results2.first().getColor(), "Pin"));
+                locationadapter.addItem(new LocationMemo_item(results2.first().getIcon(), results2.first().getColor(), results2.first().getName(), "Title"));
+                for (Data_alam data_alam : results2) {
+                    locationadapter.addItem(new LocationMemo_item(data_alam.getName(), data_alam.getMemo(), "Memo"));
                 }
 
             }
@@ -538,16 +523,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             Intent in = new Intent(MainActivity.this, InsertActivity.class);
             startActivityForResult(in, 0522);  //-- 메모추가 액티비티로 이동
         } else if (view == mainBinding.menu.btnReset) {
-            if( mainBinding.locationTab.getAlpha() == 1.0f) {
+            if (mainBinding.locationTab.getAlpha() == 1.0f) {
                 alamreset.show();  //-- 모든 알람 초기화를 누른다면 알람리셋 팝업창 보여주기
-            }else{
+            } else {
                 alamreset2.show();
             }
         } else if (view == mainBinding.locationTab) {
             mainBinding.kakaoButton.setText("   위치메모\n    공유하기 ");
             mainBinding.menu.btnReset.setText("   위치 메모 초기화");
             mainBinding.locationTab.setAlpha(1.0f);
-            mainBinding.nomalTab.setAlpha(0.6f);
+            mainBinding.nomalTab.setAlpha(0.3f);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             LocationMemoActivity location_memo_activity = new LocationMemoActivity();
             transaction.replace(R.id.frame, location_memo_activity);
@@ -556,7 +541,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else if (view == mainBinding.nomalTab) {
             mainBinding.kakaoButton.setText("   일반메모\n    공유하기 ");
             mainBinding.menu.btnReset.setText("   일반 메모 초기화");
-            mainBinding.locationTab.setAlpha(0.6f);
+            mainBinding.locationTab.setAlpha(0.3f);
             mainBinding.nomalTab.setAlpha(1.0f);
             nomaladapters.clear();
             RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll().sort("order");
@@ -597,11 +582,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 finish();
                 overridePendingTransition(R.anim.fadein, R.anim.fadeout);
             }
-        } else if(view == mainBinding.menu.btnShare){
+        } else if (view == mainBinding.menu.btnShare) {
 
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_TEXT,"https://play.google.com/store/apps/details?id=net.daum.android.daum");
+            intent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=net.daum.android.daum");
             intent.setPackage("com.kakao.talk");
             startActivity(intent);
 
@@ -623,191 +608,190 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //                }
 //            });
 
-        }else if (view == mainBinding.kakaoButton) {
+        } else if (view == mainBinding.kakaoButton) {
 
             checkPermissions();
 
         } else if (view == mainBinding.menu.btnBackUp) {
-            if(user.equals("google")){
+            if (user.equals("google")) {
 
                 progressDialog.show();
-            mDatabase.child(UID).removeValue();
+                mDatabase.child(UID).removeValue();
 
-            RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
-            RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).findAll();
-            RealmResults<Data_Icon> data_icons = myRealm.where(Data_Icon.class).findAll();
+                RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
+                RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).findAll();
+                RealmResults<Data_Icon> data_icons = myRealm.where(Data_Icon.class).findAll();
 
-            for (Data_alam data_alam : data_alams) {            // 위치 알람 메모
-                Data_alam_firebase dataAlamFirebase = new Data_alam_firebase();
-                dataAlamFirebase.setAlamOn(data_alam.getisAlamOn());
-                dataAlamFirebase.setColor(data_alam.getColor());
-                dataAlamFirebase.setIcon(data_alam.getIcon());
-                dataAlamFirebase.setLatitude(data_alam.getLatitude());
-                dataAlamFirebase.setLongitude(data_alam.getLongitude());
-                dataAlamFirebase.setMemo(data_alam.getMemo());
-                dataAlamFirebase.setName(data_alam.getName());
-                mDatabase.child(UID).child("Location_Memo").child(EncodeString(data_alam.getMemo())).setValue(dataAlamFirebase).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("Data_alam","백업 성공");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        isSuccess = false;
-                        Log.d("Data_alam","백업 실패");
-                    }
-                });
-            }
-            for (Data_nomal data_nomal : data_nomals) {            // 일반 메모
-                Data_nomal_firebase dataNomalFirebase = new Data_nomal_firebase();
-                dataNomalFirebase.setColor(data_nomal.getColor());
-                dataNomalFirebase.setFrag(data_nomal.getFrag());
-                dataNomalFirebase.setMemo(EncodeString(data_nomal.getMemo()));
-                dataNomalFirebase.setOrder(data_nomal.getOrder());
-                mDatabase.child(UID).child("Nomal_Memo").child(EncodeString(data_nomal.getMemo())).setValue(dataNomalFirebase).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("Data_nomal","백업 성공");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        isSuccess = false;
-                        Log.d("Data_nomal","백업 실패");
-                    }
-                });
-            }
-            for (Data_Icon data_icon : data_icons) {            // 위치 아이콘
-                Data_Icon_firebase dataIconFirebase = new Data_Icon_firebase();
-                dataIconFirebase.setButton(data_icon.getButton());
-                dataIconFirebase.setButtonclick(data_icon.getButtonclick());
-                dataIconFirebase.setLatitude(data_icon.getLatitude());
-                dataIconFirebase.setLongitude(data_icon.getLongitude());
-                dataIconFirebase.setName(data_icon.getName());
-                mDatabase.child(UID).child("Location_Icon").child(EncodeString(data_icon.getName())).setValue(dataIconFirebase).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d("Data_Icon","백업 성공");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        isSuccess = false;
-                        Log.d("Data_Icon","백업 실패");
-                    }
-                });
-            }
-            progressDialog.dismiss();
-            if(isSuccess) {
-                Toast.makeText(mainContext, "백업 완료.", Toast.LENGTH_LONG).show();
-            }else{
-                Toast.makeText(mainContext, "백업 실패.", Toast.LENGTH_LONG).show();
-                isSuccess = true;
+                for (Data_alam data_alam : data_alams) {            // 위치 알람 메모
+                    Data_alam_firebase dataAlamFirebase = new Data_alam_firebase();
+                    dataAlamFirebase.setAlamOn(data_alam.getisAlamOn());
+                    dataAlamFirebase.setColor(data_alam.getColor());
+                    dataAlamFirebase.setIcon(data_alam.getIcon());
+                    dataAlamFirebase.setLatitude(data_alam.getLatitude());
+                    dataAlamFirebase.setLongitude(data_alam.getLongitude());
+                    dataAlamFirebase.setMemo(data_alam.getMemo());
+                    dataAlamFirebase.setName(data_alam.getName());
+                    mDatabase.child(UID).child("Location_Memo").child(EncodeString(data_alam.getMemo())).setValue(dataAlamFirebase).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("Data_alam", "백업 성공");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            isSuccess = false;
+                            Log.d("Data_alam", "백업 실패");
+                        }
+                    });
                 }
-            }
-            else if(user.equals("guest")){
+                for (Data_nomal data_nomal : data_nomals) {            // 일반 메모
+                    Data_nomal_firebase dataNomalFirebase = new Data_nomal_firebase();
+                    dataNomalFirebase.setColor(data_nomal.getColor());
+                    dataNomalFirebase.setFrag(data_nomal.getFrag());
+                    dataNomalFirebase.setMemo(EncodeString(data_nomal.getMemo()));
+                    dataNomalFirebase.setOrder(data_nomal.getOrder());
+                    mDatabase.child(UID).child("Nomal_Memo").child(EncodeString(data_nomal.getMemo())).setValue(dataNomalFirebase).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("Data_nomal", "백업 성공");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            isSuccess = false;
+                            Log.d("Data_nomal", "백업 실패");
+                        }
+                    });
+                }
+                for (Data_Icon data_icon : data_icons) {            // 위치 아이콘
+                    Data_Icon_firebase dataIconFirebase = new Data_Icon_firebase();
+                    dataIconFirebase.setButton(data_icon.getButton());
+                    dataIconFirebase.setButtonclick(data_icon.getButtonclick());
+                    dataIconFirebase.setLatitude(data_icon.getLatitude());
+                    dataIconFirebase.setLongitude(data_icon.getLongitude());
+                    dataIconFirebase.setName(data_icon.getName());
+                    mDatabase.child(UID).child("Location_Icon").child(EncodeString(data_icon.getName())).setValue(dataIconFirebase).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d("Data_Icon", "백업 성공");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            isSuccess = false;
+                            Log.d("Data_Icon", "백업 실패");
+                        }
+                    });
+                }
+                progressDialog.dismiss();
+                if (isSuccess) {
+                    Toast.makeText(mainContext, "백업 완료.", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(mainContext, "백업 실패.", Toast.LENGTH_LONG).show();
+                    isSuccess = true;
+                }
+            } else if (user.equals("guest")) {
                 Toast.makeText(mainContext, "백업 기능은 로그인 후 이용하실수 있습니다.", Toast.LENGTH_LONG).show();
             }
         } else if (view == mainBinding.menu.btnLoad) {
-            if(user.equals("google")){
-            progressDialog.show();
-            mDatabase.child(UID).child("Location_Icon").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    RealmResults<Data_Icon> data_icons = myRealm.where(Data_Icon.class).findAll();
-                    myRealm.beginTransaction();
-                    data_icons.deleteAllFromRealm();
-                    myRealm.commitTransaction();
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        Data_Icon_firebase dataIconFirebase = postSnapshot.getValue(Data_Icon_firebase.class);
+            if (user.equals("google")) {
+                progressDialog.show();
+                mDatabase.child(UID).child("Location_Icon").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        RealmResults<Data_Icon> data_icons = myRealm.where(Data_Icon.class).findAll();
                         myRealm.beginTransaction();
-                        Data_Icon data_icon = myRealm.createObject(Data_Icon.class);
-                        data_icon.setButton(dataIconFirebase.getButton());
-                        data_icon.setButtonclick(dataIconFirebase.getButtonclick());
-                        data_icon.setLatitude(dataIconFirebase.getLatitude());
-                        data_icon.setLongitude(dataIconFirebase.getLongitude());
-                        data_icon.setName(DecodeString(dataIconFirebase.getName()));
+                        data_icons.deleteAllFromRealm();
                         myRealm.commitTransaction();
+                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                            Data_Icon_firebase dataIconFirebase = postSnapshot.getValue(Data_Icon_firebase.class);
+                            myRealm.beginTransaction();
+                            Data_Icon data_icon = myRealm.createObject(Data_Icon.class);
+                            data_icon.setButton(dataIconFirebase.getButton());
+                            data_icon.setButtonclick(dataIconFirebase.getButtonclick());
+                            data_icon.setLatitude(dataIconFirebase.getLatitude());
+                            data_icon.setLongitude(dataIconFirebase.getLongitude());
+                            data_icon.setName(DecodeString(dataIconFirebase.getName()));
+                            myRealm.commitTransaction();
+                        }
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    isSuccess = false;
-                }
-            });
-            mDatabase.child(UID).child("Nomal_Memo").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).findAll();
-                    myRealm.beginTransaction();
-                    data_nomals.deleteAllFromRealm();
-                    myRealm.commitTransaction();
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        Data_nomal_firebase dataNomalFirebase = postSnapshot.getValue(Data_nomal_firebase.class);
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        isSuccess = false;
+                    }
+                });
+                mDatabase.child(UID).child("Nomal_Memo").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).findAll();
                         myRealm.beginTransaction();
-                        Data_nomal data_nomal = myRealm.createObject(Data_nomal.class);
-                        data_nomal.setOrder(dataNomalFirebase.getOrder());
-                        data_nomal.setColor(dataNomalFirebase.getColor());
-                        data_nomal.setFrag(dataNomalFirebase.getFrag());
-                        data_nomal.setMemo(DecodeString(dataNomalFirebase.getMemo()));
+                        data_nomals.deleteAllFromRealm();
                         myRealm.commitTransaction();
+                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                            Data_nomal_firebase dataNomalFirebase = postSnapshot.getValue(Data_nomal_firebase.class);
+                            myRealm.beginTransaction();
+                            Data_nomal data_nomal = myRealm.createObject(Data_nomal.class);
+                            data_nomal.setOrder(dataNomalFirebase.getOrder());
+                            data_nomal.setColor(dataNomalFirebase.getColor());
+                            data_nomal.setFrag(dataNomalFirebase.getFrag());
+                            data_nomal.setMemo(DecodeString(dataNomalFirebase.getMemo()));
+                            myRealm.commitTransaction();
+
+                        }
+                        nomaladapters.clear();
+                        RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll().sort("order");
+                        for (Data_nomal data_nomal : results) {
+                            nomaladapters.addItem(data_nomal.getMemo(), data_nomal.getColor());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        isSuccess = false;
 
                     }
-                    nomaladapters.clear();
-                    RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll().sort("order");
-                    for (Data_nomal data_nomal : results) {
-                        nomaladapters.addItem(data_nomal.getMemo(), data_nomal.getColor());
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    isSuccess = false;
-
-                }
-            });
+                });
 
 
-            mDatabase.child(UID).child("Location_Memo").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
-                    myRealm.beginTransaction();
-                    data_alams.deleteAllFromRealm();
-                    myRealm.commitTransaction();
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        Data_alam_firebase dataAlamFirebase = postSnapshot.getValue(Data_alam_firebase.class);
+                mDatabase.child(UID).child("Location_Memo").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
+                        myRealm.beginTransaction();
+                        data_alams.deleteAllFromRealm();
+                        myRealm.commitTransaction();
+                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                            Data_alam_firebase dataAlamFirebase = postSnapshot.getValue(Data_alam_firebase.class);
 //                                Log.d("==",dataAlamFirebase.getName());
-                        myRealm.beginTransaction();
-                        Data_alam dataalam = myRealm.createObject(Data_alam.class);
-                        dataalam.setName(dataAlamFirebase.getName());
-                        dataalam.setMemo(DecodeString(dataAlamFirebase.getMemo()));
-                        dataalam.setIcon(dataAlamFirebase.getIcon());
-                        dataalam.setLatitude(dataAlamFirebase.getLatitude());
-                        dataalam.setLongitude(dataAlamFirebase.getLongitude());
-                        dataalam.setColor(dataAlamFirebase.getColor());
-                        dataalam.setAlamOn(dataAlamFirebase.getisAlamOn());
-                        myRealm.commitTransaction();
-                        ShowAlamUi(sort);
+                            myRealm.beginTransaction();
+                            Data_alam dataalam = myRealm.createObject(Data_alam.class);
+                            dataalam.setName(dataAlamFirebase.getName());
+                            dataalam.setMemo(DecodeString(dataAlamFirebase.getMemo()));
+                            dataalam.setIcon(dataAlamFirebase.getIcon());
+                            dataalam.setLatitude(dataAlamFirebase.getLatitude());
+                            dataalam.setLongitude(dataAlamFirebase.getLongitude());
+                            dataalam.setColor(dataAlamFirebase.getColor());
+                            dataalam.setAlamOn(dataAlamFirebase.getisAlamOn());
+                            myRealm.commitTransaction();
+                            ShowAlamUi(sort);
+
+                        }
 
                     }
 
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    isSuccess = false;
-                }
-            });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        isSuccess = false;
+                    }
+                });
                 progressDialog.dismiss();
-            if (isSuccess) {
-                Toast.makeText(mainContext, "복원 완료.", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(mainContext, "복원 실패.", Toast.LENGTH_SHORT).show();
-            }
-        }else if(user.equals("guest")){
+                if (isSuccess) {
+                    Toast.makeText(mainContext, "복원 완료.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(mainContext, "복원 실패.", Toast.LENGTH_SHORT).show();
+                }
+            } else if (user.equals("guest")) {
                 Toast.makeText(mainContext, "백업 기능은 로그인 후 이용하실수 있습니다.", Toast.LENGTH_LONG).show();
             }
         }
@@ -816,28 +800,30 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void Kakao() {
-        if( mainBinding.locationTab.getAlpha() == 1.0f) {
-            if(getScreenshotFromRecyclerView(recycleerView)!=null) {
+        if (mainBinding.locationTab.getAlpha() == 1.0f) {
+            if (getScreenshotFromRecyclerView(recycleerView) != null) {
                 saveToInternalStorage(getScreenshotFromRecyclerView(recycleerView));
                 File imageFile = new File(goalPath);
-                Uri uri = FileProvider.getUriForFile(this,getPackageName(),imageFile);
+                Uri uri = FileProvider.getUriForFile(this, getPackageName(), imageFile);
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("image/*");
-                intent.putExtra(Intent.EXTRA_STREAM,uri);
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
                 intent.setPackage("com.kakao.talk");
                 startActivity(intent);
-            }else Toast.makeText(getApplicationContext(), "전송할 메모가 없습니다.", Toast.LENGTH_SHORT).show();
-        }else{
-            if(getScreenshotFromRecyclerView(recyclerView_nomal)!=null) {
+            } else
+                Toast.makeText(getApplicationContext(), "전송할 메모가 없습니다.", Toast.LENGTH_SHORT).show();
+        } else {
+            if (getScreenshotFromRecyclerView(recyclerView_nomal) != null) {
                 saveToInternalStorage(getScreenshotFromRecyclerView(recyclerView_nomal));
                 File imageFile = new File(goalPath);
-                Uri uri = FileProvider.getUriForFile(this,getPackageName(),imageFile);
+                Uri uri = FileProvider.getUriForFile(this, getPackageName(), imageFile);
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("image/*");
-                intent.putExtra(Intent.EXTRA_STREAM,uri);
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
                 intent.setPackage("com.kakao.talk");
                 startActivity(intent);
-            } else Toast.makeText(getApplicationContext(), "전송할 메모가 없습니다.", Toast.LENGTH_SHORT).show();
+            } else
+                Toast.makeText(getApplicationContext(), "전송할 메모가 없습니다.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -870,7 +856,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public Bitmap getScreenshotFromRecyclerView(RecyclerView view) {
         RecyclerView.Adapter adapter = view.getAdapter();
         Bitmap bigBitmap = null;
-        if (adapter != null && adapter.getItemCount()!=0) {
+        if (adapter != null && adapter.getItemCount() != 0) {
             int size = adapter.getItemCount();
             int height = 0;
             Paint paint = new Paint();
@@ -950,46 +936,47 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
     private void saveToInternalStorage(Bitmap bitmapImage) {
-        String ex_storage =Environment.getExternalStorageDirectory().getAbsolutePath();
-        String foler_name = "/"+"immmmmage"+"/";
-        String file_name = "KaKao_Image"+".jpg";
-        String string_path = ex_storage+foler_name;
+        String ex_storage = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String foler_name = "/" + "immmmmage" + "/";
+        String file_name = "KaKao_Image" + ".jpg";
+        String string_path = ex_storage + foler_name;
 
         File file_path;
         try {
             file_path = new File(string_path);
-            if(!file_path.isDirectory()){
+            if (!file_path.isDirectory()) {
                 file_path.mkdirs();
             }
-            goalPath = string_path+file_name;
-            FileOutputStream out = new FileOutputStream(string_path+file_name);
-            bitmapImage.compress(Bitmap.CompressFormat.JPEG,100,out);
+            goalPath = string_path + file_name;
+            FileOutputStream out = new FileOutputStream(string_path + file_name);
+            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.close();
             Toast.makeText(mainContext, "저장완료", Toast.LENGTH_SHORT).show();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(mainContext, "에러 잼"+e, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mainContext, "에러 잼" + e, Toast.LENGTH_SHORT).show();
         }
-        }
-
+    }
 
 
     private String EncodeString(String string) {
-        String encodingString =  string.replace(".", "-001");
+        String encodingString = string.replace(".", "-001");
         String encodingString2 = encodingString.replace("#", "-002");
         String encodingString3 = encodingString2.replace("$", "-003");
         String encodingString4 = encodingString3.replace("[", "-004");
         String encodingString5 = encodingString4.replace("]", "-005");
         return encodingString5;
     }
+
     private String DecodeString(String string) {
-        String encodingString =  string.replace("-001", ".");
+        String encodingString = string.replace("-001", ".");
         String encodingString2 = encodingString.replace("-002", "#");
         String encodingString3 = encodingString2.replace("-003", "$");
         String encodingString4 = encodingString3.replace("-004", "[");
         String encodingString5 = encodingString4.replace("-005", "]");
         return encodingString5;
     }
+
     PermissionListener permissionListener = new PermissionListener() {
         @Override
         public void onPermissionGranted() {
@@ -1001,13 +988,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             Toast.makeText(getApplicationContext(), "권한 거부시 서비스이용이 제한됩니다.", Toast.LENGTH_SHORT).show();
         }
     };
+
     public void checkPermissions() {
-        if (Build.VERSION.SDK_INT >= 23){ // 마시멜로(안드로이드 6.0) 이상 권한 체크
+        if (Build.VERSION.SDK_INT >= 23) { // 마시멜로(안드로이드 6.0) 이상 권한 체크
             TedPermission.with(this)
                     .setPermissionListener(permissionListener)
                     .setRationaleMessage("카카오톡 메모사진 공유를 위해서는 권한이 필요합니다")
                     .setDeniedMessage("앱에서 요구하는 권한설정이 필요합니다...\n [설정] > [권한] 에서 사용으로 활성화해주세요.")
-                    .setPermissions(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE})
+                    .setPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE})
                     .check();
 
         } else {
@@ -1016,4 +1004,4 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-    }
+}

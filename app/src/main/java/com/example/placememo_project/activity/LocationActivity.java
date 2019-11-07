@@ -86,7 +86,6 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
         });
 
             startLastLocation();
-
     }
 
     @Override

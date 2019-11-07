@@ -96,27 +96,30 @@
                     </LinearLayout>
                 </LinearLayout>
                 <RelativeLayout
-                    android:gravity="left"
+                    android:gravity="left|bottom"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="60dp">
 
-                    <Button
+                    <ImageButton
                         android:id="@+id/location_tab"
-                        android:layout_width="50dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/fragment_check"
-                        android:text="위치 메모"
+                        android:layout_width="40dp"
+                        android:layout_height="60dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/ribbon1"
                         android:textSize="10dp" />
-                    <Button
-                        android:alpha="0.6"
-                        android:layout_toEndOf="@+id/location_tab"
-                        android:text="일반 메모"
+
+                    <ImageButton
                         android:id="@+id/nomal_tab"
-                        android:textSize="10dp"
+                        android:layout_width="40dp"
+                        android:layout_height="60dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_toEndOf="@+id/location_tab"
+                        android:alpha="0.3"
+                        android:background="@drawable/ribbon2"
                         android:backgroundTintMode="src_over"
-                        android:background="@drawable/fragment_check"
-                        android:layout_width="50dp"
-                        android:layout_height="40dp"/>
+                        android:textSize="10dp" />
                     <Button
                         android:id="@+id/kakao_button"
                         android:padding="5dp"
