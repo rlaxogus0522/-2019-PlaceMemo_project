@@ -15,6 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
+
         android:gravity="center">
 
         <ImageView
@@ -23,7 +24,6 @@
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
             android:layout_gravity="center"
-            android:layout_marginTop="8dp"
             android:layout_marginRight="5dp"
             android:src="@drawable/baseline_notifications_active_white_48dp" />
     </LinearLayout>

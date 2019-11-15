@@ -15,33 +15,37 @@
             <LinearLayout
                 android:id="@+id/insert_nomal_layout"
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="40dp"
-                android:background="@mipmap/paper"
+                android:background="@mipmap/paper1"
                 android:orientation="vertical"
                 android:padding="10dp">
 
+
                 <LinearLayout
-                    android:layout_weight="3"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
+
                         <TextView
-                            android:focusable="true"
-                            android:focusableInTouchMode="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:alpha="0.5"
                             android:background="@drawable/simpebox"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
                             android:padding="10dp"
                             android:text="일반 메모"
                             android:textColor="#ffffff"
                             android:textStyle="bold" />
-
                         <Button
                             android:id="@+id/color1"
                             android:layout_width="0dp"
@@ -88,39 +92,41 @@
                             android:background="@drawable/color5" />
 
 
+
+
                     </LinearLayout>
 
                 </LinearLayout>
 
-
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_weight="3.5"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
-                    <LinearLayout
+
+                    <me.grantland.widget.AutofitLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1">
 
                         <EditText
                             android:id="@+id/Edit_memo"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:textSize="12dp"
-                            android:text="메모 해주세요!"
-                            android:layout_marginBottom="8dp"
                             android:background="@drawable/insertmemo_text"
-                            android:padding="10dp" />
-                    </LinearLayout>
-
+                            android:maxLines="5"
+                            android:padding="10dp"
+                            android:text="메모 해주세요!"
+                            android:textSize="12dp" />
+                    </me.grantland.widget.AutofitLayout>
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="0.3"
-                        android:gravity="center|top">
+                        android:gravity="center">
 
                         <Button
                             android:id="@+id/btn_save"
