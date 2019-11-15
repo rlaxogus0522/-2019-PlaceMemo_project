@@ -650,7 +650,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     dataNomalFirebase.setFrag(data_nomal.getFrag());
                     dataNomalFirebase.setMemo(EncodeString(data_nomal.getMemo()));
                     dataNomalFirebase.setOrder(data_nomal.getOrder());
-                    mDatabase.child(UID).child("Nomal_Memo").child(EncodeString(data_nomal.getMemo())).setValue(dataNomalFirebase).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    mDatabase.child(UID).child("Nomal_Memo").child(String.valueOf(data_nomal.getOrder())).setValue(dataNomalFirebase).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d("Data_nomal", "백업 성공");
@@ -728,16 +728,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         myRealm.beginTransaction();
                         data_nomals.deleteAllFromRealm();
                         myRealm.commitTransaction();
+                        int i = 0;
                         for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                             Data_nomal_firebase dataNomalFirebase = postSnapshot.getValue(Data_nomal_firebase.class);
                             myRealm.beginTransaction();
                             Data_nomal data_nomal = myRealm.createObject(Data_nomal.class);
-                            data_nomal.setOrder(dataNomalFirebase.getOrder());
+                            data_nomal.setOrder(i);
                             data_nomal.setColor(dataNomalFirebase.getColor());
                             data_nomal.setFrag(dataNomalFirebase.getFrag());
                             data_nomal.setMemo(DecodeString(dataNomalFirebase.getMemo()));
                             myRealm.commitTransaction();
-
+                            i++;
                         }
                         nomaladapters.clear();
                         RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll().sort("order");

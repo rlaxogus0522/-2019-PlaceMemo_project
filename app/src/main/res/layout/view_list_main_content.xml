@@ -10,15 +10,23 @@
     tools:showIn="@layout/list_item_main"
     >
 
-    <ImageView
-        android:id="@+id/alam"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentRight="true"
-        android:layout_gravity="center"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="5dp"
-        android:src="@drawable/baseline_notifications_active_white_48dp" />
+    <LinearLayout
+        android:id="@+id/alam_lay"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/alam"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/baseline_notifications_active_white_48dp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/text_list_main_title"
@@ -29,7 +37,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
-        android:layout_toStartOf="@+id/alam"
+        android:layout_toStartOf="@+id/alam_lay"
         android:gravity="center|left" />
 
     <TextView

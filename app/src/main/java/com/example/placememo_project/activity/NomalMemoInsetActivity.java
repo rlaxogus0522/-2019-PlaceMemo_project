@@ -28,6 +28,14 @@ public class NomalMemoInsetActivity extends AppCompatActivity implements View.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         nBinding = DataBindingUtil.setContentView(this, R.layout.activity_nomal_memo);
+        nBinding.EditMemo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {   //--  메모입력창에 포커스를 받으면 메모를 입력해주세요라는 문구 삭제
+                if (b) {
+                    nBinding.EditMemo.setText("");
+                }
+            }
+        });
         Realm.init(this);
         myRealm = Realm.getDefaultInstance();
         nBinding.btnSave.setOnClickListener(this);

@@ -135,7 +135,6 @@ public class LocationReceiver extends BroadcastReceiver {
                 }
             }
         } catch (NullPointerException e) {
-            Log.d("꺄아아아악",e+"");
         }
 
         /*-----------------------------------------------------------------------------------------------------------------------------------------------*/

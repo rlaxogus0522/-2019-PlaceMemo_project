@@ -14,9 +14,11 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".activity.EditNomalMemoActivity"
-            android:theme="@style/Theme.MyDialog" />
+            android:theme="@style/Theme.MyDialog"
+            android:screenOrientation="portrait"/>
 
-        <activity android:name=".activity.IntroActivity">
+        <activity android:name=".activity.IntroActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -35,35 +37,43 @@
         </activity>
         <activity
             android:name=".activity.WidgetInsertActivity"
+            android:screenOrientation="portrait"
             android:excludeFromRecents="true"
             android:taskAffinity="com.example.placememo_project.A"
             android:theme="@style/Theme.Transparent" />
         <activity
             android:name=".activity.WidgetNomalMemoInsetActivity"
+            android:screenOrientation="portrait"
             android:excludeFromRecents="true"
             android:taskAffinity="com.example.placememo_project.B"
             android:theme="@style/Theme.Transparent" />
         <activity android:name=".activity.BaseActivity" />
         <activity
             android:name=".activity.AlamActivity"
+            android:screenOrientation="portrait"
             android:excludeFromRecents="true"
             android:showOnLockScreen="true" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".activity.TitleAddItemActivity"
             android:theme="@style/Theme.MyDialog" />
         <activity
             android:name=".activity.NomalMemoInsetActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.MyDialog" />
         <activity android:name=".activity.MainActivity" />
         <activity
             android:name=".activity.EditMemoActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.MyDialog" />
         <activity
             android:name=".activity.InsertActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.MyDialog" />
         <activity android:name=".activity.LocationActivity" />
         <activity
             android:name=".activity.IconActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.MyDialog" />
         <activity android:name=".activity.LoginActivity" />
         <meta-data

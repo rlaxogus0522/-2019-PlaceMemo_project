@@ -6,12 +6,11 @@
     android:layout_width="260dp"
     android:layout_height="match_parent"
     android:layout_gravity="end"
-
     android:weightSum="10"
     android:orientation="vertical">
 
     <RelativeLayout
-        android:background="@mipmap/background"
+        android:background="@drawable/background1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
