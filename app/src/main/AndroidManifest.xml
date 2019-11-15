@@ -104,7 +104,7 @@
 
         <receiver
             android:name="com.example.placememo_project.wiget.WigetProvider"
-            android:label="위젯 테스트 (일반)">
+            android:label="PM">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -113,6 +113,15 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_provider" />
         </receiver>
+
+        <service android:name=".activity.JobService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+
+        </service>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

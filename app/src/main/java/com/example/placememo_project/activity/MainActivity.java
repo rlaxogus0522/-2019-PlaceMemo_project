@@ -433,9 +433,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (resultCode == RESULT_OK) { //--  사용자가 메모를 추가가 성공적이었다면
             ShowAlamUi(sort);
             RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn", true).findAll();
-            if (data_alams.size() == 1) locationSerch(this);
+            if (data_alams.size() == 1)
+//                JobSchedulerStart.start(this);
+                locationSerch(this);
         }
     }
+
 
     public void ShowAlamUi(String sort) {
         int count = 0;

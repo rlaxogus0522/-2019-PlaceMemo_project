@@ -29,6 +29,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.firebase:firebase-jobdispatcher:0.8.6'
     implementation'me.grantland:autofittextview:0.2.+'
     implementation group: 'com.kakao.sdk', name: 'kakaolink', version: '1.25.0'
     implementation 'com.google.firebase:firebase-database:19.1.0'

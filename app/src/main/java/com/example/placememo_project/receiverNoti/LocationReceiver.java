@@ -47,6 +47,7 @@ public class LocationReceiver extends BroadcastReceiver {
     int alamCycle = 15;  //-- 초단위 저장용
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d("==","Receiver 받음");
         Realm.init(context);
         Realm myRealm2;
         myRealm2 = Realm.getDefaultInstance();
@@ -177,20 +178,24 @@ public class LocationReceiver extends BroadcastReceiver {
 
 
     public void locationSerch(){
+        Log.d("==location","실행됨");
         Intent intent = new Intent("AlarmService");
         PendingIntent sender = PendingIntent.getBroadcast(rContext, 0, intent, 0); //flag 종류
         AlarmManager am = (AlarmManager) rContext.getSystemService(ALARM_SERVICE);
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 //API 19 이상 API 23미만
-                am.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, startTime, sender) ;
+                am.setExact(AlarmManager.RTC_WAKEUP, startTime, sender) ;
+                Log.d("==버전","19이상 23미만");
             } else {
                 //API 19미만
-                am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, startTime, sender);
+                am.set(AlarmManager.RTC_WAKEUP, startTime, sender);
+                Log.d("==버전","19미만");
             }
         } else {
             //API 23 이상
-            am.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, startTime, sender);
+            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, startTime, sender);
+            Log.d("==버전","23이상");
         }
     }
 
