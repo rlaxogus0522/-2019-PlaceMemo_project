@@ -37,10 +37,13 @@
 
     </LinearLayout>
     <RelativeLayout
+        android:id="@+id/rrr"
         android:layout_weight="8"
         android:layout_width="match_parent"
         android:layout_height="0dp"
      >
+
+
         <fragment
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -59,6 +62,7 @@
             android:id="@+id/loadings"
             android:alpha="0.5"
             android:visibility="gone"
+            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#000000"/>
@@ -70,13 +74,12 @@
             android:layout_width="50dp"
             android:layout_height="50dp"/>
 
-
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.2"
+        android:layout_weight="1"
         android:background="@mipmap/paper"
         android:padding="5dp">
 

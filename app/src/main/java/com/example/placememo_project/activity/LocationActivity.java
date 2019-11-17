@@ -11,6 +11,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -51,6 +52,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
     LocationManager manager;
     double longitude;
     double latitude;
+    Handler handler;
     Animation animation;
     private boolean isIconcheck = false;  //-- 사용자가 아이콘을 선택했는지 구분
     CircleOptions circle; //원점
@@ -60,9 +62,10 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         lBinding = DataBindingUtil.setContentView(this, R.layout.activity_location);
-       circle = new CircleOptions();
+        circle = new CircleOptions();
         animation = AnimationUtils.loadAnimation(this,R.anim.loading);
         geocoder= new Geocoder(this);
+        handler = new Handler();
         lBinding.btnAddIcon.setOnClickListener(this);
         lBinding.btnAddlocation.setOnClickListener(this);
         lBinding.btnSerch.setOnClickListener(this);
@@ -84,6 +87,8 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
         });
+
+
 
             startLastLocation();
     }
@@ -185,16 +190,25 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
 
         mMap = googleMap;
         mMap.setOnMarkerClickListener(this);
+        mMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+            @Override
+            public void onCameraMove() {
+                mMap.clear();
+                handler.removeCallbacks(runnable);
+            }
+        });
         mMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
             @Override
             public void onCameraMoveStarted(int i) {
                 mMap.clear();
+                handler.removeCallbacks(runnable);
             }
         });
         mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
                 mMap.clear();
+                handler.removeCallbacks(runnable);
                 LatLng location = cameraPosition.target;
                 latitude = location.latitude;
                 longitude = location.longitude;
@@ -202,7 +216,8 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
                 circle.radius(200);      //반지름 단위 : m
                 circle.strokeWidth(0f);  //선너비 0f : 선없음
                 circle.fillColor(Color.parseColor("#500000ff")); //배경색
-                mMap.addCircle(circle);
+
+                handler.postDelayed(runnable,300);
             }
         });
         LatLng selectLocation = new LatLng(latitude, longitude);
@@ -211,6 +226,12 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            mMap.addCircle(circle);
+        }
+    };
 
 
     @Override
