@@ -18,6 +18,7 @@
             android:screenOrientation="portrait"/>
 
         <activity android:name=".activity.IntroActivity"
+            android:label="여기 메모!"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -61,7 +62,8 @@
             android:name=".activity.NomalMemoInsetActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MyDialog" />
-        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.MainActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.EditMemoActivity"
             android:screenOrientation="portrait"
@@ -70,12 +72,14 @@
             android:name=".activity.InsertActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MyDialog" />
-        <activity android:name=".activity.LocationActivity" />
+        <activity android:name=".activity.LocationActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.IconActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MyDialog" />
-        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAeyokLLIn5BwKqqVRm0weMIU9GOBmfJUc" />
