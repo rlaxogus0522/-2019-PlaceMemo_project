@@ -334,7 +334,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else {
             checkAlam = true;
             TextViewNoMemo.setVisibility(View.GONE);
-            if (sender == null) locationSerch(this);   //-- 내위치 검색 알람매니저 실행
+            if (sender == null ) {
+                locationSerch(this);
+                Log.d("==","1번째");
+            }//-- 내위치 검색 알람매니저 실행
         }
     }
 
@@ -432,10 +435,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) { //--  사용자가 메모를 추가가 성공적이었다면
             ShowAlamUi(sort);
-            RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn", true).findAll();
-            if (data_alams.size() == 1)
-//                JobSchedulerStart.start(this);
-                locationSerch(this);
+            locationSerch(this);
+            Log.d("==","2번째");
         }
     }
 

@@ -113,15 +113,9 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_provider" />
         </receiver>
-
-        <service android:name=".activity.JobService"
+        <service android:name=".receiverNoti.LocationService"
             android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
-            </intent-filter>
-
-        </service>
+            android:exported="true"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -131,5 +125,6 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
 </manifest>
