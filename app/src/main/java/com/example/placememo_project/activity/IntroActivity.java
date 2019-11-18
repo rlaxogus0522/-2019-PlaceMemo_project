@@ -52,9 +52,8 @@ public class IntroActivity extends AppCompatActivity {
         setContentView(R.layout.activity_intro);
         titlename.clear();
         animationView = (LottieAnimationView) findViewById(R.id.animation_view);
-        animationView.setAnimation("locations.json");
+        animationView.setAnimation("location.json");
         animationView.loop(false);
-
         start();
     }
 
@@ -83,7 +82,7 @@ public class IntroActivity extends AppCompatActivity {
 
     private void start() {
             animationView.playAnimation();
-            handler.postDelayed(newRunnable, 3000);
+            handler.postDelayed(newRunnable, 2500);
     }
 
 

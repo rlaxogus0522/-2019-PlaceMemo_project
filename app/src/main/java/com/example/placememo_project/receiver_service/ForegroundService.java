@@ -20,7 +20,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.util.Log;
-import android.widget.Toast;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
@@ -112,7 +112,7 @@ public class ForegroundService extends Service {
                     Data_LastLocation_LastTime data_lastLocation_lastTime = myRealm.createObject(Data_LastLocation_LastTime.class);
                     data_lastLocation_lastTime.setLatitude(latitude);
                     data_lastLocation_lastTime.setLongitude(longitude);
-                    data_lastLocation_lastTime.setMinTime(alamCycle);
+                    data_lastLocation_lastTime.setMintime(alamCycle);
                     myRealm.commitTransaction();
                 }else{
 
@@ -132,16 +132,16 @@ public class ForegroundService extends Service {
             for (Data_alam data_alam : data_alams) {  //-- DB에 저장된 알람을 원하는 위치와 현재 위치를 비교
                 distance = getDistance(data_alam.getLatitude(),data_alam.getLongitude(),this.latitude,this.longitude);
                 Log.d("=="+data_alam.getName(),distance +" Km");  //-- 저장된 메모에따른 거리 보여주기위한 Log
-                if(data_lastLocation_lastTimes.getMinTime() == 0f){  //-- 만약 최소거리가 0이라면 첫번째임을 알수있음
+                if(data_lastLocation_lastTimes.getMindistance() == 0f){  //-- 만약 최소거리가 0이라면 첫번째임을 알수있음
                     myRealm.beginTransaction();
-                    data_lastLocation_lastTimes.setMinTime(distance);  //-- 최소거리에 첫번째 가져온 위치에 대한 거리를 저장
+                    data_lastLocation_lastTimes.setMindistance(distance);  //-- 최소거리에 첫번째 가져온 위치에 대한 거리를 저장
                     myRealm.commitTransaction();
-                }else if(data_lastLocation_lastTimes.getMinTime() > getDistance(data_alam.getLatitude(),data_alam.getLongitude(),this.latitude,this.longitude)) {  //-- 최소거리가 0이아니라면 그다음에 가져오는 위치에대한 거리를 저장되어있던 최소거리와 비교후 더 가까운 거리를 저장
+                }else if(data_lastLocation_lastTimes.getMindistance() > getDistance(data_alam.getLatitude(),data_alam.getLongitude(),this.latitude,this.longitude)) {  //-- 최소거리가 0이아니라면 그다음에 가져오는 위치에대한 거리를 저장되어있던 최소거리와 비교후 더 가까운 거리를 저장
                     myRealm.beginTransaction();
-                    data_lastLocation_lastTimes.setMinTime(distance);
+                    data_lastLocation_lastTimes.setMindistance(distance);
                     myRealm.commitTransaction();
                 }
-                Log.d("==minDistance",data_lastLocation_lastTimes.getMinTime()+"km");
+                Log.d("==minDistance",data_lastLocation_lastTimes.getMindistance()+"km");
                 if(distance<0.3) {
                     if (!pause) {
                         KeyguardManager km = (KeyguardManager) rContext.getSystemService(Context.KEYGUARD_SERVICE);
@@ -179,27 +179,27 @@ public class ForegroundService extends Service {
 
         /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
         Data_LastLocation_LastTime data_lastLocation_lastTimes = myRealm.where(Data_LastLocation_LastTime.class).findFirst();
-        if (data_lastLocation_lastTimes.getMinTime() > 1000){
+        if (data_lastLocation_lastTimes.getMindistance() > 1000){
             alamCycle = 21;  //10000
-        }else if( data_lastLocation_lastTimes.getMinTime() > 500){
+        }else if( data_lastLocation_lastTimes.getMindistance() > 500){
             alamCycle = 20; //5000
-        }else if ( data_lastLocation_lastTimes.getMinTime() >100 ){
+        }else if ( data_lastLocation_lastTimes.getMindistance() >100 ){
             alamCycle = 19;  //2000
-        }else if(data_lastLocation_lastTimes.getMinTime() >10){
+        }else if(data_lastLocation_lastTimes.getMindistance() >10){
             alamCycle = 18;  //500
-        }else if(data_lastLocation_lastTimes.getMinTime() > 1){
+        }else if(data_lastLocation_lastTimes.getMindistance() > 1){
             alamCycle = 17;  //100
-        }else if(data_lastLocation_lastTimes.getMinTime() >0.5){
+        }else if(data_lastLocation_lastTimes.getMindistance() >0.5){
             alamCycle = 16; //60
-        }else if (data_lastLocation_lastTimes.getMinTime() > 0.2){
+        }else if (data_lastLocation_lastTimes.getMindistance() > 0.2){
             alamCycle = 15; //15
         }
         double dis = getDistance(data_lastLocation_lastTimes.getLatitude(),data_lastLocation_lastTimes.getLongitude(),latitude,longitude);
-        int time = (int)(data_lastLocation_lastTimes.getMinTime()/(dis/data_lastLocation_lastTimes.getMinTime()));
+        int time = (int)(data_lastLocation_lastTimes.getMindistance()/(dis/data_lastLocation_lastTimes.getMintime()));
         myRealm.beginTransaction();
         data_lastLocation_lastTimes.setLongitude(longitude);
         data_lastLocation_lastTimes.setLatitude(latitude);
-        data_lastLocation_lastTimes.setMinTime(time);
+        data_lastLocation_lastTimes.setMintime(time);
         myRealm.commitTransaction();
         if(alamCycle>time){
             alamCycle = time;

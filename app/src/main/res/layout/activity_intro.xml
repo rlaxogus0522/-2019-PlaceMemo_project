@@ -6,16 +6,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:background="@mipmap/paper"
         tools:context=".activity.IntroActivity">
 
-     <com.airbnb.lottie.LottieAnimationView
-         android:id="@+id/animation_view"
-         android:background="#855FC9"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         app:lottie_loop="false"
-         app:lottie_autoPlay="true"
-         app:lottie_fileName="locations.json"/>
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animation_view"
+            android:background="@android:color/transparent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:lottie_loop="false"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="location.json"/>
 
 
 

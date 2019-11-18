@@ -117,7 +117,7 @@ public class LocationMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 
         } else if (viewHolder instanceof LocationMemoAdapter.ItemSwipeWithActionWidthViewHolder2) {
-            Data_alam data_alam = myRealm.where(Data_alam.class).equalTo("memo", items.get(position).getMemo()).findFirst();
+            Data_alam data_alam = myRealm.where(Data_alam.class).equalTo("memo", items.get(position).getMemo()).equalTo("name", items.get(position).getTitle()).findFirst();
             if (data_alam.getisAlamOn()) {
                 ((ItemSwipeWithActionWidthViewHolder2) viewHolder).imageButton.setImageResource(R.drawable.baseline_notifications_active_white_48dp);
             } else {
@@ -145,7 +145,7 @@ public class LocationMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 @Override
                 public void onClick(View view) {
                     if (((LocationMemoAdapter.ItemSwipeWithActionWidthViewHolder2) viewHolder).mViewContent2.getTranslationX() == 0f) {
-                        RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("memo", items.get(position).getMemo()).findAll();
+                        RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("memo", items.get(position).getMemo()).equalTo("name", items.get(position).getTitle()).findAll();
                         if (Objects.requireNonNull(data_alams.first()).getisAlamOn()) {
                             ((ItemSwipeWithActionWidthViewHolder2) viewHolder).imageButton.setImageResource(R.drawable.baseline_notifications_off_white_48dp);
                             myRealm.beginTransaction();
@@ -216,7 +216,7 @@ public class LocationMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public View mViewContent1;
         public View mActionContainer1;
         public View background;
-        int color;
+
 
         public ViewHolder1(View itemView) {
             super(itemView);
@@ -226,10 +226,6 @@ public class LocationMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             mViewContent1 = itemView.findViewById(R.id.view_list_title_content);
             mActionContainer1 = itemView.findViewById(R.id.view_list_title_action_container);
             background = itemView.findViewById(R.id.title_background);
-
-//            background.setBackgroundColor(color);
-//            mViewContent1.setBackgroundColor(color);
-//            mActionContainer1.setBackgroundColor(color);
 
         }
     }

@@ -442,7 +442,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     public void ShowAlamUi(String sort) {
         int count = 0;
-        boolean isSmame = true;
+        boolean isSame = true;
         locationadapter.clear();
         titlename.clear();
         if (sort.equals("sort_name")) {
@@ -475,10 +475,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     count = data_alams.size();
                 } else {
                     RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("name", titlename.get(i)).findAll();
-                    if (count != data_alams.size()) isSmame = false;
+                    if (count != data_alams.size()) isSame = false;
                 }
             }
-            if (!isSmame) {
+            if (!isSame) {
                 ArrayList<String> arrayList = new ArrayList<>();
                 arrayList.addAll(titlename);
                 titlename.clear();
@@ -613,7 +613,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         } else if (view == mainBinding.kakaoButton) {
 
-            checkPermissions();
+            RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
+            Toast.makeText(mainContext, data_alams.size()+"", Toast.LENGTH_SHORT).show();
+//            checkPermissions();
 
         } else if (view == mainBinding.menu.btnBackUp) {
             if (user.equals("google")) {

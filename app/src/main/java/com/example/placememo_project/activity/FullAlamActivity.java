@@ -52,7 +52,7 @@ public class FullAlamActivity extends BaseActivity {
         vibrator.vibrate(pattern,0);
         Intent intent = getIntent();
         title = intent.getStringExtra("title");
-        data_alams = myrealm.where(Data_alam.class).equalTo("isAlamOn",true).equalTo("name",intent.getStringExtra("title")).findAll();
+        data_alams = myrealm.where(Data_alam.class).equalTo("isAlamOn",true).equalTo("name",title).findAll();
         alamBinding.alamIcon.setImageResource(data_alams.first().getIcon());
         alamBinding.alamName.setText(data_alams.first().getName());
         alamBinding.seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
