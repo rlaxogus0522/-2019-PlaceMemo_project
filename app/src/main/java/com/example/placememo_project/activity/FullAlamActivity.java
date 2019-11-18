@@ -10,13 +10,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.SeekBar;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.placememo_project.adapter.AlamAdapter;
-import com.example.placememo_project.databinding.ActivityAlamBinding;
+import com.example.placememo_project.adapter.FullAlamAdapter;
+import com.example.placememo_project.databinding.ActivityFullAlamBinding;
 import com.example.placememo_project.dbData.Data_alam;
 import com.example.placememo_project.R;
 
@@ -26,10 +25,10 @@ import io.realm.RealmResults;
 import static com.example.placememo_project.activity.MainActivity.mainContext;
 import static com.example.placememo_project.activity.MainActivity.sort;
 
-public class AlamActivity extends BaseActivity {
-    ActivityAlamBinding alamBinding;
+public class FullAlamActivity extends BaseActivity {
+    ActivityFullAlamBinding alamBinding;
     RecyclerView.LayoutManager layoutManager;
-    AlamAdapter alamAdapter;
+    FullAlamAdapter alamAdapter;
     Realm myrealm;
     String title;
     Animation allanim,fadein;
@@ -41,7 +40,7 @@ public class AlamActivity extends BaseActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN|WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD|WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON|
                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED|
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-        alamBinding = DataBindingUtil.setContentView(this, R.layout.activity_alam);
+        alamBinding = DataBindingUtil.setContentView(this, R.layout.activity_full_alam);
         allanim = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.all_anim);
         fadein =  AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein2);
         alamBinding.set.startAnimation(fadein);
@@ -114,7 +113,7 @@ public class AlamActivity extends BaseActivity {
 
         layoutManager = new LinearLayoutManager(this);
         alamBinding.alamRecycler.setLayoutManager(layoutManager);
-        alamAdapter = new AlamAdapter();
+        alamAdapter = new FullAlamAdapter();
         for(Data_alam data_alam : data_alams){
             alamAdapter.addItem(data_alam.getMemo());
         }

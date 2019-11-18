@@ -9,7 +9,7 @@
     >
 
         <LinearLayout
-            android:layout_weight="4"
+            android:layout_weight="3.5"
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -18,8 +18,8 @@
 
             <ImageView
                 android:id="@+id/alam_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:src="@drawable/home" />
 
             <TextView
@@ -48,7 +48,7 @@
             android:layout_height="1dp"
             android:background="#ffffff"/>
         <LinearLayout
-            android:layout_weight="4"
+            android:layout_weight="4.5"
             android:layout_width="match_parent"
             android:layout_height="0dp">
 

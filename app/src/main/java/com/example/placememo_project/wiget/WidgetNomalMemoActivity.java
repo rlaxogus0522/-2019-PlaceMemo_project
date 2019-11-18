@@ -1,4 +1,4 @@
-package com.example.placememo_project.activity;
+package com.example.placememo_project.wiget;
 
 import android.os.Bundle;
 import android.view.View;
@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.example.placememo_project.R;
-import com.example.placememo_project.databinding.ActivityNomalMemoBinding;
-import com.example.placememo_project.databinding.ActivityWidgetNomalmemoBinding;
+import com.example.placememo_project.activity.MainActivity;
+import com.example.placememo_project.databinding.ActivityWidgetNomalMemoBinding;
 import com.example.placememo_project.dbData.Data_nomal;
 
 import io.realm.Realm;
@@ -18,8 +18,8 @@ import io.realm.RealmResults;
 
 import static com.example.placememo_project.activity.MainActivity.mainContext;
 
-public class WidgetNomalMemoInsetActivity extends AppCompatActivity implements View.OnClickListener {
-    ActivityWidgetNomalmemoBinding nBinding;
+public class WidgetNomalMemoActivity extends AppCompatActivity implements View.OnClickListener {
+    ActivityWidgetNomalMemoBinding nBinding;
     Realm myRealm;
     int color[] = new int[]{0xFFDF8A84, 0xFF8E65D8, 0xFF6CB8DF, 0xFFCBD654, 0xFFE76E97};  //-- 저장된 메모 메뉴에 표시할 색깔 등록해두기
     Button colorButton[] = new Button[5];
@@ -28,7 +28,7 @@ public class WidgetNomalMemoInsetActivity extends AppCompatActivity implements V
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        nBinding = DataBindingUtil.setContentView(this, R.layout.activity_widget_nomalmemo);
+        nBinding = DataBindingUtil.setContentView(this, R.layout.activity_widget_nomal_memo);
         nBinding.EditMemo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {   //--  메모입력창에 포커스를 받으면 메모를 입력해주세요라는 문구 삭제

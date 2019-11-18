@@ -15,7 +15,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 
 import android.graphics.Paint;
-import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 
@@ -55,12 +54,14 @@ import com.example.placememo_project.dbData.Data_alam;
 import com.example.placememo_project.dbData.Data_alam_firebase;
 import com.example.placememo_project.dbData.Data_nomal;
 import com.example.placememo_project.dbData.Data_nomal_firebase;
-import com.example.placememo_project.touchcallback.ItemTouchHelperCallback;
-import com.example.placememo_project.touchcallback.ItemTouchHelperCallback2;
-import com.example.placememo_project.adapter.LocationAdapter;
+import com.example.placememo_project.fragment.LocationMemoActivity;
+import com.example.placememo_project.fragment.NomalMemoActivity;
+import com.example.placememo_project.touchcallback.LocationItemTouchHelper;
+import com.example.placememo_project.touchcallback.NomalItemTouchHelper;
+import com.example.placememo_project.adapter.LocationMemoAdapter;
 import com.example.placememo_project.adapter.item.LocationMemo_item;
 import com.example.placememo_project.R;
-import com.example.placememo_project.adapter.RecyclerAdapter;
+import com.example.placememo_project.adapter.NomalMemoAdapter;
 import com.example.placememo_project.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -107,8 +108,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public RecyclerView recycleerView, recyclerView_nomal;
     public FragmentManager fragmentManager;
     private Fragment locaion;
-    public LocationAdapter locationadapter;
-    public RecyclerAdapter nomaladapters;
+    public LocationMemoAdapter locationadapter;
+    public NomalMemoAdapter nomaladapters;
     public ItemTouchHelperExtension mItemTouchHelper_nomal;
     public ItemTouchHelperExtension.Callback mCallback_nomal;
     public Animation animOpen, animClose, animation3, animation4, animOpen2, animClose2;
@@ -135,8 +136,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         locaion = new LocationMemoActivity();
         fragmentManager.beginTransaction().replace(R.id.frame, locaion).commit();
         mainContext = this;
-        locationView = getLayoutInflater().inflate(R.layout.location_framelatout, null, false);
-        nomalView = getLayoutInflater().inflate(R.layout.nomal_framelayout, null, false);
+        locationView = getLayoutInflater().inflate(R.layout.framelayout_location, null, false);
+        nomalView = getLayoutInflater().inflate(R.layout.framelayout_nomal, null, false);
         recycleerView = locationView.findViewById(R.id.recycleerView);
         recyclerView_nomal = nomalView.findViewById(R.id.nomal_recyclerview);
         TextViewNoMemo = locationView.findViewById(R.id.TextView_no_memo);
@@ -215,21 +216,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         progressDialog.setProgressStyle(android.R.style.Widget_ProgressBar_Horizontal);
 
 
-        mCallback_nomal = new ItemTouchHelperCallback2(this);
+        mCallback_nomal = new NomalItemTouchHelper(this);
         mItemTouchHelper_nomal = new ItemTouchHelperExtension(mCallback_nomal);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getApplicationContext(), new LinearLayoutManager(this).getOrientation());
         recyclerView_nomal.addItemDecoration(dividerItemDecoration);
-        nomaladapters = new RecyclerAdapter(this);
+        nomaladapters = new NomalMemoAdapter(this);
         recyclerView_nomal.setLayoutManager(new LinearLayoutManager(this));
         recyclerView_nomal.setAdapter(nomaladapters);
         mItemTouchHelper_nomal.attachToRecyclerView(recyclerView_nomal);
 
-        mCallback = new ItemTouchHelperCallback(this);
+        mCallback = new LocationItemTouchHelper(this);
         mitemTouchHelper = new ItemTouchHelperExtension(mCallback);
 
 
-        locationadapter = new LocationAdapter(this);
+        locationadapter = new LocationMemoAdapter(this);
         recycleerView.setLayoutManager(new LinearLayoutManager(this));
         recycleerView.setAdapter(locationadapter);
         mitemTouchHelper.attachToRecyclerView(recycleerView);
@@ -336,8 +337,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             TextViewNoMemo.setVisibility(View.GONE);
             if (sender == null ) {
                 locationSerch(this);
-                Log.d("==","1번째");
-            }//-- 내위치 검색 알람매니저 실행
+            }
         }
     }
 
@@ -353,7 +353,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     public void startEdit(String memo, View view, String type) {
         view.setTranslationX(0f);
-        Intent intent = new Intent(this, EditMemoActivity.class);
+        Intent intent = new Intent(this, EditLocationMemoActivity.class);
         if (type.equals("memo")) {
             intent.putExtra("memo", memo);
             intent.putExtra("type", "memo");
@@ -436,7 +436,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (resultCode == RESULT_OK) { //--  사용자가 메모를 추가가 성공적이었다면
             ShowAlamUi(sort);
             locationSerch(this);
-            Log.d("==","2번째");
         }
     }
 
@@ -524,7 +523,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             mainBinding.drawlayout.openDrawer(mainBinding.menu.drawer);
             isdrawer = true;  //-- 드로어가 열린것으로 변경
         } else if (view == mainBinding.hideMenu) {  //-- 메모추가를 누른다면
-            Intent in = new Intent(MainActivity.this, InsertActivity.class);
+            Intent in = new Intent(MainActivity.this, LocationMemoInsertActivity.class);
             startActivityForResult(in, 0522);  //-- 메모추가 액티비티로 이동
         } else if (view == mainBinding.menu.btnReset) {
             if (mainBinding.locationTab.getAlpha() == 1.0f) {
@@ -635,7 +634,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     dataAlamFirebase.setLongitude(data_alam.getLongitude());
                     dataAlamFirebase.setMemo(data_alam.getMemo());
                     dataAlamFirebase.setName(data_alam.getName());
-                    mDatabase.child(UID).child("Location_Memo").child(EncodeString(data_alam.getMemo())).setValue(dataAlamFirebase).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    mDatabase.child(UID).child("Location_Memo").child(EncodeString(data_alam.getName())+"_"+EncodeString(data_alam.getMemo())).setValue(dataAlamFirebase).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d("Data_alam", "백업 성공");
@@ -768,7 +767,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         myRealm.commitTransaction();
                         for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                             Data_alam_firebase dataAlamFirebase = postSnapshot.getValue(Data_alam_firebase.class);
-//                                Log.d("==",dataAlamFirebase.getName());
                             myRealm.beginTransaction();
                             Data_alam dataalam = myRealm.createObject(Data_alam.class);
                             dataalam.setName(dataAlamFirebase.getName());
@@ -779,10 +777,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             dataalam.setColor(dataAlamFirebase.getColor());
                             dataalam.setAlamOn(dataAlamFirebase.getisAlamOn());
                             myRealm.commitTransaction();
-                            ShowAlamUi(sort);
-
                         }
-
+                        ShowAlamUi(sort);
                     }
 
                     @Override

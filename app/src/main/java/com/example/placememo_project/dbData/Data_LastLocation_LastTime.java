@@ -5,7 +5,7 @@ import io.realm.RealmObject;
 public class Data_LastLocation_LastTime extends RealmObject {
     double latitude;
     double longitude;
-    int minTime;
+    double minTime = 0f;
 
     public double getLatitude() {
         return latitude;
@@ -23,11 +23,11 @@ public class Data_LastLocation_LastTime extends RealmObject {
         this.longitude = longitude;
     }
 
-    public int getMinTime() {
+    public double getMinTime() {
         return minTime;
     }
 
-    public void setMinTime(int minTime) {
+    public void setMinTime(double minTime) {
         this.minTime = minTime;
     }
 }

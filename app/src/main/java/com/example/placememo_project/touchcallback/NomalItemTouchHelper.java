@@ -2,14 +2,13 @@ package com.example.placememo_project.touchcallback;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.util.Log;
 
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.placememo_project.dbData.Data_nomal;
 import com.example.placememo_project.activity.MainActivity;
-import com.example.placememo_project.adapter.RecyclerAdapter;
+import com.example.placememo_project.adapter.NomalMemoAdapter;
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 
 
@@ -17,9 +16,9 @@ import io.realm.Realm;
 
 import static com.example.placememo_project.activity.MainActivity.mainContext;
 
-public  class ItemTouchHelperCallback2 extends ItemTouchHelperExtension.Callback{
+public  class NomalItemTouchHelper extends ItemTouchHelperExtension.Callback{
     Realm myRealm;
-    public ItemTouchHelperCallback2(Context context){
+    public NomalItemTouchHelper(Context context){
         Realm.init(context);
         myRealm = Realm.getDefaultInstance();
     }
@@ -63,8 +62,8 @@ public  class ItemTouchHelperCallback2 extends ItemTouchHelperExtension.Callback
         if(dX == 0 && dY != 0){
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
-        RecyclerAdapter.ViewHolder1 holder1 = (RecyclerAdapter.ViewHolder1) viewHolder;
-        if (viewHolder instanceof RecyclerAdapter.ItemSwipeWithActionWidthViewHolder1) {
+        NomalMemoAdapter.ViewHolder1 holder1 = (NomalMemoAdapter.ViewHolder1) viewHolder;
+        if (viewHolder instanceof NomalMemoAdapter.ItemSwipeWithActionWidthViewHolder1) {
             holder1.mViewContent1.setTranslationX(dX);
             return;
         }

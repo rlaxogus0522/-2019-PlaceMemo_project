@@ -9,10 +9,10 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import com.example.placememo_project.databinding.ActivityEditLocationMemoBinding;
 import com.example.placememo_project.dbData.Data_Icon;
 import com.example.placememo_project.dbData.Data_alam;
 import com.example.placememo_project.R;
-import com.example.placememo_project.databinding.ActivityEditMemoBinding;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -20,8 +20,8 @@ import io.realm.RealmResults;
 import static com.example.placememo_project.activity.MainActivity.mainContext;
 import static com.example.placememo_project.activity.MainActivity.sort;
 
-public class EditMemoActivity extends AppCompatActivity implements View.OnClickListener {
-    ActivityEditMemoBinding editMemoBinding;
+public class EditLocationMemoActivity extends AppCompatActivity implements View.OnClickListener {
+    ActivityEditLocationMemoBinding editMemoBinding;
     Realm myRealm;
     Data_alam data_alams1;
     RealmResults<Data_alam> data_alams;
@@ -32,7 +32,7 @@ public class EditMemoActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         Realm.init(this);
         myRealm =  Realm.getDefaultInstance();
-        editMemoBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit_memo);
+        editMemoBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit_location_memo);
         Intent intent  = getIntent();
         type = intent.getStringExtra("type");
         editMemoBinding.EditMemo.setText(intent.getExtras().getString("memo"));

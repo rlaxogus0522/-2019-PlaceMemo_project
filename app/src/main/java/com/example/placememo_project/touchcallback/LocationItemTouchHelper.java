@@ -7,12 +7,12 @@ import android.graphics.Canvas;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.placememo_project.adapter.LocationAdapter;
+import com.example.placememo_project.adapter.LocationMemoAdapter;
 import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 
-public class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback {
+public class LocationItemTouchHelper extends ItemTouchHelperExtension.Callback {
     Context context;
-    public ItemTouchHelperCallback(Context context){
+    public LocationItemTouchHelper(Context context){
         this.context = context;
     }
     @Override
@@ -34,12 +34,12 @@ public class ItemTouchHelperCallback extends ItemTouchHelperExtension.Callback {
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
-        if(viewHolder instanceof LocationAdapter.ViewHolder1) {   //-- 저장된 알람 메뉴에 대한 스와이프 기능에 필요한 x 위치 설정
-            LocationAdapter.ViewHolder1 holder1 = (LocationAdapter.ViewHolder1) viewHolder;
+        if(viewHolder instanceof LocationMemoAdapter.ViewHolder1) {   //-- 저장된 알람 메뉴에 대한 스와이프 기능에 필요한 x 위치 설정
+            LocationMemoAdapter.ViewHolder1 holder1 = (LocationMemoAdapter.ViewHolder1) viewHolder;
                 holder1.mViewContent1.setTranslationX(dX);
 
-        }else if (viewHolder instanceof  LocationAdapter.ViewHolder2){ //-- 저장된 알람 메모에 대한 스와이프 기능에 필요한 x 위치 설정
-            LocationAdapter.ViewHolder2 holder2 = (LocationAdapter.ViewHolder2) viewHolder;
+        }else if (viewHolder instanceof  LocationMemoAdapter.ViewHolder2){ //-- 저장된 알람 메모에 대한 스와이프 기능에 필요한 x 위치 설정
+            LocationMemoAdapter.ViewHolder2 holder2 = (LocationMemoAdapter.ViewHolder2) viewHolder;
                 holder2.mViewContent2.setTranslationX(dX);
 
         }

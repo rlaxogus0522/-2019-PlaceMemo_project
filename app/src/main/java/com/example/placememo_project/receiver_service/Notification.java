@@ -1,4 +1,4 @@
-package com.example.placememo_project.receiverNoti;
+package com.example.placememo_project.receiver_service;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -7,16 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
-import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 
 import com.example.placememo_project.R;
 import com.example.placememo_project.activity.IntroActivity;
-import com.example.placememo_project.activity.MainActivity;
-
-import static com.example.placememo_project.activity.MainActivity.mainContext;
-import static com.example.placememo_project.activity.MainActivity.sort;
 
 public class Notification {
     Context rContext;

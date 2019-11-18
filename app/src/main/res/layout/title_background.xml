@@ -1,32 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#ffffff"
-    >
+    android:id="@+id/title_background"
+    android:background="#EB7777">
 
     <LinearLayout
-        android:layout_margin="8dp"
-        android:id="@+id/view_list_repo_action_container"
+        android:id="@+id/view_list_title_action_container"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="right"
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/view_list_repo_action_edit"
+            android:id="@+id/view_list_title_action_edit"
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:gravity="center"
             android:padding="12dp"
-            android:text="내용 수정"
+            android:text="수정"
             android:background="@drawable/edit_memo"
             android:textColor="@android:color/white"/>
 
         <TextView
-            android:id="@+id/view_list_repo_action_delete"
+            android:id="@+id/view_list_title_action_delete"
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:background="@drawable/delete_memo"
@@ -35,8 +33,5 @@
             android:text="삭제"
             android:textColor="@android:color/white"/>
 
-    </LinearLayout>
-
-    <include
-        layout="@layout/view_list_main_content" />
+    </LinearLayout><include layout="@layout/title_foreground"/>
 </FrameLayout>

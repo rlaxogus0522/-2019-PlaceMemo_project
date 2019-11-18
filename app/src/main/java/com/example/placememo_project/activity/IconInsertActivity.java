@@ -2,7 +2,6 @@ package com.example.placememo_project.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -10,20 +9,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.example.placememo_project.R;
-import com.example.placememo_project.databinding.ActivityInserticonBinding;
+import com.example.placememo_project.databinding.ActivityInsertIconBinding;
 
 import java.util.ArrayList;
 
-public class IconActivity extends AppCompatActivity implements View.OnClickListener {   //-- 아이콘추가시 실행되는 액티비티
-    private final static String TAG = "IconActivity : ";
+public class IconInsertActivity extends AppCompatActivity implements View.OnClickListener {   //-- 아이콘추가시 실행되는 액티비티
+    private final static String TAG = "IconInsertActivity : ";
     private int icon,clickicon;   //-- 클릭되기전 아이콘과 이후 아이콘 구분
-    ActivityInserticonBinding iBinding;
+    ActivityInsertIconBinding iBinding;
     ArrayList<Integer> locationButton = new ArrayList<>(); // -- 클릭 되기 전 버튼 이미지
     ArrayList<Integer> locationButtonClick = new ArrayList<>(); // -- 클릭 된 이후 버튼 이미지
     ArrayList<ImageButton> btnlocation = new ArrayList<>(); // -- 이미지버튼의 객체를 배열형태로 담아둠
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        iBinding = DataBindingUtil.setContentView(this, R.layout.activity_inserticon);
+        iBinding = DataBindingUtil.setContentView(this, R.layout.activity_insert_icon);
         iBinding.btnAddiconOk.setOnClickListener(this);
 
         addButton();

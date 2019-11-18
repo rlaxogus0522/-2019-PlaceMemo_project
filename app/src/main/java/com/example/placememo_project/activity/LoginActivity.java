@@ -30,7 +30,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     ActivityLoginBinding loginBinding;
-    private static final String TAG = "GoogleActivity";
+    private static final String TAG = "LoginActivity";
     private static final int RC_SIGN_IN = 522;
     public  static final int RC_SIGN_OUT = 526;
     private GoogleSignInClient mGoogleSignInClient;
@@ -81,6 +81,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 });
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

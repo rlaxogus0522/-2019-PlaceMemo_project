@@ -13,7 +13,7 @@ import com.example.placememo_project.R;
 
 import java.util.ArrayList;
 
-public class AlamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FullAlamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public ArrayList<String> items = new ArrayList<>();
 //    ArrayList<Integer> color = new ArrayList<>();
 
@@ -27,7 +27,7 @@ public class AlamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.alam_item, viewGroup, false);
+            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_full_alam, viewGroup, false);
             return new ViewHolder1(v);
 
     }

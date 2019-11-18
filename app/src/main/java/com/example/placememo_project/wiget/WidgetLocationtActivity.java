@@ -1,7 +1,6 @@
-package com.example.placememo_project.activity;
+package com.example.placememo_project.wiget;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -12,11 +11,11 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import com.example.placememo_project.R;
-import com.example.placememo_project.databinding.ActivityWidgetInsertmemoBinding;
+import com.example.placememo_project.activity.BaseActivity;
+import com.example.placememo_project.databinding.ActivityWidgetLocationMemoBinding;
 import com.example.placememo_project.dbData.Data_Icon;
 import com.example.placememo_project.dbData.Data_alam;
 
@@ -25,11 +24,9 @@ import java.util.ArrayList;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
-import static com.example.placememo_project.activity.MainActivity.mainContext;
 
-
-public class WidgetInsertActivity extends BaseActivity implements View.OnClickListener {   //-- 메모를 추가하는 액티비티
-    private final static String TAG = "InsertActivity-------";
+public class WidgetLocationtActivity extends BaseActivity implements View.OnClickListener {   //-- 메모를 추가하는 액티비티
+    private final static String TAG = "WidgetLocationtActivity";
     private ArrayList<Integer> locationButton = new ArrayList<>(); // -- 클릭 되기 전 버튼 이미지
     private ArrayList<Integer> locationButtonClick = new ArrayList<>(); // -- 클릭 된 이후 버튼 이미지
     private ImageButton btnlocation[] = new ImageButton[5]; // -- 이미지버튼의 객체를 배열형태로 담아둠
@@ -39,7 +36,7 @@ public class WidgetInsertActivity extends BaseActivity implements View.OnClickLi
     private int nicon;   //--  현재 선택된 위치의 아이콘 저장용
     private String nName;   //--  현재 선택된 위치의 이름 저장용
     private double nlat, nlong;   //--  현재 선택된 위치의 위 경도 저장용
-    ActivityWidgetInsertmemoBinding imbinding;
+    ActivityWidgetLocationMemoBinding imbinding;
     private boolean isLocationCheck = false;   //-- 메모 추가시 알림 받을 위치를 선택했는지 체크용
     int colors[] = new int[]{0xFFE8EE9C, 0xFFE4B786, 0xFF97E486, 0xFF86E4D1, 0xFFE48694};  //-- 저장된 메모 메뉴에 표시할 색깔 등록해두기
     int setColor;
@@ -49,7 +46,7 @@ public class WidgetInsertActivity extends BaseActivity implements View.OnClickLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        imbinding = DataBindingUtil.setContentView(this, R.layout.activity_widget_insertmemo);
+        imbinding = DataBindingUtil.setContentView(this, R.layout.activity_widget_location_memo);
         imbinding.exit.setOnClickListener(this);
         imbinding.exit2.setOnClickListener(this);
         Realm.init(this);

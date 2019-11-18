@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
-    tools:showIn="@layout/list_nomal_item_main"
+    tools:showIn="@layout/nomal_background"
     android:layout_margin="3dp"
     >
     <View

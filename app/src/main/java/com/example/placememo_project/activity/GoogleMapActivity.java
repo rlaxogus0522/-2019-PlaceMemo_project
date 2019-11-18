@@ -28,7 +28,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.example.placememo_project.R;
-import com.example.placememo_project.databinding.ActivityLocationBinding;
+import com.example.placememo_project.databinding.ActivityGoogleMapBinding;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -41,12 +41,12 @@ import com.google.android.gms.maps.model.Marker;
 import java.io.IOException;
 import java.util.List;
 
-import static com.example.placememo_project.activity.InsertActivity.locationName;
+import static com.example.placememo_project.activity.LocationMemoInsertActivity.locationName;
 
 
-public class LocationActivity extends AppCompatActivity implements View.OnClickListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
-    private final static String TAG = "LocationActivity : ";
-    ActivityLocationBinding lBinding;
+public class GoogleMapActivity extends AppCompatActivity implements View.OnClickListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+    private final static String TAG = "GoogleMapActivity : ";
+    ActivityGoogleMapBinding lBinding;
     private int icon, clickicon;  //--  아이콘 추가시 클릭/미클릭 이미지 구분
     private GoogleMap mMap;
     LocationManager manager;
@@ -61,7 +61,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        lBinding = DataBindingUtil.setContentView(this, R.layout.activity_location);
+        lBinding = DataBindingUtil.setContentView(this, R.layout.activity_google_map);
         circle = new CircleOptions();
         animation = AnimationUtils.loadAnimation(this,R.anim.loading);
         geocoder= new Geocoder(this);
@@ -131,7 +131,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
             startLocation();
         }
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(LocationActivity.this);
+        mapFragment.getMapAsync(GoogleMapActivity.this);
     }
 
     private  void setMyLocation(Location location){
@@ -155,7 +155,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-                mapFragment.getMapAsync(LocationActivity.this);
+                mapFragment.getMapAsync(GoogleMapActivity.this);
                 stopLocation();  //-- 위치를 가져온 후 위치 검색 종료
                 lBinding.loading.setVisibility(View.GONE);
                 lBinding.loadings.setVisibility(View.GONE);
@@ -248,7 +248,7 @@ public class LocationActivity extends AppCompatActivity implements View.OnClickL
             startLocation();
             Toast.makeText(this, "위치 정보 받아오는중..", Toast.LENGTH_SHORT).show();
         } else if (v == lBinding.btnAddIcon) {
-            Intent intent = new Intent(this, IconActivity.class);
+            Intent intent = new Intent(this, IconInsertActivity.class);
             startActivityForResult(intent, 0522);
         } else if (v == lBinding.btnAddlocation) {  //-- 최종 위치 추가를 클릭했을시 해당하는 내용 위치추가버튼을 눌렀던 메모추가액티비티로 전송
             if(!locationName.contains(lBinding.locationName.getText().toString()) && isIconcheck) {  //-- 만약 위치를 선택했다면

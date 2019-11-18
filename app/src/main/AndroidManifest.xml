@@ -37,20 +37,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.WidgetInsertActivity"
+            android:name=".wiget.WidgetLocationtActivity"
             android:screenOrientation="portrait"
             android:excludeFromRecents="true"
             android:taskAffinity="com.example.placememo_project.A"
             android:theme="@style/Theme.Transparent" />
         <activity
-            android:name=".activity.WidgetNomalMemoInsetActivity"
+            android:name=".wiget.WidgetNomalMemoActivity"
             android:screenOrientation="portrait"
             android:excludeFromRecents="true"
             android:taskAffinity="com.example.placememo_project.B"
             android:theme="@style/Theme.Transparent" />
         <activity android:name=".activity.BaseActivity" />
         <activity
-            android:name=".activity.AlamActivity"
+            android:name=".activity.FullAlamActivity"
             android:screenOrientation="portrait"
             android:excludeFromRecents="true"
             android:showOnLockScreen="true" />
@@ -65,17 +65,17 @@
         <activity android:name=".activity.MainActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activity.EditMemoActivity"
+            android:name=".activity.EditLocationMemoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MyDialog" />
         <activity
-            android:name=".activity.InsertActivity"
+            android:name=".activity.LocationMemoInsertActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MyDialog" />
-        <activity android:name=".activity.LocationActivity"
+        <activity android:name=".activity.GoogleMapActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activity.IconActivity"
+            android:name=".activity.IconInsertActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MyDialog" />
         <activity android:name=".activity.LoginActivity"
@@ -98,7 +98,7 @@
                 android:resource="@xml/provider" />
         </provider>
         <receiver
-            android:name=".receiverNoti.LocationReceiver"
+            android:name=".receiver_service.LocationReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -117,7 +117,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_provider" />
         </receiver>
-        <service android:name=".receiverNoti.LocationService"
+        <service android:name=".receiver_service.ForegroundService"
+            android:enabled="true"
+            android:exported="true"/>
+
+        <service android:name=".receiver_service.BackgroundService"
             android:enabled="true"
             android:exported="true"/>
     </application>

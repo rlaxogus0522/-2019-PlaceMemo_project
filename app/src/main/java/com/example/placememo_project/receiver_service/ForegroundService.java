@@ -1,4 +1,4 @@
-package com.example.placememo_project.receiverNoti;
+package com.example.placememo_project.receiver_service;
 
 import android.Manifest;
 import android.app.AlarmManager;
@@ -25,7 +25,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
 import com.example.placememo_project.R;
-import com.example.placememo_project.activity.AlamActivity;
+import com.example.placememo_project.activity.FullAlamActivity;
 import com.example.placememo_project.activity.IntroActivity;
 import com.example.placememo_project.activity.MainActivity;
 import com.example.placememo_project.dbData.Data_LastLocation_LastTime;
@@ -37,7 +37,7 @@ import io.realm.RealmResults;
 import static com.example.placememo_project.activity.BaseActivity.pause;
 import static com.example.placememo_project.activity.MainActivity.mainContext;
 
-public class LocationService extends Service {
+public class ForegroundService extends Service {
     double latitude;
     double longitude;
     double minDistance = 0f;  //-- 최소거리 확인용
@@ -49,6 +49,7 @@ public class LocationService extends Service {
     int alamCycle = 15;  //-- 초단위 저장용
     Realm myRealm2;
     NotificationCompat.Builder builder;
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -62,15 +63,11 @@ public class LocationService extends Service {
         builder.setColor(Color.RED);
         // 사용자가 탭을 클릭하면 자동 제거
         builder.setAutoCancel(true);
-
-
         // 알림 표시
         NotificationManager notificationManager = (NotificationManager) rContext.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationManager.createNotificationChannel(new NotificationChannel("default", "기본 채널", NotificationManager.IMPORTANCE_DEFAULT));
         }
-
-
 
 
         startForeground(9,builder.build());
@@ -131,20 +128,26 @@ public class LocationService extends Service {
         int notiNum=1;
         try {
             RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
+            Data_LastLocation_LastTime data_lastLocation_lastTimes = myRealm.where(Data_LastLocation_LastTime.class).findFirst();
             for (Data_alam data_alam : data_alams) {  //-- DB에 저장된 알람을 원하는 위치와 현재 위치를 비교
                 distance = getDistance(data_alam.getLatitude(),data_alam.getLongitude(),this.latitude,this.longitude);
-                Log.d(data_alam.getName(),distance +" Km");  //-- 저장된 메모에따른 거리 보여주기위한 Log
-                if(minDistance == 0f){  //-- 만약 최소거리가 0이라면 첫번째임을 알수있음
-                    minDistance = distance;  //-- 최소거리에 첫번째 가져온 위치에 대한 거리를 저장
-                }else if(minDistance > getDistance(data_alam.getLatitude(),data_alam.getLongitude(),this.latitude,this.longitude)) {  //-- 최소거리가 0이아니라면 그다음에 가져오는 위치에대한 거리를 저장되어있던 최소거리와 비교후 더 가까운 거리를 저장
-                    minDistance = distance;
+                Log.d("=="+data_alam.getName(),distance +" Km");  //-- 저장된 메모에따른 거리 보여주기위한 Log
+                if(data_lastLocation_lastTimes.getMinTime() == 0f){  //-- 만약 최소거리가 0이라면 첫번째임을 알수있음
+                    myRealm.beginTransaction();
+                    data_lastLocation_lastTimes.setMinTime(distance);  //-- 최소거리에 첫번째 가져온 위치에 대한 거리를 저장
+                    myRealm.commitTransaction();
+                }else if(data_lastLocation_lastTimes.getMinTime() > getDistance(data_alam.getLatitude(),data_alam.getLongitude(),this.latitude,this.longitude)) {  //-- 최소거리가 0이아니라면 그다음에 가져오는 위치에대한 거리를 저장되어있던 최소거리와 비교후 더 가까운 거리를 저장
+                    myRealm.beginTransaction();
+                    data_lastLocation_lastTimes.setMinTime(distance);
+                    myRealm.commitTransaction();
                 }
+                Log.d("==minDistance",data_lastLocation_lastTimes.getMinTime()+"km");
                 if(distance<0.3) {
                     if (!pause) {
                         KeyguardManager km = (KeyguardManager) rContext.getSystemService(Context.KEYGUARD_SERVICE);
                         if (km.inKeyguardRestrictedInputMode()) {
                             if (!onetime) {
-                                Intent intent = new Intent(rContext, AlamActivity.class);
+                                Intent intent = new Intent(rContext, FullAlamActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
                                 intent.putExtra("title", data_alam.getName());
                                 rContext.startActivity(intent);
@@ -156,6 +159,7 @@ public class LocationService extends Service {
                                 wl.release();
 
                                 onetime = true;
+
                             }
                         } else if (!km.inKeyguardRestrictedInputMode()) {
                             new Notification(data_alam.getName(), data_alam.getMemo(), rContext, notiNum, data_alam.getisAlamOn());
@@ -174,25 +178,24 @@ public class LocationService extends Service {
         }
 
         /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
-
-        if (minDistance > 1000){
-            alamCycle = 10000;
-        }else if( minDistance > 500){
-            alamCycle = 5000;
-        }else if ( minDistance >100 ){
-            alamCycle = 2000;
-        }else if(minDistance >10){
-            alamCycle = 500;
-        }else if(minDistance > 1){
-            alamCycle = 100;
-        }else if(minDistance >0.5){
-            alamCycle = 60;
-        }else if (minDistance > 0.2){
-            alamCycle = 15;
-        }
         Data_LastLocation_LastTime data_lastLocation_lastTimes = myRealm.where(Data_LastLocation_LastTime.class).findFirst();
+        if (data_lastLocation_lastTimes.getMinTime() > 1000){
+            alamCycle = 21;  //10000
+        }else if( data_lastLocation_lastTimes.getMinTime() > 500){
+            alamCycle = 20; //5000
+        }else if ( data_lastLocation_lastTimes.getMinTime() >100 ){
+            alamCycle = 19;  //2000
+        }else if(data_lastLocation_lastTimes.getMinTime() >10){
+            alamCycle = 18;  //500
+        }else if(data_lastLocation_lastTimes.getMinTime() > 1){
+            alamCycle = 17;  //100
+        }else if(data_lastLocation_lastTimes.getMinTime() >0.5){
+            alamCycle = 16; //60
+        }else if (data_lastLocation_lastTimes.getMinTime() > 0.2){
+            alamCycle = 15; //15
+        }
         double dis = getDistance(data_lastLocation_lastTimes.getLatitude(),data_lastLocation_lastTimes.getLongitude(),latitude,longitude);
-        int time = (int)(minDistance/(dis/data_lastLocation_lastTimes.getMinTime()));
+        int time = (int)(data_lastLocation_lastTimes.getMinTime()/(dis/data_lastLocation_lastTimes.getMinTime()));
         myRealm.beginTransaction();
         data_lastLocation_lastTimes.setLongitude(longitude);
         data_lastLocation_lastTimes.setLatitude(latitude);
@@ -202,7 +205,6 @@ public class LocationService extends Service {
             alamCycle = time;
         }
         Log.d("==alamCycle",alamCycle+"초");
-        Log.d("==time",time+"초");
         /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
 
         startTime = SystemClock.elapsedRealtime() + alamCycle * 1000;  //-- 알람받을 시간 설정

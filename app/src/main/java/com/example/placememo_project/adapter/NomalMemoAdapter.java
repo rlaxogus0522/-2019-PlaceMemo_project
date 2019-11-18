@@ -27,14 +27,14 @@ import io.realm.RealmResults;
 
 import static com.example.placememo_project.activity.MainActivity.mainContext;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class NomalMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public ArrayList<String> items = new ArrayList<>();
     public ArrayList<Integer> color = new ArrayList<>();
     public Realm myRealm;
     public Context mcontext;
 
 
-    public RecyclerAdapter(Context context){
+    public NomalMemoAdapter(Context context){
         this.mcontext = context;
         Realm.init(context);
         myRealm = Realm.getDefaultInstance();
@@ -47,7 +47,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_nomal_item_main, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.nomal_background, viewGroup, false);
         return new ItemSwipeWithActionWidthViewHolder1(v);
 
     }

@@ -11,9 +11,6 @@ import android.widget.RemoteViews;
 
 import com.example.placememo_project.R;
 
-import com.example.placememo_project.activity.WidgetInsertActivity;
-import com.example.placememo_project.activity.WidgetNomalMemoInsetActivity;
-
 
 public class WigetProvider extends AppWidgetProvider {
 
@@ -77,10 +74,10 @@ public class WigetProvider extends AppWidgetProvider {
         RemoteViews updateViews = new RemoteViews(context.getPackageName(), R.layout.widget);
 
 
-        Intent intent = new Intent(context.getApplicationContext(), WidgetInsertActivity.class);
+        Intent intent = new Intent(context.getApplicationContext(), WidgetLocationtActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
         PendingIntent pendingIntent  = PendingIntent.getActivity(context,0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        Intent intent1 = new Intent(context.getApplicationContext(), WidgetNomalMemoInsetActivity.class);
+        Intent intent1 = new Intent(context.getApplicationContext(), WidgetNomalMemoActivity.class);
         PendingIntent pendingIntent1  = PendingIntent.getActivity(context,0,intent1, PendingIntent.FLAG_UPDATE_CURRENT);
         updateViews.setOnClickPendingIntent(R.id.widget_location,pendingIntent);
         updateViews.setOnClickPendingIntent(R.id.widget_nomal,pendingIntent1);

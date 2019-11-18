@@ -1,4 +1,4 @@
-package com.example.placememo_project.activity;
+package com.example.placememo_project.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,18 +9,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.placememo_project.activity.MainActivity;
 
 import static com.example.placememo_project.activity.MainActivity.mainContext;
 
-public class LocationMemoActivity extends Fragment {
+public class NomalMemoActivity extends Fragment {
 
-    public LocationMemoActivity() {
+    public NomalMemoActivity(){
 
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return ((MainActivity)mainContext).locationView;
+        return ((MainActivity)mainContext).nomalView;
     }
 }

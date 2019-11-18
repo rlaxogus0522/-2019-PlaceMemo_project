@@ -21,10 +21,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 
+import com.example.placememo_project.databinding.ActivityInsertLocationMemoBinding;
 import com.example.placememo_project.dbData.Data_Icon;
 import com.example.placememo_project.dbData.Data_alam;
 import com.example.placememo_project.R;
-import com.example.placememo_project.databinding.ActivityInsertmemoBinding;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
@@ -36,8 +36,8 @@ import io.realm.RealmResults;
 import static com.example.placememo_project.activity.MainActivity.mainContext;
 import static com.example.placememo_project.activity.MainActivity.sort;
 
-public class InsertActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {   //-- 메모를 추가하는 액티비티
-    private final static String TAG = "InsertActivity-------";
+public class LocationMemoInsertActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {   //-- 메모를 추가하는 액티비티
+    private final static String TAG = "LocationMemoInsertActivity-------";
     private boolean isEditMode = false;   //--  사용자가 등록한 아이콘을 삭제할때 롱클릭시 에디트모드로 변경
     private ArrayList<Integer> locationButton = new ArrayList<>(); // -- 클릭 되기 전 버튼 이미지
     private ArrayList<Integer> locationButtonClick = new ArrayList<>(); // -- 클릭 된 이후 버튼 이미지
@@ -50,7 +50,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
     private int nicon;   //--  현재 선택된 위치의 아이콘 저장용
     private String nName;   //--  현재 선택된 위치의 이름 저장용
     private double nlat, nlong;   //--  현재 선택된 위치의 위 경도 저장용
-    ActivityInsertmemoBinding imbinding;
+    ActivityInsertLocationMemoBinding imbinding;
     LocationManager locationManager;
     private boolean isLocationCheck = false;   //-- 메모 추가시 알림 받을 위치를 선택했는지 체크용
     int colors[] = new int[]{0xFFE8EE9C, 0xFFE4B786, 0xFF97E486, 0xFF86E4D1, 0xFFE48694};  //-- 저장된 메모 메뉴에 표시할 색깔 등록해두기
@@ -62,7 +62,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        imbinding = DataBindingUtil.setContentView(this, R.layout.activity_insertmemo);
+        imbinding = DataBindingUtil.setContentView(this, R.layout.activity_insert_location_memo);
         locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
         Realm.init(this);
 
@@ -364,7 +364,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void AddLocation() {
-        Intent in = new Intent(InsertActivity.this, LocationActivity.class);
+        Intent in = new Intent(LocationMemoInsertActivity.this, GoogleMapActivity.class);
         startActivityForResult(in, 0522);
         overridePendingTransition(R.anim.fadein, R.anim.fadeout);
     }
@@ -455,7 +455,7 @@ public class InsertActivity extends AppCompatActivity implements View.OnClickLis
 
         @Override
         public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-            Toast.makeText(InsertActivity.this, "권한 거부시 서비스이용이 제한됩니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LocationMemoInsertActivity.this, "권한 거부시 서비스이용이 제한됩니다.", Toast.LENGTH_SHORT).show();
         }
     };
     public void checkPermissions() {

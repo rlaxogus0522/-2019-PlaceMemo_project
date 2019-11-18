@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="44dp"
     android:background="#9B9797"
-    tools:showIn="@layout/list_item_title"
+    tools:showIn="@layout/title_background"
 >
 
     <TextView

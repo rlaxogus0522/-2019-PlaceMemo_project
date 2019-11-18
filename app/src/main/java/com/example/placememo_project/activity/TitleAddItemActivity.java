@@ -56,6 +56,7 @@ public class TitleAddItemActivity extends AppCompatActivity implements View.OnCl
                 myRealm.commitTransaction();
                 finish();
                 ((MainActivity) mainContext).ShowAlamUi(sort);
+                ((MainActivity) mainContext).checkNoImage();
             }else{
                 if (titleAddItemBinding.EditMemo.getText().toString().equals(""))  //--  메모내용이 비어있을때
                     Toast.makeText(this, "메모를 설정해주세요.", Toast.LENGTH_LONG).show();

@@ -8,16 +8,16 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import com.example.placememo_project.databinding.ActivityEditNomalMemoBinding;
 import com.example.placememo_project.dbData.Data_nomal;
 import com.example.placememo_project.R;
-import com.example.placememo_project.databinding.ActivityNomalEditMemoBinding;
 
 import io.realm.Realm;
 
 import static com.example.placememo_project.activity.MainActivity.mainContext;
 
 public class EditNomalMemoActivity extends AppCompatActivity implements View.OnClickListener {
-    ActivityNomalEditMemoBinding editMemoBinding;
+    ActivityEditNomalMemoBinding editMemoBinding;
     int color[] = new int[]{0xFFDF8A84, 0xFF8E65D8, 0xFF6CB8DF, 0xFFCBD654, 0xFFE76E97};  //-- 저장된 메모 메뉴에 표시할 색깔 등록해두기
     Button colorButton[] = new Button[5];
     Realm myRealm;
@@ -29,7 +29,7 @@ public class EditNomalMemoActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         Realm.init(this);
         myRealm =  Realm.getDefaultInstance();
-        editMemoBinding = DataBindingUtil.setContentView(this, R.layout.activity_nomal_edit_memo);
+        editMemoBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit_nomal_memo);
         Intent intent  = getIntent();
         editMemoBinding.EditMemo.setText(intent.getExtras().getString("memo"));
         data_nomals = myRealm.where(Data_nomal.class).equalTo("memo",intent.getExtras().getString("memo")).findFirst();
