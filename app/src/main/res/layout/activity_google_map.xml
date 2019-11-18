@@ -5,6 +5,8 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:layout_weight="0.8"
         android:layout_width="match_parent"
         android:orientation="horizontal"
@@ -24,6 +26,8 @@
             android:layout_height="match_parent"
             android:background="@drawable/insertmemo_text"
             android:inputType="text"
+            android:text="장소를 검색할수 있습니다."
+            android:textColor="#757575"
             android:imeOptions="actionSearch"
             android:id="@+id/serch_location"/>
         <ImageButton

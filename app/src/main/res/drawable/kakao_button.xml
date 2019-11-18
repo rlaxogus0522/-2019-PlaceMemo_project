@@ -2,7 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:padding="10dp"
     android:shape="rectangle" >
-    <solid android:color="#C79346" />
+    <solid android:color="#fddc3f" />
     <corners
         android:bottomLeftRadius="10dp"
         android:bottomRightRadius="10dp"
@@ -10,5 +10,5 @@
         android:topRightRadius="10dp" />
     <stroke
         android:width="3dp"
-        android:color="#B8802C" />
+        android:color="#FFEB3B" />
 </shape>

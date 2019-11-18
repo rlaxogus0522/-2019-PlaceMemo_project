@@ -412,12 +412,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onBackPressed() {  //-- 옵션창이 켜져있는상태에서 사용자가 백키를 눌렀을때
-        if (isdrawer) {
-            drawerLayout.closeDrawers();
-            isdrawer = false;
-            return;
-        } else {
-
             if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
                 backKeyPressedTime = System.currentTimeMillis();
                 Toast.makeText(this, "두번 눌러 앱 종료", Toast.LENGTH_SHORT).show();
@@ -425,7 +419,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             //2번째 백버튼 클릭 (종료)
             else {
                 finishAffinity();
-            }
         }
     }
 
@@ -532,7 +525,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 alamreset2.show();
             }
         } else if (view == mainBinding.locationTab) {
-            mainBinding.kakaoButton.setText("   위치메모\n    공유하기 ");
+            mainBinding.kakaoButton.setText("위치메모\n 공유하기 ");
             mainBinding.menu.btnReset.setText("   위치 메모 초기화");
             mainBinding.locationTab.setAlpha(1.0f);
             mainBinding.nomalTab.setAlpha(0.3f);
@@ -542,7 +535,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             transaction.commit();
             ShowAlamUi(sort);
         } else if (view == mainBinding.nomalTab) {
-            mainBinding.kakaoButton.setText("   일반메모\n    공유하기 ");
+            mainBinding.kakaoButton.setText("일반메모\n 공유하기 ");
             mainBinding.menu.btnReset.setText("   일반 메모 초기화");
             mainBinding.locationTab.setAlpha(0.3f);
             mainBinding.nomalTab.setAlpha(1.0f);

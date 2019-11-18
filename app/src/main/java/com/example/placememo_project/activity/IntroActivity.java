@@ -81,8 +81,8 @@ public class IntroActivity extends AppCompatActivity {
     };
 
     private void start() {
-            animationView.playAnimation();
-            handler.postDelayed(newRunnable, 2500);
+        animationView.playAnimation();
+            handler.postDelayed(newRunnable, 2800);
     }
 
 

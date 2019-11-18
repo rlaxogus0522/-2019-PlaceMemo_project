@@ -20,6 +20,8 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,8 +77,21 @@ public class GoogleMapActivity extends AppCompatActivity implements View.OnClick
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                if(i== EditorInfo.IME_ACTION_SEARCH){
                    locationSerch();
+                   InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                   imm.hideSoftInputFromWindow(lBinding.serchLocation.getWindowToken(), 0);
                }
                 return false;
+            }
+        });
+
+        lBinding.serchLocation.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    lBinding.serchLocation.setText("");
+                    lBinding.serchLocation.setTextColor(0xff000000);
+
+                }
             }
         });
         lBinding.locationName.setOnFocusChangeListener(new View.OnFocusChangeListener() {  //-- 사용자가 포커싱을 하면 해당내용 비워줌
@@ -84,6 +99,7 @@ public class GoogleMapActivity extends AppCompatActivity implements View.OnClick
             public void onFocusChange(View view, boolean b) {
                 if (b) {
                     lBinding.locationName.setText("");
+                    lBinding.locationName.setTextColor(0xff000000);
                 }
             }
         });
