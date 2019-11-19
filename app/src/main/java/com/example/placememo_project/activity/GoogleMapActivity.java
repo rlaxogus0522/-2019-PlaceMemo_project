@@ -110,9 +110,46 @@ public class GoogleMapActivity extends AppCompatActivity implements View.OnClick
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void onClick(View v) {
+        if (v == lBinding.btnSerch) {
+            lBinding.loading.setVisibility(View.VISIBLE);
+            lBinding.loadings.setVisibility(View.VISIBLE);
+            lBinding.loading.startAnimation(animation);
+            locationSerch();
+        } else if (v == lBinding.btnMylocation) {  //-- 현재 내위치를 가져오는 메소드
+            lBinding.loading.setVisibility(View.VISIBLE);
+            lBinding.loadings.setVisibility(View.VISIBLE);
+            lBinding.loading.startAnimation(animation);
+            startLocation();
+            Toast.makeText(this, "위치 정보 받아오는중..", Toast.LENGTH_SHORT).show();
+        } else if (v == lBinding.btnAddIcon) {
+            Intent intent = new Intent(this, IconInsertActivity.class);
+            startActivityForResult(intent, 0522);
+        } else if (v == lBinding.btnAddlocation) {  //-- 최종 위치 추가를 클릭했을시 해당하는 내용 위치추가버튼을 눌렀던 메모추가액티비티로 전송
+            if(!locationName.contains(lBinding.locationName.getText().toString()) && isIconcheck) {  //-- 만약 위치를 선택했다면
+                Intent intent = new Intent();
+                intent.putExtra("name", lBinding.locationName.getText().toString());
+                intent.putExtra("icon", icon);
+                intent.putExtra("clickicon", clickicon);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
+                setResult(RESULT_OK, intent);
+                finish();
+            }else{
+                if(locationName.contains(lBinding.locationName.getText().toString())) Toast.makeText(this,"이미 존재하는 장소명 입니다.",Toast.LENGTH_LONG).show();
+                if(!isIconcheck) Toast.makeText(this,"아이콘을 선택해주세요.",Toast.LENGTH_LONG).show();
+            }
+        }
+
     }
+
+
+    /*-------------------------------------------------------------------------------------------------------------------------------*/
+    /*-------------------------------------------------------------------------------------------------------------------------------*/
+    /*-------------------------------------------------------------------------------------------------------------------------------*/
+
+
+
 
     public void startLocation() { //-- 위치 검색 시작
         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -229,7 +266,7 @@ public class GoogleMapActivity extends AppCompatActivity implements View.OnClick
                 latitude = location.latitude;
                 longitude = location.longitude;
                 circle.center(location);
-                circle.radius(200);      //반지름 단위 : m
+                circle.radius(300);      //반지름 단위 : m
                 circle.strokeWidth(0f);  //선너비 0f : 선없음
                 circle.fillColor(Color.parseColor("#500000ff")); //배경색
 
@@ -250,39 +287,7 @@ public class GoogleMapActivity extends AppCompatActivity implements View.OnClick
     };
 
 
-    @Override
-    public void onClick(View v) {
-        if (v == lBinding.btnSerch) {
-            lBinding.loading.setVisibility(View.VISIBLE);
-            lBinding.loadings.setVisibility(View.VISIBLE);
-            lBinding.loading.startAnimation(animation);
-            locationSerch();
-        } else if (v == lBinding.btnMylocation) {  //-- 현재 내위치를 가져오는 메소드
-            lBinding.loading.setVisibility(View.VISIBLE);
-            lBinding.loadings.setVisibility(View.VISIBLE);
-            lBinding.loading.startAnimation(animation);
-            startLocation();
-            Toast.makeText(this, "위치 정보 받아오는중..", Toast.LENGTH_SHORT).show();
-        } else if (v == lBinding.btnAddIcon) {
-            Intent intent = new Intent(this, IconInsertActivity.class);
-            startActivityForResult(intent, 0522);
-        } else if (v == lBinding.btnAddlocation) {  //-- 최종 위치 추가를 클릭했을시 해당하는 내용 위치추가버튼을 눌렀던 메모추가액티비티로 전송
-            if(!locationName.contains(lBinding.locationName.getText().toString()) && isIconcheck) {  //-- 만약 위치를 선택했다면
-                Intent intent = new Intent();
-                intent.putExtra("name", lBinding.locationName.getText().toString());
-                intent.putExtra("icon", icon);
-                intent.putExtra("clickicon", clickicon);
-                intent.putExtra("latitude", latitude);
-                intent.putExtra("longitude", longitude);
-                setResult(RESULT_OK, intent);
-                finish();
-            }else{
-                if(locationName.contains(lBinding.locationName.getText().toString())) Toast.makeText(this,"이미 존재하는 장소명 입니다.",Toast.LENGTH_LONG).show();
-                if(!isIconcheck) Toast.makeText(this,"아이콘을 선택해주세요.",Toast.LENGTH_LONG).show();
-            }
-        }
 
-    }
 
     private void locationSerch() {
         List<Address> list = null;

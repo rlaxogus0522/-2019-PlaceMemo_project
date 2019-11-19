@@ -149,7 +149,7 @@
             </LinearLayout>
         <include
             android:id="@+id/menu"
-            layout="@layout/activity_seting"
+            layout="@layout/activity_setting"
             />
 
     </androidx.drawerlayout.widget.DrawerLayout></layout>

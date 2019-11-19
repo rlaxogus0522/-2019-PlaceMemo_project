@@ -180,17 +180,17 @@ public class ForegroundService extends Service {
         /*-----------------------------------------------------------------------------------------------------------------------------------------------*/
         Data_LastLocation_LastTime data_lastLocation_lastTimes = myRealm.where(Data_LastLocation_LastTime.class).findFirst();
         if (data_lastLocation_lastTimes.getMindistance() > 1000){
-            alamCycle = 21;  //10000
+            alamCycle = 10000;  //10000
         }else if( data_lastLocation_lastTimes.getMindistance() > 500){
-            alamCycle = 20; //5000
+            alamCycle = 5000; //5000
         }else if ( data_lastLocation_lastTimes.getMindistance() >100 ){
-            alamCycle = 19;  //2000
+            alamCycle = 2000;  //2000
         }else if(data_lastLocation_lastTimes.getMindistance() >10){
-            alamCycle = 18;  //500
+            alamCycle = 500;  //500
         }else if(data_lastLocation_lastTimes.getMindistance() > 1){
-            alamCycle = 17;  //100
+            alamCycle = 100;  //100
         }else if(data_lastLocation_lastTimes.getMindistance() >0.5){
-            alamCycle = 16; //60
+            alamCycle = 60; //60
         }else if (data_lastLocation_lastTimes.getMindistance() > 0.2){
             alamCycle = 15; //15
         }

@@ -119,9 +119,5 @@ public class FullAlamActivity extends BaseActivity {
         }
         alamBinding.alamRecycler.setAdapter(alamAdapter);
         ((MainActivity)mainContext).pause = true;
-//        RealmResults<Data_alam> data_alam = myrealm.where(Data_alam.class).equalTo("isAlamOn",true).equalTo("name",intent.getStringExtra("title")).findAll();
-//        for(Data_alam data_alam1 : data_alam){
-//            data_alam1.setAlamOn(false);
-//        }
     }
 }

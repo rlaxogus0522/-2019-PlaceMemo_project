@@ -111,7 +111,7 @@
                     android:layout_margin="3dp"
                     android:layout_marginStart="3dp"
                     android:alpha="0"
-                    android:background="@drawable/delete" />
+                    android:background="@drawable/delete1" />
                 <ImageButton
                     android:id="@+id/btn_location_1"
                     android:layout_width="40dp"
@@ -128,7 +128,7 @@
                     android:layout_toRightOf="@id/btn_location_1"
                     android:layout_margin="3dp"
                     android:alpha="0"
-                    android:background="@drawable/delete" />
+                    android:background="@drawable/delete1" />
                 <ImageButton
                     android:id="@+id/btn_location_2"
                     android:layout_width="40dp"
@@ -144,7 +144,7 @@
                     android:layout_toRightOf="@id/btn_location_2"
                     android:layout_margin="3dp"
                     android:alpha="0"
-                    android:background="@drawable/delete" />
+                    android:background="@drawable/delete1" />
                 <ImageButton
                     android:id="@+id/btn_location_3"
                     android:layout_width="40dp"
@@ -161,7 +161,7 @@
                     android:layout_toRightOf="@id/btn_location_3"
                     android:layout_margin="3dp"
                     android:alpha="0"
-                    android:background="@drawable/delete" />
+                    android:background="@drawable/delete1" />
                 <ImageButton
                     android:id="@+id/btn_location_4"
                     android:layout_width="40dp"
@@ -178,7 +178,7 @@
                     android:layout_toRightOf="@id/btn_location_4"
                     android:layout_margin="3dp"
                     android:alpha="0"
-                    android:background="@drawable/delete" />
+                    android:background="@drawable/delete1" />
                 <ImageButton
                     android:id="@+id/btn_location_5"
                     android:layout_width="40dp"

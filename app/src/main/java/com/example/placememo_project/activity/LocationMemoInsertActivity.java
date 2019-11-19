@@ -37,7 +37,7 @@ import static com.example.placememo_project.activity.MainActivity.mainContext;
 import static com.example.placememo_project.activity.MainActivity.sort;
 
 public class LocationMemoInsertActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {   //-- 메모를 추가하는 액티비티
-    private final static String TAG = "LocationMemoInsertActivity-------";
+    private final static String TAG = "LocationMemoInsert";
     private boolean isEditMode = false;   //--  사용자가 등록한 아이콘을 삭제할때 롱클릭시 에디트모드로 변경
     private ArrayList<Integer> locationButton = new ArrayList<>(); // -- 클릭 되기 전 버튼 이미지
     private ArrayList<Integer> locationButtonClick = new ArrayList<>(); // -- 클릭 된 이후 버튼 이미지
@@ -160,97 +160,6 @@ public class LocationMemoInsertActivity extends AppCompatActivity implements Vie
         refreshButtonImage();   //--  이미지 설정 초기화
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {   //-- 팝업으로 뜨는 메모추가 액티비티 외 구역을 터치했을때
-        if (isEditMode) {
-            Rect diaalogBounds = new Rect();
-            getWindow().getDecorView().getHitRect(diaalogBounds);
-            if (!diaalogBounds.contains((int) ev.getX(), (int) ev.getY())) {
-                for (int i = 0; i < locationButton.size(); i++) {   //--  삭제버튼을 안보이게 설정하고 기본버튼을 보이게설정
-                    btndelete[i].setAlpha((float) 0.0);
-                    btnlocation[i].setAlpha((float) 1.0);
-                    isEditMode = false;   //--  이후에 에디트모드 false
-                }
-                return false;
-            }
-        }
-        return super.dispatchTouchEvent(ev);
-    }
-
-    private void dataUpdate() {   //-- 저장되어있는 사용자가 원하는 알림위치에 대한 정보 가져오기
-        locationName.clear();
-        try {
-            RealmResults<Data_Icon> results = myRealm.where(Data_Icon.class).findAll();
-            for (Data_Icon data_icon : results) {
-                locationButton.add(data_icon.getButton());   //-- 클릭전 이미지
-                locationButtonClick.add(data_icon.getButtonclick());   //--  클릭후 이미지
-                if (!locationName.contains(data_icon.getName())) {   //-- 만약 위치이름이 리스트에 없다면
-                    locationName.add(data_icon.getName());
-                }   //--  데이터베이스에서 가져온 위치를 리스트에 추가
-                latitude.add(data_icon.getLatitude());   //-- 데이터베이스에서 위도가져와서 추가
-                longitutde.add(data_icon.getLongitude());   //--  데이터베이스에서 경도가져와서  추가
-
-            }
-        } catch (NullPointerException e) {
-            Log.d(TAG, String.valueOf(e));
-        }
-    }
-
-    private void dataBackup() {   //--  사용자가 입력한 데이터 저장
-        try {
-            for (int i = 0; i < locationButton.size(); i++) {   //-- 등록되어있는 버튼의 갯수만큼 반복
-                myRealm.beginTransaction();
-                Data_Icon dataIcon = myRealm.createObject(Data_Icon.class);
-                dataIcon.setButton(locationButton.get(i));   //-- 클릭전 이미지
-                dataIcon.setButtonclick(locationButtonClick.get(i));   //--  클릭후 이미지
-                dataIcon.setName(locationName.get(i));   //-- 위치이름
-                dataIcon.setLatitude(latitude.get(i));   //-- 위도
-                dataIcon.setLongitude(longitutde.get(i));   //-- 경도
-                myRealm.commitTransaction();
-            }
-        } catch (NullPointerException e) {
-            Log.d(TAG, "NullPointerException");
-        }
-
-    }
-
-    private void refreshButtonImage() {   //-- 이미지 초기화
-        for (int i = 0; i < locationButton.size(); i++) {   //-- 등록되어있는 버튼의 갯수만큼 반복
-            btnlocation[i].setOnClickListener(this);   //--  추가된 버튼에 리스너 등록
-            btnlocation[i].setOnLongClickListener(this);   //-- 추가된 버튼이 롱클릭 리스너 등록
-            btndelete[i].setOnClickListener(this);   //--  추가된 버튼에대한 삭제버튼 리스너 등록
-            btnlocation[i].setBackgroundResource(locationButton.get(i)); // -- Refresh 할때마다 새로 리스너를 달아주는 문제점발견 -  (추후 수정)
-        }
-    }
-
-    boolean CheckDBinMemo(String title){
-        boolean isAlready= false;
-            RealmResults<Data_alam> Data_alams = myRealm.where(Data_alam.class).equalTo("name",title).findAll();
-            for(Data_alam data_alam : Data_alams){
-                if(imbinding.EditMemo.getText().toString().equals(data_alam.getMemo())){
-                    isAlready = true;
-                    break;
-                }
-            }
-            return isAlready;
-    }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        RealmResults<Data_Icon> realmDataBases = myRealm.where(Data_Icon.class).findAll();   //-- 종료 전에 등록된 위치 정보 데이터베이스 초기화후 재저장 ( 오류 및 꼬임현상 방지 )
-        myRealm.beginTransaction();
-        realmDataBases.deleteAllFromRealm(); // 데이터베이스에 내용 전부 제거
-        myRealm.commitTransaction();
-        dataBackup();   //--  백업실행
-        myRealm.close();
-    }
-
-    @Override
-    protected void onResume() {   //-- 화면을 받았을때 초기 설정
-        super.onResume();
-        isLocationCheck = false;
-        isEditMode = false;
-    }
 
     @Override
     public void onClick(View view) {
@@ -362,6 +271,108 @@ public class LocationMemoInsertActivity extends AppCompatActivity implements Vie
             }
         }
     }
+
+
+
+    /*----------------------------------------------------------------------------------------------------------------------------------------*/
+    /*----------------------------------------------------------------------------------------------------------------------------------------*/
+    /*----------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {   //-- 팝업으로 뜨는 메모추가 액티비티 외 구역을 터치했을때
+        if (isEditMode) {
+            Rect diaalogBounds = new Rect();
+            getWindow().getDecorView().getHitRect(diaalogBounds);
+            if (!diaalogBounds.contains((int) ev.getX(), (int) ev.getY())) {
+                for (int i = 0; i < locationButton.size(); i++) {   //--  삭제버튼을 안보이게 설정하고 기본버튼을 보이게설정
+                    btndelete[i].setAlpha((float) 0.0);
+                    btnlocation[i].setAlpha((float) 1.0);
+                    isEditMode = false;   //--  이후에 에디트모드 false
+                }
+                return false;
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private void dataUpdate() {   //-- 저장되어있는 사용자가 원하는 알림위치에 대한 정보 가져오기
+        locationName.clear();
+        try {
+            RealmResults<Data_Icon> results = myRealm.where(Data_Icon.class).findAll();
+            for (Data_Icon data_icon : results) {
+                locationButton.add(data_icon.getButton());   //-- 클릭전 이미지
+                locationButtonClick.add(data_icon.getButtonclick());   //--  클릭후 이미지
+                if (!locationName.contains(data_icon.getName())) {   //-- 만약 위치이름이 리스트에 없다면
+                    locationName.add(data_icon.getName());
+                }   //--  데이터베이스에서 가져온 위치를 리스트에 추가
+                latitude.add(data_icon.getLatitude());   //-- 데이터베이스에서 위도가져와서 추가
+                longitutde.add(data_icon.getLongitude());   //--  데이터베이스에서 경도가져와서  추가
+
+            }
+        } catch (NullPointerException e) {
+            Log.d(TAG, String.valueOf(e));
+        }
+    }
+
+    private void dataBackup() {   //--  사용자가 입력한 데이터 저장
+        try {
+            for (int i = 0; i < locationButton.size(); i++) {   //-- 등록되어있는 버튼의 갯수만큼 반복
+                myRealm.beginTransaction();
+                Data_Icon dataIcon = myRealm.createObject(Data_Icon.class);
+                dataIcon.setButton(locationButton.get(i));   //-- 클릭전 이미지
+                dataIcon.setButtonclick(locationButtonClick.get(i));   //--  클릭후 이미지
+                dataIcon.setName(locationName.get(i));   //-- 위치이름
+                dataIcon.setLatitude(latitude.get(i));   //-- 위도
+                dataIcon.setLongitude(longitutde.get(i));   //-- 경도
+                myRealm.commitTransaction();
+            }
+        } catch (NullPointerException e) {
+            Log.d(TAG, "NullPointerException");
+        }
+
+    }
+
+    private void refreshButtonImage() {   //-- 이미지 초기화
+        for (int i = 0; i < locationButton.size(); i++) {   //-- 등록되어있는 버튼의 갯수만큼 반복
+            btnlocation[i].setOnClickListener(this);   //--  추가된 버튼에 리스너 등록
+            btnlocation[i].setOnLongClickListener(this);   //-- 추가된 버튼이 롱클릭 리스너 등록
+            btndelete[i].setOnClickListener(this);   //--  추가된 버튼에대한 삭제버튼 리스너 등록
+            btnlocation[i].setBackgroundResource(locationButton.get(i)); // -- Refresh 할때마다 새로 리스너를 달아주는 문제점발견 -  (추후 수정)
+        }
+    }
+
+    boolean CheckDBinMemo(String title){
+        boolean isAlready= false;
+            RealmResults<Data_alam> Data_alams = myRealm.where(Data_alam.class).equalTo("name",title).findAll();
+            for(Data_alam data_alam : Data_alams){
+                if(imbinding.EditMemo.getText().toString().equals(data_alam.getMemo())){
+                    isAlready = true;
+                    break;
+                }
+            }
+            return isAlready;
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RealmResults<Data_Icon> realmDataBases = myRealm.where(Data_Icon.class).findAll();   //-- 종료 전에 등록된 위치 정보 데이터베이스 초기화후 재저장 ( 오류 및 꼬임현상 방지 )
+        myRealm.beginTransaction();
+        realmDataBases.deleteAllFromRealm(); // 데이터베이스에 내용 전부 제거
+        myRealm.commitTransaction();
+        dataBackup();   //--  백업실행
+        myRealm.close();
+    }
+
+    @Override
+    protected void onResume() {   //-- 화면을 받았을때 초기 설정
+        super.onResume();
+        isLocationCheck = false;
+        isEditMode = false;
+    }
+
+
 
     private void AddLocation() {
         Intent in = new Intent(LocationMemoInsertActivity.this, GoogleMapActivity.class);
