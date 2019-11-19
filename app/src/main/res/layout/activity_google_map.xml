@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:padding="5dp"
-        android:background="@mipmap/paper"
+        android:background="@drawable/paper"
         android:layout_height="0dp">
         <ImageButton
             android:layout_weight="1"
@@ -85,16 +85,20 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.1"
-        android:background="@mipmap/paper"
+        android:gravity="center"
+        android:background="@drawable/paper"
         android:padding="5dp">
 
         <EditText
             android:id="@+id/location_name"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="3"
             android:background="@drawable/insertmemo_text"
             android:gravity="center"
+            android:padding="14dp"
+            android:imeOptions="actionDone"
+            android:inputType="text"
             android:text="장소명을 작성해주세요."
             android:textColor="#757575"
             android:textSize="15dp" />
@@ -124,7 +128,7 @@
         <Button
             android:id="@+id/btn_addlocation"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"

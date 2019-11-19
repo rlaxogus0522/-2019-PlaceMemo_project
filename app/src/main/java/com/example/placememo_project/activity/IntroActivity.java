@@ -66,7 +66,7 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        animationView.loop(false);
+        start();
     }
 
 

@@ -76,9 +76,9 @@ public class GoogleMapActivity extends AppCompatActivity implements View.OnClick
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                if(i== EditorInfo.IME_ACTION_SEARCH){
-                   locationSerch();
                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                    imm.hideSoftInputFromWindow(lBinding.serchLocation.getWindowToken(), 0);
+                   locationSerch();
                }
                 return false;
             }
@@ -112,6 +112,8 @@ public class GoogleMapActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View v) {
         if (v == lBinding.btnSerch) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(lBinding.serchLocation.getWindowToken(), 0);
             lBinding.loading.setVisibility(View.VISIBLE);
             lBinding.loadings.setVisibility(View.VISIBLE);
             lBinding.loading.startAnimation(animation);
