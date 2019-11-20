@@ -64,6 +64,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+
+    @Override
+    public void onClick(View view) {
+        if(view == loginBinding.GoogleLogin){
+            signIn();
+        }else if(view == loginBinding.GuestLogin){
+            signInAnonymously(); // google firebase 게스트 로그인 실행
+        }
+    }
+
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -87,19 +97,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-                // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account);
                 Log.d("로그인","onActivityResult");
             } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e);
-                // [START_EXCLUDE]
-                // [END_EXCLUDE]
             }
         }else if ( requestCode == RC_SIGN_OUT){
             signOut();
@@ -107,17 +112,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d("로그인","firebaseAuthWithGoogle");
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         progressDialog.show();
-
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             currentUser = mAuth.getCurrentUser();
                             Log.d("+++", ""+currentUser.getPhotoUrl());
@@ -130,12 +131,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             intent.putExtra("conected",conected);
                             startActivityForResult(intent,RC_SIGN_OUT);
                             overridePendingTransition(R.anim.fadein,R.anim.fadeout);
-//                            updateUI(user);
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-//                            Snackbar.make(findViewById(R.id.main_layout), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
-//                            updateUI(null);
                         }
                         progressDialog.dismiss();
                     }
@@ -144,13 +141,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void signInAnonymously() {
         progressDialog.show();
-        // [START signin_anonymously]
         mAuth.signInAnonymously()
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             currentUser = mAuth.getCurrentUser();
                             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                             intent.putExtra("user","guest");
@@ -163,17 +158,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Log.d("실패","실패");
 
                         }
-
-                        // [START_EXCLUDE]
                         progressDialog.dismiss();
-                        // [END_EXCLUDE]
                     }
                 });
-        // [END signin_anonymously]
     }
 
     @Override
-    protected void onStart() {
+    protected void onStart() { // 이미 로그인 했었다면 바로 해당정보를 넘기면서 Main액티비티로 진행
         super.onStart();
         currentUser = mAuth.getCurrentUser();
         if(currentUser != null) {
@@ -200,22 +191,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
 
-    @Override
-    public void onClick(View view) {
-        if(view == loginBinding.GoogleLogin){
-            Log.d("로그인","클릭함");
-            signIn();
-        }else if(view == loginBinding.GuestLogin){
-            signInAnonymously();
-//
-//
-//            Intent intent = new Intent(this,MainActivity.class);
-//            intent.putExtra("user","guest");
-//            startActivity(intent);
-//            overridePendingTransition(R.anim.fadein,R.anim.fadeout);
-//            finish();
-        }
-    }
 
     @Override
     public void onBackPressed() {

@@ -16,7 +16,7 @@ public class BaseActivity extends AppCompatActivity {
     public static boolean pause = false;
     public AlarmManager am;
     public PendingIntent sender = null ;
-    public void locationSerch(Context context) {
+    public void locationSerch(Context context) { //최초 알림매니저 등록
         Intent intent = new Intent(this, LocationReceiver.class);
         intent.setAction("alam");
         sender = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);

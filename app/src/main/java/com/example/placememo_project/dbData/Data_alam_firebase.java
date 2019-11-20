@@ -1,11 +1,11 @@
 package com.example.placememo_project.dbData;
 
 
-public class Data_alam_firebase {  //-- 저장된 메모
-    public  double latitude,longitude; //-- 저장된 각 위치의 위,경도 위치 ( 사용자에게는 안보이는 부분 )
-    public String name; //-- 사용자가 입력한 위치 이름 ( 제목 부분 )
-    public  int icon;  //-- 사용자가 설정한 Icon  ( 제목 부분 )
-    public  String memo; //-- 사용자가 등록한 메모 ( 내용 부분)
+public class Data_alam_firebase {  //-- Google FireBase 연동용
+    public  double latitude,longitude;
+    public String name;
+    public  int icon;
+    public  String memo;
     public  boolean isAlamOn;
     public  int color;
 

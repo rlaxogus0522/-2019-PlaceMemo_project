@@ -60,11 +60,11 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        handler.removeCallbacks(newRunnable);
+        handler.removeCallbacks(newRunnable); // 사용자가 화면을 벗어나면 login 액티비티 이동 정지
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume() { // 다시 사용자가 화면으로 돌아오면 재작동
         super.onResume();
         start();
     }

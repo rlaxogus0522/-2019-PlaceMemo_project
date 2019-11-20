@@ -7,8 +7,8 @@ public class Data_alam extends RealmObject {  //-- 저장된 메모
     public String name; //-- 사용자가 입력한 위치 이름 ( 제목 부분 )
     public int icon;  //-- 사용자가 설정한 Icon  ( 제목 부분 )
     public String memo; //-- 사용자가 등록한 메모 ( 내용 부분)
-    public boolean isAlamOn;
-    public int color;
+    public boolean isAlamOn; // -- 해당메모가 알림이 켜져있는지
+    public int color; // -- 해당위치에 색깔
 
 
     public int getColor() {

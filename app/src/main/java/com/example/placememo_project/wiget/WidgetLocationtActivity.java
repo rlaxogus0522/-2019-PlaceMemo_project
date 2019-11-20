@@ -213,7 +213,6 @@ public class WidgetLocationtActivity extends BaseActivity implements View.OnClic
 
     public void startLocationSerch(){
         Log.d("==","실행됨");
-//        RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn",true).findAll();
         if(sender!=null) {
             Log.d("==","sender null 아님");
             am.cancel(sender);

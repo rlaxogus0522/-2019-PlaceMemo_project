@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
 public class FullAlamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public ArrayList<String> items = new ArrayList<>();
-//    ArrayList<Integer> color = new ArrayList<>();
 
 
 
@@ -48,7 +47,6 @@ public class FullAlamAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void addItem(String item) {
         items.add(item);
-//        this.color.add(color);
         notifyDataSetChanged();  // -- 업데이트
     }
 

@@ -43,8 +43,8 @@ public class LocationMemoInsertActivity extends AppCompatActivity implements Vie
     private ArrayList<Integer> locationButtonClick = new ArrayList<>(); // -- 클릭 된 이후 버튼 이미지
     private ImageButton btnlocation[] = new ImageButton[5]; // -- 이미지버튼의 객체를 배열형태로 담아둠
     private ImageButton btndelete[] = new ImageButton[5];   //-- 이미지삭제 버튼의 객체를 배열형대로 담아둠
-    private ArrayList<Double> latitude = new ArrayList<>();
-    private ArrayList<Double> longitutde = new ArrayList<>();
+    private ArrayList<Double> latitude = new ArrayList<>(); //-- 위도경도 저장
+    private ArrayList<Double> longitutde = new ArrayList<>(); //-- 위도경도 저장
     static ArrayList<String> locationName = new ArrayList<>();   //--  위치이름 저장
     private Vibrator vibrator;   //-- 삭제를 위한 롱클릭시 진동으로 사용자에게 알려주기위해
     private int nicon;   //--  현재 선택된 위치의 아이콘 저장용

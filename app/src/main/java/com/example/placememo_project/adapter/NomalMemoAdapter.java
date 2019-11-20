@@ -48,23 +48,23 @@ public class NomalMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.nomal_background, viewGroup, false);
-        return new ItemSwipeWithActionWidthViewHolder1(v);
+        return new ItemSwipeWithActionWidthNomalHolder(v);
 
     }
 
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, final int position) {
-        if (viewHolder instanceof ItemSwipeWithActionWidthViewHolder1) {
+        if (viewHolder instanceof ItemSwipeWithActionWidthNomalHolder) {
             Log.d("==",items.get(position));
             Data_nomal data_nomals = myRealm.where(Data_nomal.class).equalTo("memo", items.get(position)).findFirst();
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.setText(items.get(position));
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).colorView.setBackgroundColor(color.get(position));
+            ((ItemSwipeWithActionWidthNomalHolder) viewHolder).textView.setText(items.get(position));
+            ((ItemSwipeWithActionWidthNomalHolder) viewHolder).colorView.setBackgroundColor(color.get(position));
             if(data_nomals.getFrag()){
-                ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.setPaintFlags(((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                ((ItemSwipeWithActionWidthNomalHolder) viewHolder).textView.setPaintFlags(((ItemSwipeWithActionWidthNomalHolder) viewHolder).textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             }else{
-                ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.setPaintFlags(((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                ((ItemSwipeWithActionWidthNomalHolder) viewHolder).textView.setPaintFlags(((ItemSwipeWithActionWidthNomalHolder) viewHolder).textView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             }
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.setOnClickListener(new DoubleClickListener() {
+            ((ItemSwipeWithActionWidthNomalHolder) viewHolder).mViewContent1.setOnClickListener(new DoubleClickListener() {
                 @Override
                 public void onSingleClick(View v) {
 //                    Toast.makeText(mcontext,data_nomals.get(position).getOrder()+"",Toast.LENGTH_LONG).show();
@@ -73,14 +73,14 @@ public class NomalMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                 @Override
                 public void onDoubleClick(View v) {
-                    if(((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() != (((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG) ) {
-                        ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.setPaintFlags(((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    if(((ItemSwipeWithActionWidthNomalHolder) viewHolder).textView.getPaintFlags() != (((ItemSwipeWithActionWidthNomalHolder) viewHolder).textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG) ) {
+                        ((ItemSwipeWithActionWidthNomalHolder) viewHolder).textView.setPaintFlags(((ItemSwipeWithActionWidthNomalHolder) viewHolder).textView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                         RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).equalTo("memo", items.get(position)).findAll();
                         myRealm.beginTransaction();
                         data_nomals.first().setFrag(true);
                         myRealm.commitTransaction();
                     }else{
-                        ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.setPaintFlags(((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                        ((ItemSwipeWithActionWidthNomalHolder) viewHolder).textView.setPaintFlags(((ItemSwipeWithActionWidthNomalHolder) viewHolder).textView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                         RealmResults<Data_nomal> data_nomals = myRealm.where(Data_nomal.class).equalTo("memo", items.get(position)).findAll();
                         myRealm.beginTransaction();
                         data_nomals.first().setFrag(false);
@@ -88,23 +88,23 @@ public class NomalMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     }
                 }
             });
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewDelete1.setOnClickListener(new View.OnClickListener() {
+            ((ItemSwipeWithActionWidthNomalHolder) viewHolder).mActionViewDelete1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.getTranslationX() <= -((((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionContainer1.getWidth()) / 2f)){
+                    if (((ItemSwipeWithActionWidthNomalHolder) viewHolder).mViewContent1.getTranslationX() <= -((((ItemSwipeWithActionWidthNomalHolder) viewHolder).mActionContainer1.getWidth()) / 2f)){
                         remove(position);
-                        ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.setTranslationX(0f);
+                        ((ItemSwipeWithActionWidthNomalHolder) viewHolder).mViewContent1.setTranslationX(0f);
 
                     }
                 }
             });
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewEdit1.setOnClickListener(new View.OnClickListener() {
+            ((ItemSwipeWithActionWidthNomalHolder) viewHolder).mActionViewEdit1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.getTranslationX() <=  -(((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionContainer1.getWidth()) / 2f) {
+                    if(((ItemSwipeWithActionWidthNomalHolder) viewHolder).mViewContent1.getTranslationX() <=  -(((ItemSwipeWithActionWidthNomalHolder) viewHolder).mActionContainer1.getWidth()) / 2f) {
 //                        Data_nomal data_nomal = myRealm.where(Data_nomal.class).equalTo("memo",items.get(position)).findFirst();
 ////                        data_nomal
-                        ((MainActivity)mainContext).startNomalEdit(items.get(position),((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1,position);
+                        ((MainActivity)mainContext).startNomalEdit(items.get(position),((ItemSwipeWithActionWidthNomalHolder) viewHolder).mViewContent1,position);
                         view.setTranslationX(0f);
                     }
                 }
@@ -169,14 +169,14 @@ public class NomalMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         notifyDataSetChanged();  // -- 업데이트
     }
 
-    public class ViewHolder1 extends RecyclerView.ViewHolder {
+    public class NomalHolder extends RecyclerView.ViewHolder {
         public  TextView textView;
         public  View mViewContent1;
         public  View mActionContainer1;
         public View colorView;
 
 
-        public  ViewHolder1(View itemView) {
+        public NomalHolder(View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.text_list_item_memo);
             mViewContent1 = itemView.findViewById(R.id.view_list_nomal_content);
@@ -188,13 +188,13 @@ public class NomalMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     /*---------------------------------------------------------------------------------------------------------------------------*/
-    public class ItemSwipeWithActionWidthViewHolder1 extends ViewHolder1 implements Extension {
+    public class ItemSwipeWithActionWidthNomalHolder extends NomalHolder implements Extension {
         public View mActionViewDelete1;
         public View mActionViewEdit1;
 
 
 
-        public ItemSwipeWithActionWidthViewHolder1(View itemView) {
+        public ItemSwipeWithActionWidthNomalHolder(View itemView) {
             super(itemView);
             mActionViewDelete1 = itemView.findViewById(R.id.view_list_memo_delete);
             mActionViewEdit1 = itemView.findViewById(R.id.view_list_memo_edit);

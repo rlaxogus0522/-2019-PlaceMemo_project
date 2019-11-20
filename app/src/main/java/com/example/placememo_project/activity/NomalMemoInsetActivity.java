@@ -55,17 +55,17 @@ public class NomalMemoInsetActivity extends AppCompatActivity implements View.On
 
     @Override
     public void onClick(View view) {
-        if(view == nBinding.btnSave) {
+        if(view == nBinding.btnSave) { // 일반메모에서 저장버튼을 눌렀을때
             boolean isAledymemo = false;
             RealmResults<Data_nomal> data_nomals2 = myRealm.where(Data_nomal.class).findAll();
             for (Data_nomal data_nomal : data_nomals2) {
-                if (nBinding.EditMemo.getText().toString().equals(data_nomal.getMemo())) {
+                if (nBinding.EditMemo.getText().toString().equals(data_nomal.getMemo())) { // 단 한개라고 완벽하게 겹치는 내용의 메모가 이미 있다면
                     Toast.makeText(this, "이미 같은 메모가 저장되어있습니다.", Toast.LENGTH_LONG).show();
                     isAledymemo = true;
                     break;
                 }
             }
-            if (!isAledymemo){
+            if (!isAledymemo){ // 단 한개도 겹치는 메모가 없었다면 메모 저장 실행
                 RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll();
             myRealm.beginTransaction();
             Data_nomal data_nomal = myRealm.createObject(Data_nomal.class);

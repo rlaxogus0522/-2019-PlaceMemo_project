@@ -2,12 +2,12 @@ package com.example.placememo_project.dbData;
 
 
 
-public class Data_Icon_firebase{
-    public int button; //-- 사용자가 메모입력시 선택하는 버튼
-    public int buttonclick;  //-- 사용자가  메모입력시 선택하는 버튼에 클릭된 모양
-    public String name;  //--  사용자가 메모 입력시 미리 작성해둔 위치이름
-    public double longitude;  //-- 최종적으로 메모를 저장할때 넘겨주는 경도
-    public  double latitude;   //-- 최종적으로 메모를 저장할때 넘겨주는 위도
+public class Data_Icon_firebase{  //-- Google FireBase 연동용
+    public int button;
+    public int buttonclick;
+    public String name;
+    public double longitude;
+    public  double latitude;
     public double getLongitude() {
         return longitude;
     }

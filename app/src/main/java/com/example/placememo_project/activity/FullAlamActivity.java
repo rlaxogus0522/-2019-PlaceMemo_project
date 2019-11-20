@@ -48,7 +48,7 @@ public class FullAlamActivity extends BaseActivity {
         vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
         Realm.init(this);
         myrealm = Realm.getDefaultInstance();
-        long[] pattern = {800,300,800,300};
+        long[] pattern = {800,300,800,300}; // 진동 간격
         vibrator.vibrate(pattern,0);
         Intent intent = getIntent();
         title = intent.getStringExtra("title");
@@ -69,13 +69,13 @@ public class FullAlamActivity extends BaseActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                if((seekBar.getProgress() > 250  && seekBar.getProgress() < 500 )|| (seekBar.getProgress() < 750 && seekBar.getProgress() > 500)){
+                if((seekBar.getProgress() > 250  && seekBar.getProgress() < 500 )|| (seekBar.getProgress() < 750 && seekBar.getProgress() > 500)){ // 사용자가 적게 움지이면 원위치
                     seekBar.setProgress(500);
                     seekBar.setAlpha(1f);
                     alamBinding.set.setAlpha(1f);
                     alamBinding.set.startAnimation(fadein);
                     alamBinding.set.startAnimation(allanim);
-                }else if(seekBar.getProgress() < 250){
+                }else if(seekBar.getProgress() < 250){ // 왼쪽이면 해당하는 알람메모 삭제
                     seekBar.setProgress(0);
                     seekBar.setAlpha(0f);
                     myrealm.beginTransaction();
@@ -88,7 +88,7 @@ public class FullAlamActivity extends BaseActivity {
                         ((MainActivity)mainContext).ShowAlamUi(sort);
                     }catch (Exception e){}
 
-                }else if(seekBar.getProgress() >750){
+                }else if(seekBar.getProgress() >750){ // 오른쪽이면 해당하는 알람메모 알람 종료
                     seekBar.setProgress(1000);
                     seekBar.setAlpha(0f);
                     myrealm.beginTransaction();

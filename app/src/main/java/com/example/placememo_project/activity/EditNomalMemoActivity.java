@@ -31,7 +31,7 @@ public class EditNomalMemoActivity extends AppCompatActivity implements View.OnC
         myRealm =  Realm.getDefaultInstance();
         editMemoBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit_nomal_memo);
         Intent intent  = getIntent();
-        editMemoBinding.EditMemo.setText(intent.getExtras().getString("memo"));
+        editMemoBinding.EditMemo.setText(intent.getExtras().getString("memo")); //해당하는 메모 가져오기
         data_nomals = myRealm.where(Data_nomal.class).equalTo("memo",intent.getExtras().getString("memo")).findFirst();
         position = intent.getIntExtra("position",-1);
         selectColor = data_nomals.getColor();

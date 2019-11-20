@@ -31,10 +31,10 @@ import static com.example.placememo_project.activity.MainActivity.sort;
 public class LocationMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public ArrayList<LocationMemo_item> items = new ArrayList<>();
     public Realm myRealm;
-    private static final int VIEW_TYPE_D = -1;
-    private static final int VIEW_TYPE_A = 0;   // -- view 타입을 2개로 구분 (  메뉴 /  메모 )
+    private static final int VIEW_TYPE_A = 0;
     private static final int VIEW_TYPE_B = 1;
     private static final int VIEW_TYPE_C = 2;
+    private static final int VIEW_TYPE_D = -1; // -- view 타입을 4개로 구분 (핀 / 메뉴 / 메모 / 위치별 메모 단락을 짓기위한 구분용 투명 View )
     Context mcontext;
 
 
@@ -68,91 +68,91 @@ public class LocationMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.title_background, viewGroup, false);
 
 
-            return new ItemSwipeWithActionWidthViewHolder1(v);
+            return new ItemSwipeWithActionWidthTitleHolder(v);
         } else if (viewType == VIEW_TYPE_B) {
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.memo_background, viewGroup, false);
-            return new ItemSwipeWithActionWidthViewHolder2(v);
+            return new ItemSwipeWithActionWidthMemoHolder(v);
         } else {
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_to_item, viewGroup, false);
-            return new ViewHolder3(v);
+            return new TransParentHolder(v);
         }
     }
 
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, final int position) {
         Data_alam data_alams = myRealm.where(Data_alam.class).equalTo("name", items.get(position).getTitle()).findFirst();
-        if (viewHolder instanceof LocationMemoAdapter.ItemSwipeWithActionWidthViewHolder1) {
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).background.setBackgroundColor(data_alams.getColor());
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.setBackgroundColor(data_alams.getColor());
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionContainer1.setBackgroundColor(data_alams.getColor());
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewDelete1.setOnClickListener(new View.OnClickListener() {  //-- 메뉴에 삭제버튼을 클릭한다면
+        if (viewHolder instanceof ItemSwipeWithActionWidthTitleHolder) { // 타이틀에 대한 설정
+            ((ItemSwipeWithActionWidthTitleHolder) viewHolder).background.setBackgroundColor(data_alams.getColor());
+            ((ItemSwipeWithActionWidthTitleHolder) viewHolder).mViewContent1.setBackgroundColor(data_alams.getColor());
+            ((ItemSwipeWithActionWidthTitleHolder) viewHolder).mActionContainer1.setBackgroundColor(data_alams.getColor());
+            ((ItemSwipeWithActionWidthTitleHolder) viewHolder).mActionViewDelete1.setOnClickListener(new View.OnClickListener() {  //-- 메뉴에 삭제버튼을 클릭한다면
                 @Override
                 public void onClick(View view) {
-                    if (((LocationMemoAdapter.ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.getTranslationX() <= -((((LocationMemoAdapter.ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionContainer1.getWidth()) / 2f)) {
+                    if (((ItemSwipeWithActionWidthTitleHolder) viewHolder).mViewContent1.getTranslationX() <= -((((ItemSwipeWithActionWidthTitleHolder) viewHolder).mActionContainer1.getWidth()) / 2f)) {
                         remove(position, "Title");  //-- 해당 메뉴에 해당하는 메모 전부 삭제
 //                    titlename.remove(getTitle());
-                        ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.setTranslationX(0f);
+                        ((ItemSwipeWithActionWidthTitleHolder) viewHolder).mViewContent1.setTranslationX(0f);
                     }
                 }
             });
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).imageButton.setOnClickListener(new View.OnClickListener() {  //-- 메뉴에 메모추가버튼을 클릭한다면
+            ((ItemSwipeWithActionWidthTitleHolder) viewHolder).imageButton.setOnClickListener(new View.OnClickListener() {  //-- 메뉴에 메모추가버튼을 클릭한다면
                 @Override
-                public void onClick(View view) {
-                    if (((LocationMemoAdapter.ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.getTranslationX() == 0f) {
+                public void onClick(View view) { //-- 타이틀에 + 버튼을 눌렀을때
+                    if (((ItemSwipeWithActionWidthTitleHolder) viewHolder).mViewContent1.getTranslationX() == 0f) {
                         ((MainActivity) mainContext).startTitleAddItem(items.get(position).getTitle());
                     }
                 }
             });
 
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionViewEdit1.setOnClickListener(new View.OnClickListener() { //-- 메뉴에 편집버튼을 클릭한다면
+            ((ItemSwipeWithActionWidthTitleHolder) viewHolder).mActionViewEdit1.setOnClickListener(new View.OnClickListener() { //-- 메뉴에 편집버튼을 클릭한다면
                 @Override
                 public void onClick(View view) {
-                    if (((LocationMemoAdapter.ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1.getTranslationX() <= -((((LocationMemoAdapter.ItemSwipeWithActionWidthViewHolder1) viewHolder).mActionContainer1.getWidth()) / 2f)) {
-                        ((MainActivity) mainContext).startEdit(items.get(position).getTitle(), ((LocationMemoAdapter.ItemSwipeWithActionWidthViewHolder1) viewHolder).mViewContent1, "title");
+                    if (((ItemSwipeWithActionWidthTitleHolder) viewHolder).mViewContent1.getTranslationX() <= -((((ItemSwipeWithActionWidthTitleHolder) viewHolder).mActionContainer1.getWidth()) / 2f)) {
+                        ((MainActivity) mainContext).startLocationEdit(items.get(position).getTitle(), ((ItemSwipeWithActionWidthTitleHolder) viewHolder).mViewContent1, "title");
                     }
                 }
             });
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).textView.setText(items.get(position).getTitle());
-            ((ItemSwipeWithActionWidthViewHolder1) viewHolder).imageView.setImageResource(items.get(position).getIcon());
+            ((ItemSwipeWithActionWidthTitleHolder) viewHolder).textView.setText(items.get(position).getTitle());
+            ((ItemSwipeWithActionWidthTitleHolder) viewHolder).imageView.setImageResource(items.get(position).getIcon());
 
 
-        } else if (viewHolder instanceof LocationMemoAdapter.ItemSwipeWithActionWidthViewHolder2) {
+        } else if (viewHolder instanceof ItemSwipeWithActionWidthMemoHolder) { // 메모에 대한 설정
             Data_alam data_alam = myRealm.where(Data_alam.class).equalTo("memo", items.get(position).getMemo()).equalTo("name", items.get(position).getTitle()).findFirst();
             if (data_alam.getisAlamOn()) {
-                ((ItemSwipeWithActionWidthViewHolder2) viewHolder).imageButton.setImageResource(R.drawable.baseline_notifications_active_white_48dp);
+                ((ItemSwipeWithActionWidthMemoHolder) viewHolder).imageButton.setImageResource(R.drawable.baseline_notifications_active_white_48dp);
             } else {
-                ((ItemSwipeWithActionWidthViewHolder2) viewHolder).imageButton.setImageResource(R.drawable.baseline_notifications_off_white_48dp);
+                ((ItemSwipeWithActionWidthMemoHolder) viewHolder).imageButton.setImageResource(R.drawable.baseline_notifications_off_white_48dp);
             }
-            ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mActionViewDelete2.setEnabled(false);
-            ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mActionViewDelete2.setOnClickListener(new View.OnClickListener() {  //-- 메모에 삭제버튼을 클릭한다면
+            ((ItemSwipeWithActionWidthMemoHolder) viewHolder).mActionViewDelete2.setEnabled(false);
+            ((ItemSwipeWithActionWidthMemoHolder) viewHolder).mActionViewDelete2.setOnClickListener(new View.OnClickListener() {  //-- 메모에 삭제버튼을 클릭한다면
                 @Override
                 public void onClick(View view) {
-                    if (((LocationMemoAdapter.ItemSwipeWithActionWidthViewHolder2) viewHolder).mViewContent2.getTranslationX() <= -((((LocationMemoAdapter.ItemSwipeWithActionWidthViewHolder2) viewHolder).mActionContainer2.getWidth()) / 2f)) {
+                    if (((ItemSwipeWithActionWidthMemoHolder) viewHolder).mViewContent2.getTranslationX() <= -((((ItemSwipeWithActionWidthMemoHolder) viewHolder).mActionContainer2.getWidth()) / 2f)) {
                         remove(position, "Memo");
-                        ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mViewContent2.setTranslationX(0f);
+                        ((ItemSwipeWithActionWidthMemoHolder) viewHolder).mViewContent2.setTranslationX(0f);
                     }
                 }
             });
-            ((ItemSwipeWithActionWidthViewHolder2) viewHolder).mActionViewEdit2.setOnClickListener(new View.OnClickListener() { //-- 메모에 편집버튼을 클릭한다면
+            ((ItemSwipeWithActionWidthMemoHolder) viewHolder).mActionViewEdit2.setOnClickListener(new View.OnClickListener() { //-- 메모에 편집버튼을 클릭한다면
                 @Override
                 public void onClick(View view) {
-                    if (((LocationMemoAdapter.ItemSwipeWithActionWidthViewHolder2) viewHolder).mViewContent2.getTranslationX() <= -((((LocationMemoAdapter.ItemSwipeWithActionWidthViewHolder2) viewHolder).mActionContainer2.getWidth()) / 2f)) {
-                        ((MainActivity) mainContext).startEdit(items.get(position).getMemo(), ((LocationMemoAdapter.ItemSwipeWithActionWidthViewHolder2) viewHolder).mViewContent2, "memo");
+                    if (((ItemSwipeWithActionWidthMemoHolder) viewHolder).mViewContent2.getTranslationX() <= -((((ItemSwipeWithActionWidthMemoHolder) viewHolder).mActionContainer2.getWidth()) / 2f)) {
+                        ((MainActivity) mainContext).startLocationEdit(items.get(position).getMemo(), ((ItemSwipeWithActionWidthMemoHolder) viewHolder).mViewContent2, "memo");
                     }
                 }
             });
-            ((ItemSwipeWithActionWidthViewHolder2) viewHolder).imageButton.setOnClickListener(new View.OnClickListener() {   //-- 메모에 알람 종 모양을 클릭하면
+            ((ItemSwipeWithActionWidthMemoHolder) viewHolder).imageButton.setOnClickListener(new View.OnClickListener() {   //-- 메모에 알람 종 모양을 클릭하면
                 @Override
                 public void onClick(View view) {
-                    if (((LocationMemoAdapter.ItemSwipeWithActionWidthViewHolder2) viewHolder).mViewContent2.getTranslationX() == 0f) {
+                    if (((ItemSwipeWithActionWidthMemoHolder) viewHolder).mViewContent2.getTranslationX() == 0f) {
                         RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("memo", items.get(position).getMemo()).equalTo("name", items.get(position).getTitle()).findAll();
                         if (Objects.requireNonNull(data_alams.first()).getisAlamOn()) {
-                            ((ItemSwipeWithActionWidthViewHolder2) viewHolder).imageButton.setImageResource(R.drawable.baseline_notifications_off_white_48dp);
+                            ((ItemSwipeWithActionWidthMemoHolder) viewHolder).imageButton.setImageResource(R.drawable.baseline_notifications_off_white_48dp);
                             myRealm.beginTransaction();
                             Objects.requireNonNull(data_alams.first()).setAlamOn(false);
                             myRealm.commitTransaction();
                         } else {
-                            ((ItemSwipeWithActionWidthViewHolder2) viewHolder).imageButton.setImageResource(R.drawable.baseline_notifications_active_white_48dp);
+                            ((ItemSwipeWithActionWidthMemoHolder) viewHolder).imageButton.setImageResource(R.drawable.baseline_notifications_active_white_48dp);
                             myRealm.beginTransaction();
                             Objects.requireNonNull(data_alams.first()).setAlamOn(true);
                             myRealm.commitTransaction();
@@ -162,8 +162,8 @@ public class LocationMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 }
             });
 
-            ((ItemSwipeWithActionWidthViewHolder2) viewHolder).textView2.setText(items.get(position).getMemo());
-        } else if (viewHolder instanceof LocationMemoAdapter.PinHolder) {
+            ((ItemSwipeWithActionWidthMemoHolder) viewHolder).textView2.setText(items.get(position).getMemo());
+        } else if (viewHolder instanceof LocationMemoAdapter.PinHolder) { // 핀에 디자인
             GradientDrawable gradientDrawable = new GradientDrawable();
             gradientDrawable.setCornerRadii(new float[]{200, 200, 200, 200, 0, 0, 0, 0});
             gradientDrawable.setColor(data_alams.getColor());
@@ -209,7 +209,7 @@ public class LocationMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 
     /*---------------------------------------------------------------------------------------------------------------------------*/
-    public class ViewHolder1 extends RecyclerView.ViewHolder {
+    public class TitleHolder extends RecyclerView.ViewHolder {
         public TextView textView;
         public ImageView imageView;
         public ImageButton imageButton;
@@ -218,7 +218,7 @@ public class LocationMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public View background;
 
 
-        public ViewHolder1(View itemView) {
+        public TitleHolder(View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.tv_title);
             imageView = itemView.findViewById(R.id.title_image);
@@ -230,12 +230,12 @@ public class LocationMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    public class ItemSwipeWithActionWidthViewHolder1 extends LocationMemoAdapter.ViewHolder1 implements Extension {
+    public class ItemSwipeWithActionWidthTitleHolder extends TitleHolder implements Extension {
         public View mActionViewDelete1;
         public View mActionViewEdit1;
 
 
-        public ItemSwipeWithActionWidthViewHolder1(View itemView) {
+        public ItemSwipeWithActionWidthTitleHolder(View itemView) {
             super(itemView);
             mActionViewDelete1 = itemView.findViewById(R.id.view_list_title_action_delete);
             mActionViewEdit1 = itemView.findViewById(R.id.view_list_title_action_edit);
@@ -248,13 +248,13 @@ public class LocationMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     /*------------------------------------------------------------------------------------------------------------------*/
-    public class ViewHolder2 extends RecyclerView.ViewHolder {
+    public class MemoHolder extends RecyclerView.ViewHolder {
         public TextView textView2;
         public ImageView imageButton;
         public View mViewContent2;
         public View mActionContainer2;
 
-        public ViewHolder2(View itemView) {
+        public MemoHolder(View itemView) {
             super(itemView);
             imageButton = itemView.findViewById(R.id.alam);
             textView2 = itemView.findViewById(R.id.text_list_main_title);
@@ -264,12 +264,12 @@ public class LocationMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     }
 
-    public class ItemSwipeWithActionWidthViewHolder2 extends LocationMemoAdapter.ViewHolder2 implements Extension {
+    public class ItemSwipeWithActionWidthMemoHolder extends MemoHolder implements Extension {
 
         public View mActionViewDelete2;
         public View mActionViewEdit2;
 
-        public ItemSwipeWithActionWidthViewHolder2(View itemView) {
+        public ItemSwipeWithActionWidthMemoHolder(View itemView) {
             super(itemView);
             mActionViewDelete2 = itemView.findViewById(R.id.view_list_repo_action_delete);
             mActionViewEdit2 = itemView.findViewById(R.id.view_list_repo_action_edit);
@@ -284,15 +284,7 @@ public class LocationMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     /*------------------------------------------------------------------------------------------------------------------*/
 
-    public class ViewHolder3 extends RecyclerView.ViewHolder {
-        public View view;
 
-        public ViewHolder3(View itemView) {
-            super(itemView);
-            view = itemView.findViewById(R.id.between);
-        }
-
-    }
 
 
     public class PinHolder extends RecyclerView.ViewHolder {
@@ -306,6 +298,17 @@ public class LocationMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             padding.setPadding(0, 50, 0, 0);
 
 
+        }
+
+    }
+
+
+    public class TransParentHolder extends RecyclerView.ViewHolder {
+        public View view;
+
+        public TransParentHolder(View itemView) {
+            super(itemView);
+            view = itemView.findViewById(R.id.between);
         }
 
     }

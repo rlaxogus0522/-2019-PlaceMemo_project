@@ -64,7 +64,7 @@ public class GoogleMapActivity extends AppCompatActivity implements View.OnClick
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         lBinding = DataBindingUtil.setContentView(this, R.layout.activity_google_map);
-        circle = new CircleOptions();
+        circle = new CircleOptions(); // 사용자가 찍은 좌표 주위 300m 를 그리기위한 원
         animation = AnimationUtils.loadAnimation(this,R.anim.loading);
         geocoder= new Geocoder(this);
         handler = new Handler();
@@ -111,14 +111,14 @@ public class GoogleMapActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        if (v == lBinding.btnSerch) {
+        if (v == lBinding.btnSerch) { // 검색위치에 해당하는 위치 찾기메소드 실행
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(lBinding.serchLocation.getWindowToken(), 0);
             lBinding.loading.setVisibility(View.VISIBLE);
             lBinding.loadings.setVisibility(View.VISIBLE);
             lBinding.loading.startAnimation(animation);
             locationSerch();
-        } else if (v == lBinding.btnMylocation) {  //-- 현재 내위치를 가져오는 메소드
+        } else if (v == lBinding.btnMylocation) {  //-- 현재 내위치를 가져오는 메소드 실행
             lBinding.loading.setVisibility(View.VISIBLE);
             lBinding.loadings.setVisibility(View.VISIBLE);
             lBinding.loading.startAnimation(animation);
@@ -268,7 +268,7 @@ public class GoogleMapActivity extends AppCompatActivity implements View.OnClick
                 latitude = location.latitude;
                 longitude = location.longitude;
                 circle.center(location);
-                circle.radius(300);      //반지름 단위 : m
+                circle.radius(300);      //반지름 300m 설정
                 circle.strokeWidth(0f);  //선너비 0f : 선없음
                 circle.fillColor(Color.parseColor("#500000ff")); //배경색
 

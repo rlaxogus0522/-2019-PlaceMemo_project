@@ -30,7 +30,6 @@ public class Notification {
                     .setFullScreenIntent(pendingIntent, true);
 
             builder.setColor(Color.RED);
-            // 사용자가 탭을 클릭하면 자동 제거
             builder.setAutoCancel(true);
 
 

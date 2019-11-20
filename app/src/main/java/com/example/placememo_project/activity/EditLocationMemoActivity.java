@@ -34,7 +34,7 @@ public class EditLocationMemoActivity extends AppCompatActivity implements View.
         myRealm =  Realm.getDefaultInstance();
         editMemoBinding = DataBindingUtil.setContentView(this, R.layout.activity_edit_location_memo);
         Intent intent  = getIntent();
-        type = intent.getStringExtra("type");
+        type = intent.getStringExtra("type"); //메모 수정인지 메뉴수정인지 구분용
         editMemoBinding.EditMemo.setText(intent.getExtras().getString("memo"));
         if(type.equals("memo")) {
             data_alams1 = myRealm.where(Data_alam.class).equalTo("memo", intent.getExtras().getString("memo")).findFirst();
@@ -54,17 +54,17 @@ public class EditLocationMemoActivity extends AppCompatActivity implements View.
             finish();
         }else if(view == editMemoBinding.btnSave){
             myRealm.beginTransaction();
-            if(type.equals("memo")){
+            if(type.equals("memo")){ //메모내용 변경
             data_alams1.setMemo(editMemoBinding.EditMemo.getText().toString());
             }else if (type.equals("title")){
-                for(Data_alam data_alam : data_alams){
+                for(Data_alam data_alam : data_alams){ //전체 내용 변경밑 하위 메모에 부모타이틀 변경
                     data_alam.setName(editMemoBinding.EditMemo.getText().toString());
                 }
                 data_icon.setName(editMemoBinding.EditMemo.getText().toString());
             }
             myRealm.commitTransaction();
             finish();
-            ((MainActivity)mainContext).ShowAlamUi(sort);
+            ((MainActivity)mainContext).ShowAlamUi(sort); // 리싸이클러뷰 다시 정렬
         }
     }
 }

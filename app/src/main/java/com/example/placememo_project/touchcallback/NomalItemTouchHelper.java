@@ -31,7 +31,7 @@ public  class NomalItemTouchHelper extends ItemTouchHelperExtension.Callback{
 
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder viewHolder1) {
-        int fromPosition, toPostition;
+        int fromPosition, toPostition; // 드래그하여 위치 를 이동시기면 Db에 oreder 순서를 그에 맞춰 변경하여 다음에 재부팅및 데이터 복원 시에도 순서가 유지되게하기위함
         fromPosition = viewHolder.getAdapterPosition();
         toPostition = viewHolder1.getAdapterPosition();
 
@@ -62,8 +62,8 @@ public  class NomalItemTouchHelper extends ItemTouchHelperExtension.Callback{
         if(dX == 0 && dY != 0){
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
-        NomalMemoAdapter.ViewHolder1 holder1 = (NomalMemoAdapter.ViewHolder1) viewHolder;
-        if (viewHolder instanceof NomalMemoAdapter.ItemSwipeWithActionWidthViewHolder1) {
+        NomalMemoAdapter.NomalHolder holder1 = (NomalMemoAdapter.NomalHolder) viewHolder;
+        if (viewHolder instanceof NomalMemoAdapter.ItemSwipeWithActionWidthNomalHolder) {
             holder1.mViewContent1.setTranslationX(dX);
             return;
         }

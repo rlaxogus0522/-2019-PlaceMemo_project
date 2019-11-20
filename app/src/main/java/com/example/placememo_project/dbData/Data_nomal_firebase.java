@@ -2,7 +2,7 @@ package com.example.placememo_project.dbData;
 
 
 
-public class Data_nomal_firebase {
+public class Data_nomal_firebase { //-- Google FireBase 연동용
     String memo;
     int color;
     boolean frag;

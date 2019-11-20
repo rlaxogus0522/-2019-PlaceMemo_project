@@ -34,12 +34,12 @@ public class LocationItemTouchHelper extends ItemTouchHelperExtension.Callback {
     @Override
     public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
-        if(viewHolder instanceof LocationMemoAdapter.ViewHolder1) {   //-- 저장된 알람 메뉴에 대한 스와이프 기능에 필요한 x 위치 설정
-            LocationMemoAdapter.ViewHolder1 holder1 = (LocationMemoAdapter.ViewHolder1) viewHolder;
+        if(viewHolder instanceof LocationMemoAdapter.TitleHolder) {   //-- 저장된 알람 메뉴에 대한 스와이프 기능에 필요한 x 위치 설정
+            LocationMemoAdapter.TitleHolder holder1 = (LocationMemoAdapter.TitleHolder) viewHolder;
                 holder1.mViewContent1.setTranslationX(dX);
 
-        }else if (viewHolder instanceof  LocationMemoAdapter.ViewHolder2){ //-- 저장된 알람 메모에 대한 스와이프 기능에 필요한 x 위치 설정
-            LocationMemoAdapter.ViewHolder2 holder2 = (LocationMemoAdapter.ViewHolder2) viewHolder;
+        }else if (viewHolder instanceof LocationMemoAdapter.MemoHolder){ //-- 저장된 알람 메모에 대한 스와이프 기능에 필요한 x 위치 설정
+            LocationMemoAdapter.MemoHolder holder2 = (LocationMemoAdapter.MemoHolder) viewHolder;
                 holder2.mViewContent2.setTranslationX(dX);
 
         }

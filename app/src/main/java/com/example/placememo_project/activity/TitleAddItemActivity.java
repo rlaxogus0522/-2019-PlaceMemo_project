@@ -30,7 +30,7 @@ public class TitleAddItemActivity extends AppCompatActivity implements View.OnCl
         myRealm =  Realm.getDefaultInstance();
         titleAddItemBinding = DataBindingUtil.setContentView(this, R.layout.activity_title_add_item);
         Intent intent  = getIntent();
-        title = intent.getExtras().getString("titlename");;
+        title = intent.getExtras().getString("titlename"); // 어떤 장소에 메모를 추가하는지 알기위해서 어댑터에서 보낸 title을 받아와서 저장
 
         titleAddItemBinding.btnSave.setOnClickListener(this);
         titleAddItemBinding.btnBack.setOnClickListener(this);
@@ -56,7 +56,7 @@ public class TitleAddItemActivity extends AppCompatActivity implements View.OnCl
                 myRealm.commitTransaction();
                 finish();
                 ((MainActivity) mainContext).ShowAlamUi(sort);
-                ((MainActivity) mainContext).checkNoImage();
+                ((MainActivity) mainContext).checkLocationNoImage();
             }else{
                 if (titleAddItemBinding.EditMemo.getText().toString().equals(""))  //--  메모내용이 비어있을때
                     Toast.makeText(this, "메모를 설정해주세요.", Toast.LENGTH_LONG).show();

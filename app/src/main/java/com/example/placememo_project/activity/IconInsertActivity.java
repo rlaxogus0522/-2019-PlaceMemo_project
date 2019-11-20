@@ -25,7 +25,7 @@ public class IconInsertActivity extends AppCompatActivity implements View.OnClic
         iBinding = DataBindingUtil.setContentView(this, R.layout.activity_insert_icon);
         iBinding.btnAddiconOk.setOnClickListener(this);
 
-        addButton();
+        addButton(); // icon 버튼들 추가하기 실행
 
     }
 
@@ -43,7 +43,7 @@ public class IconInsertActivity extends AppCompatActivity implements View.OnClic
             imageChange(v);
         }
     }
-    private void imageChange(View view) {
+    private void imageChange(View view) { //사용자가 클릭한 버튼의 색을 변경하고 나머지 버튼은 원래 클리되기 전 색으로 돌림
         for (int i = 0; i < locationButton.size(); i++) {
             btnlocation.get(i).setBackgroundResource(locationButton.get(i));
             if (btnlocation.get(i) == view) {
@@ -56,7 +56,7 @@ public class IconInsertActivity extends AppCompatActivity implements View.OnClic
 
     private void addButton() {
 
-        //-- 기본으로 사용자에게 추가될 버튼이미지 부탁 ( 수정 전.. 수정할 예정 )
+        //-- 기본으로 사용자에게 제공될 버튼이미지
         btnlocation.add(iBinding.btnLocation1);
         btnlocation.add(iBinding.btnLocation2);
         btnlocation.add(iBinding.btnLocation3);

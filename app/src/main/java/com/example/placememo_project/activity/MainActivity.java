@@ -255,7 +255,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
         dataUpdate();   //-- DB에 정보 가져오기
-        checkNoImage();   //-- 처음에 저장된 메모가 있는지 없는지 여부에 따라 메모 없다고 표시
+        checkLocationNoImage();   //-- 처음에 저장된 메모가 있는지 없는지 여부에 따라 메모 없다고 표시
 
 //        getHashKey();
     }
@@ -480,7 +480,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             }
         }
-        checkNoImage();
+        checkLocationNoImage();
     }
 
 
@@ -818,7 +818,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void saveToInternalStorage(Bitmap bitmapImage) {
         String ex_storage = Environment.getExternalStorageDirectory().getAbsolutePath();
-        String foler_name = "/" + "immmmmage" + "/";
+        String foler_name = "/" + "PlaceMemo" + "/";
         String file_name = "KaKao_Image" + ".jpg";
         String string_path = ex_storage + foler_name;
 
@@ -838,7 +838,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-    private String EncodeString(String string) {
+    private String EncodeString(String string) { // google에 데이터를 올릴때 경로에특수문자가 들어가는 경우를 방지
         String encodingString = string.replace(".", "-001");
         String encodingString2 = encodingString.replace("#", "-002");
         String encodingString3 = encodingString2.replace("$", "-003");
@@ -847,7 +847,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         return encodingString5;
     }
 
-    private String DecodeString(String string) {
+    private String DecodeString(String string) {  // google에 데이터를 가져올때 경로에 특수문자가 들어갔던 경우 복원하여 가져오기
         String encodingString = string.replace("-001", ".");
         String encodingString2 = encodingString.replace("-002", "#");
         String encodingString3 = encodingString2.replace("-003", "$");
@@ -856,7 +856,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         return encodingString5;
     }
 
-    PermissionListener permissionListener = new PermissionListener() {
+    PermissionListener kakaopermissionListener = new PermissionListener() { //카카오서비스 사용시 해당 앱에서 필요한 권한
         @Override
         public void onPermissionGranted() {
             Kakao();
@@ -868,10 +868,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     };
 
+    PermissionListener dataLoadpermissionListener = new PermissionListener() { // 데이터를 가져온후 위치메모를 이용하기위해서 해당 앱에서 필요한 권한
+        @Override
+        public void onPermissionGranted() {
+            DataLoad();
+        }
+
+        @Override
+        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+            Toast.makeText(getApplicationContext(), "권한 거부시 서비스이용이 제한됩니다.", Toast.LENGTH_SHORT).show();
+        }
+    };
+
     public void checkKaKaoPermissions() {
         if (Build.VERSION.SDK_INT >= 23) { // 마시멜로(안드로이드 6.0) 이상 권한 체크
             TedPermission.with(this)
-                    .setPermissionListener(permissionListener)
+                    .setPermissionListener(kakaopermissionListener)
                     .setRationaleMessage("카카오톡 메모사진 공유를 위해서는 권한이 필요합니다")
                     .setDeniedMessage("앱에서 요구하는 권한설정이 필요합니다...\n [설정] > [권한] 에서 사용으로 활성화해주세요.")
                     .setPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE})
@@ -881,17 +893,30 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             Kakao();
         }
     }
+    public void checkDataLoadPermissions() {
+        if (Build.VERSION.SDK_INT >= 23){ // 마시멜로(안드로이드 6.0) 이상 권한 체크
+            TedPermission.with(this)
+                    .setPermissionListener(dataLoadpermissionListener)
+                    .setRationaleMessage("데이터를 가져오기 위해서는\n위치메모를 위한 접근권한이 필요합니다")
+                    .setDeniedMessage("앱에서 요구하는 권한설정이 필요합니다...\n [설정] > [권한] 에서 사용으로 활성화해주세요.")
+                    .setPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
+                    .check();
+        } else {
+            DataLoad();
+        }
+    }
+
 
     private void dataUpdate() {   //-- DB에 있는 정보 가져오기
         ShowAlamUi(sort);
     }
 
 
-    public void checkNoImage() {  //-- 등록된 알람이 없는지 체크
-        if (titlename.size() == 0) {
-            checkAlam = false;
+    public void checkLocationNoImage() {  //-- 등록된 알람이 없는지 체크
+        if (titlename.size() == 0) { // 알람이 없다면
+            checkAlam = false; // 체크해야하는 알람이 있는지 확인하는 변수를 false 로 만들고
             TextViewNoMemo_location.setVisibility(View.VISIBLE);
-            if (sender != null) {
+            if (sender != null) { // 초기 알람매니저 재설정
                 am.cancel(sender);
                 sender = null;
             }
@@ -914,7 +939,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    public void startEdit(String memo, View view, String type) {
+    public void startLocationEdit(String memo, View view, String type) { //어댑처쪽에서 위치메모에 수정 버튼을 눌렀을 때
         view.setTranslationX(0f);
         Intent intent = new Intent(this, EditLocationMemoActivity.class);
         if (type.equals("memo")) {
@@ -927,7 +952,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         startActivity(intent);
     }
 
-    public void startNomalEdit(String memo, View view, int position) {
+    public void startNomalEdit(String memo, View view, int position) { //어댑처쪽에서 일반메모에 수정 버튼을 눌렀을 때
         view.setTranslationX(0f);
         Intent intent = new Intent(this, EditNomalMemoActivity.class);
         intent.putExtra("memo", memo);
@@ -935,23 +960,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         startActivity(intent);
     }
 
-    public void startTitleAddItem(String name) {
+    public void startTitleAddItem(String name) { //어댑처쪽에서 타이틀에 추가 버튼을 눌렀을 때
         Intent intent = new Intent(this, TitleAddItemActivity.class);
         intent.putExtra("titlename", name);
         startActivity(intent);
     }
 
-    private void locationAlamReset() {  //-- 알람 리셋을 누른다면
+    private void locationAlamReset() {  //-- 위치메모 창에서 알람 리셋을 누른다면
         titlename.clear();
         RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).findAll();
         myRealm.beginTransaction();
         data_alams.deleteAllFromRealm();
         myRealm.commitTransaction();
         locationadapter.clear();
-        checkNoImage();  //-- 저장된 알람 없다는것을 체크하여 No Memo 이미지를 띄우고
+        checkLocationNoImage();  //-- 저장된 알람 없다는것을 체크하여 No Memo 이미지를 띄우고
     }
 
-    private void nomalMemoReset() {  //-- 알람 리셋을 누른다면
+    private void nomalMemoReset() {  //-- 일반메모 창에서 알람 리셋을 누른다면
         nomaladapters.clear();
         RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll();
         myRealm.beginTransaction();
@@ -1030,8 +1055,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             public void onClick(
                                     DialogInterface dialog, int id) {
                                 // 초기화
-                                DataLoad();
-
+                                checkDataLoadPermissions();
                             }
                         })
                 .setNegativeButton("아니오",
@@ -1067,7 +1091,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         installKakao = kakaoDialog.create();
     }
 
-    private void getHashKey() {
+
+
+    private void getHashKey() { // 카카오 및 구글 서비스를 이용하기 위해서 hashkey 값을 가져오기위해서 사용
         PackageInfo packageInfo = null;
         try {
             packageInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
