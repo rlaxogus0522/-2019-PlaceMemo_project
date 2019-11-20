@@ -77,7 +77,7 @@ public class NomalMemoInsetActivity extends AppCompatActivity implements View.On
             for (Data_nomal data_nomals : results) {
                 ((MainActivity) mainContext).nomaladapters.addItem(data_nomals.getMemo(), data_nomals.getColor());
             }
-            ((MainActivity) mainContext).checkNoImage_nomal();
+            ((MainActivity) mainContext).checkNomalNoImage();
             finish();
         }
         }else if(view == nBinding.btnBack){

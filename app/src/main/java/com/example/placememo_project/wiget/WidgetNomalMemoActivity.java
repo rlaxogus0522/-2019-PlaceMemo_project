@@ -80,7 +80,7 @@ public class WidgetNomalMemoActivity extends AppCompatActivity implements View.O
                 for (Data_nomal data_nomals : results) {
                     ((MainActivity) mainContext).nomaladapters.addItem(data_nomals.getMemo(), data_nomals.getColor());
                 }
-                ((MainActivity) mainContext).checkNoImage_nomal();
+                ((MainActivity) mainContext).checkNomalNoImage();
             }catch (Exception e){ }
             finish();
                 Toast.makeText(this, "저장 완료^-^", Toast.LENGTH_SHORT).show();

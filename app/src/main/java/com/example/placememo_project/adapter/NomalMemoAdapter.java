@@ -148,7 +148,7 @@ public class NomalMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.color.add(color);
         Log.d("===",color+"");
         notifyDataSetChanged();  // -- 업데이트
-        ((MainActivity)mainContext).checkNoImage_nomal();
+        ((MainActivity)mainContext).checkNomalNoImage();
     }
 
     public void remove(int position){
@@ -159,7 +159,7 @@ public class NomalMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         items.remove(position);
         color.remove(position);
         notifyDataSetChanged();  // -- 업데이트
-        ((MainActivity)mainContext).checkNoImage_nomal();
+        ((MainActivity)mainContext).checkNomalNoImage();
     }
 
 

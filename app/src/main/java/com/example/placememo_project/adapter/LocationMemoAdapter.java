@@ -181,7 +181,7 @@ public class LocationMemoAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         items.add(item);
         notifyDataSetChanged();  // -- 업데이트
-        ((MainActivity) mainContext).checkNoImage_nomal();
+        ((MainActivity) mainContext).checkNomalNoImage();
     }
 
     public void remove(int position, String type) {

@@ -324,7 +324,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             } else {
                 nomalreset.show();
             }
-        } else if (view == mainBinding.locationTab) {
+        } else if (view == mainBinding.locationTab) { //위치 메모 fragment 열기
             mainBinding.kakaoButton.setText("위치메모\n 공유하기 ");
             mainBinding.menu.btnReset.setText("   위치 메모 초기화");
             mainBinding.locationTab.setAlpha(1.0f);
@@ -334,7 +334,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             transaction.replace(R.id.frame, location_memo_activity);
             transaction.commit();
             ShowAlamUi(sort);
-        } else if (view == mainBinding.nomalTab) {
+        } else if (view == mainBinding.nomalTab) { //일반 메모 fragment 열기
             mainBinding.kakaoButton.setText("일반메모\n 공유하기 ");
             mainBinding.menu.btnReset.setText("   일반 메모 초기화");
             mainBinding.locationTab.setAlpha(0.3f);
@@ -348,7 +348,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             NomalMemoActivity nomal_memo_activity = new NomalMemoActivity();
             transaction.replace(R.id.frame, nomal_memo_activity);
             transaction.commit();
-            checkNoImage_nomal();
+            checkNomalNoImage();
         } else if (view == mainBinding.hideMenu2) {
             Intent intent = new Intent(this, NomalMemoInsetActivity.class);
             startActivity(intent);
@@ -378,7 +378,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 finish();
                 overridePendingTransition(R.anim.fadein, R.anim.fadeout);
             }
-        } else if (view == mainBinding.menu.btnShare) {
+        } else if (view == mainBinding.menu.btnShare) { //카카오톡으로 이미지 공유하기
 
             try {
                 Intent intent = new Intent(Intent.ACTION_SEND);
@@ -390,10 +390,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 installKakao.show();
             }
         } else if (view == mainBinding.kakaoButton) {
-
-            RealmResults<Data_alam> data_alams = myRealm.where(Data_alam.class).equalTo("isAlamOn", true).findAll();
             checkKaKaoPermissions();
-
         } else if (view == mainBinding.menu.btnBackUp) {
             backup.show();
         } else if (view == mainBinding.menu.btnLoad) {
@@ -412,7 +409,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /*------------------------------------------------------------------------------------------------------------------------------------------*/
 
 
-    public void ShowAlamUi(String sort) {
+    public void ShowAlamUi(String sort) { // 어댑터 정렬 및 새로고침
         int count = 0;
         boolean isSame = true;
         locationadapter.clear();
@@ -484,7 +481,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-    private void DataLoad() {
+    private void DataLoad() { // 데이터 복원
         if (user.equals("google")) {
             progressDialog.show();
             mDatabase.child(UID).child("Location_Icon").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -585,7 +582,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    private void BackUp() {
+    private void BackUp() { // 데이터 저장
         if (user.equals("google")) {
 
             progressDialog.show();
@@ -668,7 +665,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    private void Kakao() {
+    private void Kakao() { // 공유하고자 하는 메모의 어댑터를 복사하여  아이템순서대로 읽어서 이미지그림을 그린 후 파일로 저장하여 해당파일을 카카오톡으로 상대방에게 전송
         if (mainBinding.locationTab.getAlpha() == 1.0f) {
             if (getScreenshotFromRecyclerView(recycleerView_location) != null) {
                 try {
@@ -706,13 +703,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    void InstallKakao() {
+    void InstallKakao() { // 만약 카카오톡이 설치돼어있지않다면
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.kakao.talk"));
         startActivity(intent);
     }
 
 
-    private void settingToggleButton(View view) { // seletor Item
+    private void settingToggleButton(View view) { // selector Item
         if (view.getId() == R.id.sort_name) {
             sort = "sort_name";
             mainBinding.menu.sortAlams.setTextColor(Color.rgb(0, 0, 0));
@@ -734,7 +731,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    public Bitmap getScreenshotFromRecyclerView(RecyclerView view) {
+    public Bitmap getScreenshotFromRecyclerView(RecyclerView view) { // 공유하고자 하는 메모의 어댑터를 복사하여  아이템순서대로 읽어서 이미지그림을 그리는 메소드
         RecyclerView.Adapter adapter = view.getAdapter();
         Bitmap bigBitmap = null;
         if (adapter != null && adapter.getItemCount() != 0) {
@@ -744,7 +741,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             int iHeight = 0;
             final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
 
-            // Use 1/8th of the available memory for this memory cache.
             final int cacheSize = maxMemory / 8;
             LruCache<String, Bitmap> bitmaCache = new LruCache<>(cacheSize);
             for (int i = 0; i < size; i++) {
@@ -779,44 +775,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         return bigBitmap;
     }
 
-
-//    public String returnImage(String path){
-//        File imageFile = new File(path);
-//
-//        KakaoLinkService.getInstance().uploadImage(this, false, imageFile, new ResponseCallback<ImageUploadResponse>() {
-//            @Override
-//            public void onFailure(ErrorResult errorResult) {
-//                Logger.e(errorResult.toString());
-//            }
-//
-//            @Override
-//            public void onSuccess(ImageUploadResponse result) {
-//               url = result.getOriginal().getUrl();
-//
-//            }
-//        });
-//        return url;
-//    }
-//
-//
-//    public String returnImage2(String path){
-//        KakaoLinkService.getInstance().scrapImage(this, false, path, new ResponseCallback<ImageUploadResponse>() {
-//            @Override
-//            public void onFailure(ErrorResult errorResult) {
-//                Logger.e(errorResult.toString());
-//            }
-//
-//            @Override
-//            public void onSuccess(ImageUploadResponse result) {
-//                Logger.d(result.getOriginal().getUrl());
-//                url2 = result.getOriginal().getUrl();
-//            }
-//        });
-//        return url2;
-//    }
-
-
-    private void saveToInternalStorage(Bitmap bitmapImage) {
+    private void saveToInternalStorage(Bitmap bitmapImage) { //getScreenshotFromRecyclerView메소드가 만든 이미지를 저장
         String ex_storage = Environment.getExternalStorageDirectory().getAbsolutePath();
         String foler_name = "/" + "PlaceMemo" + "/";
         String file_name = "KaKao_Image" + ".jpg";
@@ -930,7 +889,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-    public void checkNoImage_nomal() {
+    public void checkNomalNoImage() {
         RealmResults<Data_nomal> results = myRealm.where(Data_nomal.class).findAll();
         if (results.size() == 0) {
             TextViewNoMemo_nomal.setVisibility(View.VISIBLE);
@@ -982,7 +941,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         myRealm.beginTransaction();
         results.deleteAllFromRealm();
         myRealm.commitTransaction();
-        checkNoImage_nomal();
+        checkNomalNoImage();
     }
 
     private void MakeAlertDialog(AlertDialog.Builder locationDialog, AlertDialog.Builder nomalDialog, AlertDialog.Builder backupDialog, AlertDialog.Builder loadDialog, AlertDialog.Builder kakaoDialog) {
