@@ -26,10 +26,12 @@ import com.example.placememo_project.fragment.Location_guide8;
 import com.example.placememo_project.fragment.Nomal_guide1;
 import com.example.placememo_project.fragment.Nomal_guide2;
 import com.example.placememo_project.fragment.Nomal_guide3;
+import com.example.placememo_project.fragment.Widget_guide1;
+import com.example.placememo_project.fragment.Widget_guide2;
+import com.example.placememo_project.fragment.Widget_guide3;
+import com.example.placememo_project.fragment.Widget_guide4;
 
 import java.util.ArrayList;
-
-import me.relex.circleindicator.CircleIndicator;
 
 public class GuideActivity  extends AppCompatActivity implements View.OnClickListener {
     GuideBinding guideBinding;
@@ -73,6 +75,18 @@ public class GuideActivity  extends AppCompatActivity implements View.OnClickLis
             adapter.addItem(nomal_guide2);
             Nomal_guide3 nomal_guide3 = new Nomal_guide3();
             adapter.addItem(nomal_guide3);
+            guideBinding.guideVp.setAdapter(adapter);
+            guideBinding.indicator.setViewPager(guideBinding.guideVp);
+        }else if(intent.getAction().equals("widget")){
+            guideBinding.guideVp.setOffscreenPageLimit(4);
+            Widget_guide1 widget_guide1 = new Widget_guide1();
+            adapter.addItem(widget_guide1);
+            Widget_guide2 widget_guide2 = new Widget_guide2();
+            adapter.addItem(widget_guide2);
+            Widget_guide3 widget_guide3 = new Widget_guide3();
+            adapter.addItem(widget_guide3);
+            Widget_guide4 widget_guide4 = new Widget_guide4();
+            adapter.addItem(widget_guide4);
             guideBinding.guideVp.setAdapter(adapter);
             guideBinding.indicator.setViewPager(guideBinding.guideVp);
         }

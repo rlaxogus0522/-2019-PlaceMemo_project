@@ -202,6 +202,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mainBinding.menu.btnShare.setOnClickListener(this);
         mainBinding.menu.btnLocationGuide.setOnClickListener(this);
         mainBinding.menu.btnNomalGuide.setOnClickListener(this);
+        mainBinding.menu.btnWidgetGuide.setOnClickListener(this);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawlayout);
         drawView = (View) findViewById(R.id.drawer);
         AlertDialog.Builder locationDialog = new AlertDialog.Builder(this);
@@ -311,6 +312,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }else if(view == mainBinding.menu.btnNomalGuide){
             Intent intent = new Intent(this,GuideActivity.class);
             intent.setAction("nomal");
+            startActivity(intent);
+        }else if(view == mainBinding.menu.btnWidgetGuide){
+            Intent intent = new Intent(this,GuideActivity.class);
+            intent.setAction("widget");
             startActivity(intent);
         }else if (view == mainBinding.btnSetting) {  //-- 옵션을 클릭한다면
             mainBinding.drawlayout.openDrawer(mainBinding.menu.drawer);

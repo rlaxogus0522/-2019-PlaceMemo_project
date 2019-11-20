@@ -6,7 +6,8 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        tools:replace="android:label"
+        android:label="여기 메모!"
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -111,7 +112,7 @@
 
         <receiver
             android:name="com.example.placememo_project.wiget.WigetProvider"
-            android:label="PM">
+            android:label="여기 메모!">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
